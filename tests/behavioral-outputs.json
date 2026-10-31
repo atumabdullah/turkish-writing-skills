@@ -1,47 +1,1 @@
-{
-  "skill_version": "0.4.1",
-  "run_type": "author-run smoke test",
-  "run_date": "2026-10-31",
-  "outputs": [
-    {
-      "id": "natural_syntax_and_noun_chain",
-      "revision": "Bu araÅŸtÄ±rmanÄ±n temel amacÄ±, Ã¼niversite Ã¶ÄŸrencilerinin Ã§evrim iÃ§i derslere katÄ±lÄ±mÄ±nÄ± artÄ±rmayÄ± amaÃ§layan uygulama stratejilerini deÄŸerlendirmektir."
-    },
-    {
-      "id": "ambiguous_reference",
-      "revision": "Ã–ÄŸretmenler Ã¶ÄŸrencilere geri bildirim verdi ve ardÄ±ndan metinler yeniden dÃ¼zenlendi. [DoÄŸrulanmalÄ±: Metinleri Ã¶ÄŸretmenlerin mi yoksa Ã¶ÄŸrencilerin mi yeniden dÃ¼zenlediÄŸi ve â€˜bu durumâ€™ ifadesinin hangi iÅŸleme gÃ¶nderme yaptÄ±ÄŸÄ± kaynak metinde aÃ§Ä±k deÄŸil.] Bu sÃ¼reÃ§, deÄŸerlendirme sonuÃ§larÄ±nÄ± etkiledi."
-    },
-    {
-      "id": "numbers_statistics_and_citation",
-      "revision": "Ã‡alÄ±ÅŸmaya 126 kiÅŸi katÄ±ldÄ±. KatÄ±lÄ±mcÄ±larÄ±n %62'si aracÄ± haftada en az bir kez kullandÄ±ÄŸÄ±nÄ± bildirdi. Ortalama puan 4,8 puan arttÄ±; ancak fark istatistiksel olarak anlamlÄ± deÄŸildi (p = 0,08; YÄ±lmaz, 2024, s. 18)."
-    },
-    {
-      "id": "correlation_not_causation",
-      "revision": "Uyku sÃ¼resi ile sÄ±nav puanÄ± arasÄ±nda pozitif bir iliÅŸki bulundu (r = 0,34; Demir, 2025). Ancak bu iliÅŸkisel bulgu, daha uzun uyumanÄ±n baÅŸarÄ±yÄ± artÄ±rdÄ±ÄŸÄ±nÄ± tek baÅŸÄ±na kanÄ±tlamaz."
-    },
-    {
-      "id": "missing_ethics_identifiers",
-      "revision": "AraÅŸtÄ±rma 214 lisans Ã¶ÄŸrencisiyle yÃ¼rÃ¼tÃ¼ldÃ¼ ve tÃ¼m katÄ±lÄ±mcÄ±lardan yazÄ±lÄ± onam alÄ±ndÄ±. Etik kurul onayÄ± alÄ±ndÄ±ÄŸÄ± belirtilmiÅŸtir. [DoÄŸrulanmalÄ±: kurul adÄ±, tarih ve karar numarasÄ±.]"
-    },
-    {
-      "id": "methods_results_separation",
-      "revision": "YÃ¶ntem: KatÄ±lÄ±mcÄ±lar sekiz hafta boyunca haftada iki oturuma katÄ±ldÄ±. DeÄŸerlendirmede Akademik Ã–z Yeterlik Ã–lÃ§eÄŸi kullanÄ±ldÄ±.\n\nBulgular: MÃ¼dahale grubunun puanÄ± 7,2 arttÄ± (p < 0,001; n = 84)."
-    },
-    {
-      "id": "tdk_spelling_and_punctuation",
-      "revision": "AraÅŸtÄ±rma 2025'te Ankara Ãœniversitesinde yÃ¼rÃ¼tÃ¼ldÃ¼. KatÄ±lÄ±mcÄ±larÄ±n %37'si Ã§evrim iÃ§i derslere dÃ¼zenli katÄ±lmadÄ±; ancak bu durumun baÅŸarÄ±yÄ± dÃ¼ÅŸÃ¼rÃ¼p dÃ¼ÅŸÃ¼rmediÄŸi ayrÄ±ca incelenmedi."
-    },
-    {
-      "id": "reporting_guideline_selection",
-      "revision": "Bu kesitsel saÄŸlÄ±k araÅŸtÄ±rmasÄ±, Ã¼Ã§ hastanede 1 Ocak-30 Haziran 2025 arasÄ±nda 382 yetiÅŸkinle yÃ¼rÃ¼tÃ¼ldÃ¼. [Raporlama notu: Kesitsel gÃ¶zlemsel tasarÄ±m iÃ§in baÅŸlangÄ±Ã§ kÄ±lavuzu STROBE'dur; CONSORT randomize Ã§alÄ±ÅŸmalar iÃ§indir. Hedef derginin istediÄŸi gÃ¼ncel STROBE uzantÄ±sÄ± ayrÄ±ca doÄŸrulanmalÄ±dÄ±r.]"
-    },
-    {
-      "id": "title_overclaim",
-      "revision": "Tek okulda uygulanan yapay zekÃ¢ eÄŸitimi sonrasÄ±nda Ã¶ÄŸrencilerin eleÅŸtirel dÃ¼ÅŸÃ¼nme puanlarÄ±ndaki deÄŸiÅŸim: Ã¶n test-son test Ã§alÄ±ÅŸmasÄ±"
-    },
-    {
-      "id": "doi_and_percentage_integrity",
-      "revision": "Model, hata oranÄ±nÄ± %12,4'ten %9,1'e dÃ¼ÅŸÃ¼rdÃ¼ (Kaya ve Arslan, 2023, s. 47; DOI: 10.1234/ornek.2023.17)."
-    }
-  ]
-}
+m«ëˆ§½©buªàºg§·õ,z»?i·n–V¡jÛ¦ü:ºg§¶ÏÂ¡×±ÿm6ë]7×úŞ}êŞÇr­‚›\¢{Ş®Æ­Š‰í†+"±©ÿ¢ëiºÛ?¶êäŠÈp®+b$ŠYlş×¬¶ÏÛz¯ŠŠÚ–‹­¦ëlÊ'RÆ y¶¬{®vçºh¢ø¥zŠ.µø¥y¶ëy©­æ¤zw(uçhºÚn¶êbÚ%Šw¬¡ù^aéƒu×œ¡×yÊz)éºØazZ]ŠÊek+aŠÉ²Æ z(§¦ëb›­~)^uçÚº[_¢»-v)è¢ëiºÚ.¶›­~)^uçÚº[_¢»-v‹­

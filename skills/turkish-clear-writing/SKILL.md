@@ -1,58 +1,1 @@
----
-name: turkish-clear-writing
-description: Türkçe akademik, kurumsal ve bilgilendirici metinleri anlamı, kanıt düzeyini, sayıları ve atıfları koruyarak doğal, açık ve okur odaklı biçimde yazar veya düzenler. Türkçe metin sadeleştirme, yapay zekâ üslubunu azaltma ve akademik kesinliği koruma isteklerinde kullan; yaratıcı edebiyat ve yalnızca yazım denetimi için kullanma.
-metadata:
-  version: "0.4.1"
----
-
-# Türkçe Açık Yazım
-
-Metni yalnızca kısaltma. Okurun bilgiyi doğru, akıcı ve gereksiz çıkarım yükü olmadan işlemesini sağla.
-
-## Önce bağlamı belirle
-
-Eksikse metinden makul biçimde çıkar; sonucu kökten değiştirecek bir belirsizlik varsa sor.
-
-- Amaç: bilgilendirme, açıklama, savunma, öğretme veya özetleme
-- Okur: alan uzmanı, lisans öğrencisi, genel okur ya da belirli bir kurum
-- Tür ve ton: makale, tez, rapor, duyuru, web metni veya günlük anlatım
-- Korunacaklar: teknik terimler, iddia sınırları, sayılar, birimler, özel adlar, atıflar ve biçim
-
-Akademik makalede ayrıca hedef derginin yazar rehberini, makale türünü ve varsa çalışma türüne özgü raporlama kılavuzunu belirle. Derginin açık biçim kuralları; genel örneklerden, varsayılan kaynakça biçiminden ve yerelleştirme tercihlerinden önce gelir. Etik kurul/onam, kayıt, yazarlık, finansman, çıkar çatışması, veri erişimi veya önceki yayın ilişkisi söz konusuysa bunları yalnızca üslup unsuru gibi düzenleme; doğrulanması gereken beyanlar olarak koru.
-
-## Düzenleme akışı
-
-1. **Koruma dökümü çıkar.** Ana iddiaları; olasılık, sınırlılık ve karşıtlık belirteçlerini; sayıları, birimleri ve atıfları listele.
-2. **Bilgi akışını kur.** Her paragrafta bilinen bilgiden yeni bilgiye ilerle; ana düşünceyi geciktirme; bir paragrafın işlevini tek cümleyle adlandırabil.
-3. **Türkçeleştir.** İngilizce söz dizimini taklit eden yapıları çöz; yüklemi doğal konuma getir; gereksiz edilgenliği, aşırı adlaştırmayı ve uzun isim zincirlerini azalt.
-4. **Bağları görünür kıl.** Özne veya gönderim belirsizse adı yinele; neden, karşıtlık, koşul ve sonuç ilişkilerini uygun bağlaçlarla açıkla. Bağlaçları mekanik biçimde çoğaltma.
-5. **Yoğunluğu ayarla.** Kısaltmayı amaç edinme. Bir cümle çok sayıda yeni kavram veya önermeyi taşıyorsa böl, tanım ya da kısa örnek ekle. Bölme sırasında mantıksal ilişkiyi kaybetme.
-6. **Kesinliği koru.** “Gösterir”, “ilişkilidir”, “olabilir”, “öne sürer” ve “kanıtlamaz” aynı güçte değildir. Kaynağın iddia düzeyini yükseltme veya düşürme.
-7. **Son doğrulamayı yap.** Düzenlenen metni koruma dökümüyle karşılaştır; sayı, yüzde, tarih, birim, denklem, dipnot, atıf ve etik/şeffaflık beyanlarını tek tek denetle.
-
-## Türkçeye özgü kararlar
-
-- **Doğal söz dizimi:** Cümleyi İngilizce sırasına zorlamadan odağı ve yüklemi doğal Türkçe akışında konumlandır. Vurgu gerektirmiyorsa devrikliği sırf çeşitlilik için kullanma.
-- **Eklemeli morfoloji:** Uzun sözcüğü tek başına hata sayma. Ancak art arda gelen yapım ve çekim ekleri görevleri belirsizleştiriyorsa sözcüğü bir yan cümle veya ayrı ifadeyle aç.
-- **İsim zincirleri:** Üç ya da daha fazla ad/isimleşmiş öğe üst üste geldiğinde tamlayan–tamlanan ilişkisini denetle. Gerekirse fiilleştir, “-e ilişkin/-de kullanılan” gibi açık bir ilişki kur veya iki cümleye böl.
-- **Özne ve gönderim:** Türkçede özne düşebilir; fakat iki olası gönderge varsa özneyi yaz. “Bu/bu durum/bunlar/söz konusu” ifadelerinin neye gönderdiğini açıklaştır.
-- **Bağdaşıklık:** Ana terimi sırf tekrar olmasın diye her cümlede başka eş anlamlıyla değiştirme. Anahtar kavramı tutarlı biçimde yinele; ilişkileri doğru bağlaçla kur.
-- **Bilgi yoğunluğu:** Cümle uzunluğuna tek başına hüküm verme. Yeni kavram, önerme, koşul ve iç içe yan cümle sayısını birlikte değerlendir.
-- **Tanımlama ve örnekleme:** Okurun bilmeyebileceği terimi ilk kullanımda kısa biçimde tanımla. Soyut bir ilişkiyi açıklamak gerekiyorsa bir temsilî örnek ver ve örneği bulgu gibi sunma.
-
-Ayrıntılı tanı–eylem–kontrol yönergeleri için [references/turkish-guidelines.md](references/turkish-guidelines.md) dosyasını oku. Yazım, noktalama, sayı, özel ad veya alıntı biçimi denetiminde [references/tdk-writing-and-punctuation.md](references/tdk-writing-and-punctuation.md) dosyasını kullan. Akademik makale planlama ya da bölüm düzenleme işinde [references/academic-article-workflow.md](references/academic-article-workflow.md) dosyasını oku. Etik, yazarlık, izin/onam, şeffaflık, TR Dizin veya çalışma türüne özgü raporlama denetiminde [references/research-ethics-and-reporting.md](references/research-ethics-and-reporting.md) dosyasını kullan. Akademik veya yüksek riskli düzenlemede [references/evidence-and-limitations.md](references/evidence-and-limitations.md) dosyasındaki kanıt sınırlarını da uygula. Örnek istenirse [references/examples.md](references/examples.md) dosyasını kullan. Değerlendirme veya kalite puanı istenirse [references/evaluation.md](references/evaluation.md) dosyasını oku.
-
-## Değiştirilmemesi gerekenler
-
-- Yeni olgu, kaynak, yöntem, sonuç veya atıf uydurma.
-- Korelasyonu nedenselliğe; olasılığı kesinliğe; yazar yorumunu veri sonucuna dönüştürme.
-- Sayıları yuvarlama, birimleri dönüştürme veya atıf yerini değiştirme; kullanıcı açıkça istemedikçe kaynak biçemini yeniden düzenleme.
-- Dergi şablonundaki ondalık ayırıcı, kaynakça, tablo, denklem veya birim biçimini yalnızca genel Türkçe yazım tercihine uydurmak için değiştirme.
-- Eksik etik kurul/onam, kayıt, yazarlık katkısı, finansman veya çıkar çatışması bilgisini tahmin ederek doldurma; eksikliği görünür biçimde işaretle.
-- Bir raporlama kontrol listesini iyi araştırma tasarımının, etik onayın veya alan uzmanı değerlendirmesinin yerine koyma.
-- Teknik terimi sırf daha gündelik görünsün diye anlamca daraltma ya da genişletme. Gerekirse terimi koruyup kısa tanım ekle.
-- Türkçeye özgü yönergeleri beş İngilizce çalışmanın doğrudan bulgusu gibi sunma.
-
-## Sonucu sun
-
-Kullanıcının istediği metni önce ver. Önemli anlam değişiklikleri, çözülemeyen belirsizlikler veya olası kaynak hataları varsa ardından kısa not düş. İzleme istenirse yalnızca anlamı etkileyen değişiklikleri açıkla; her küçük üslup düzeltmesini listeleme.
+m�눧��bu��g���,z�?i�n�V�jۦ�:�g���¡ױ�m6�]7���}�ޝǝr���\�{ޮƭ���+"�����i��?����p�+b�$�Yl��"�[?����\��¸��x?H�.gT��m��݅��(�~)^���~)^m��jF�y���y�.��������b��(~W���g�`�u�(u�^r�^�zn�^��b��Z��b�g����)�ا��_�W�y������]�z(��n�����_�W�y������]��

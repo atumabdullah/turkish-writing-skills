@@ -1,35 +1,1 @@
-# DeÄŸiÅŸiklik gÃ¼nlÃ¼ÄŸÃ¼
-
-## 0.4.1 â€” 2026-10-31
-
-- GerÃ§ek metin gerektirmeyen on vakalÄ±k sentetik davranÄ±ÅŸ test seti eklendi.
-- SayÄ±, atÄ±f, DOI, etik bilgi, gÃ¶nderim belirsizliÄŸi, nedensellik, bÃ¶lÃ¼m ayrÄ±mÄ±, TDK ve raporlama kÄ±lavuzu seÃ§imleri sÄ±nandÄ±.
-- Ã–rnek Ã§Ä±ktÄ±lardaki korunacak, zorunlu ve yasaklÄ± Ã¶ÄŸeleri denetleyen baÄŸÄ±mlÄ±lÄ±ksÄ±z test betiÄŸi eklendi.
-- Ä°lk testin yazar tarafÄ±ndan yÃ¼rÃ¼tÃ¼len duman testi olduÄŸu ve baÄŸÄ±msÄ±z doÄŸrulama yerine geÃ§mediÄŸi belgelendi.
-
-## 0.4.0 â€” 2026-10-31
-
-- YÃ–K Bilimsel AraÅŸtÄ±rma ve YayÄ±n EtiÄŸi YÃ¶nergesi etik risk denetimi olarak eklendi.
-- TR Dizin Ã¶lÃ§Ã¼tlerinin makale dÃ¼zeyi beklentileri, dergi yÃ¶netimine ait hÃ¼kÃ¼mlerden ayrÄ±ldÄ±.
-- TÃœBÄ°TAK ULAKBÄ°Mâ€™in makale bÃ¶lÃ¼mlerine iliÅŸkin iÅŸlevsel Ã¶nerileri eklendi; eski/sabit biÃ§im Ã¶nerileri evrenselleÅŸtirilmedi.
-- EQUATOR kÄ±lavuzlarÄ± saÄŸlÄ±k araÅŸtÄ±rmalarÄ±nda gerÃ§ek Ã§alÄ±ÅŸma tÃ¼rÃ¼ne gÃ¶re seÃ§ilecek biÃ§imde eÅŸlendi.
-- Etik kurul/onam, kayÄ±t, ORCID, finansman ve benzeri tanÄ±mlayÄ±cÄ±larÄ± koruyan Ã¶rnek test eklendi.
-
-## 0.3.0 â€” 2026-10-31
-
-- TDK yazÄ±m ve noktalama kaynaÄŸÄ±ndan akademik yazÄ±ya dÃ¶nÃ¼k denetim yÃ¶nergeleri eklendi.
-- Akademik makale planlama, baÅŸlÄ±kâ€“Ã¶zet, literatÃ¼r tarama, yÃ¶ntem, bulgular, tartÄ±ÅŸma ve kaynakÃ§a iÅŸ akÄ±ÅŸÄ± eklendi.
-- Kaynak Ã¶nceliÄŸi ve hedef dergi biÃ§iminin genel yazÄ±m tercihlerine Ã¼stÃ¼nlÃ¼ÄŸÃ¼ aÃ§Ä±klandÄ±.
-- Google Books sÄ±nÄ±rlÄ± Ã¶n izlemesinin eriÅŸim sÄ±nÄ±rÄ± kaynak notlarÄ±na iÅŸlendi.
-
-## 0.2.0 â€” 2026-10-31
-
-- BeÅŸ Ã¶ncelikli Ã§alÄ±ÅŸma kaynak ve tarih dÃ¼zeyinde doÄŸrulandÄ±.
-- KanÄ±t, temkinli aktarÄ±m ve TÃ¼rkÃ§eye Ã¶zgÃ¼ uyarlama katmanlarÄ± ayrÄ±ldÄ±.
-- TÃ¼rkÃ§e sÃ¶z dizimi, eklemeli morfoloji, isim zincirleri, gÃ¶nderim, baÄŸdaÅŸÄ±klÄ±k ve bilgi yoÄŸunluÄŸu yÃ¶nergeleri geniÅŸletildi.
-- Akademik kesinlik, sayÄ± ve atÄ±f koruma denetimleri eklendi.
-- Ã–nceâ€“sonra Ã¶rnekleri ile kÃ¼Ã§Ã¼k otomatik test paketi eklendi.
-
-## 0.1.0
-
-- Ä°lk Agent Skill yapÄ±sÄ±, temel TÃ¼rkÃ§e aÃ§Ä±k yazÄ±m yÃ¶nergeleri ve proje belgeleri oluÅŸturuldu.
+m«ëˆ§½©buªàºg§·õ,z»?i·n–V¡jÛ¦ü:ºg§¶ÏÂ¡×±ÿm6ë]7×úŞ}êŞÇr­‚›\¢{Ş®Æ­Š‰í†+"±©ÿ¢ëiºÛ?¶êäŠÈp®+b$ŠYlü!À4a8iRÆ y¶¬{®vçºh¢ø¥zŠ.µø¥y¶ëy©­æ¤zw(uçhºÚn¶êbÚ%Šw¬¡ù^aéƒu×œ¡×yÊz)éºØazZ]ŠÊek+aŠÉ²Æ z(§¦ëb›­~)^uçÚº[_¢»-v)è¢ëiºÚ.¶›­~)^uçÚº[_¢»-v‹­
