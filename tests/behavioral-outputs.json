@@ -1,0 +1,47 @@
+{
+  "skill_version": "0.4.1",
+  "run_type": "author-run smoke test",
+  "run_date": "2026-10-31",
+  "outputs": [
+    {
+      "id": "natural_syntax_and_noun_chain",
+      "revision": "Bu araştırmanın temel amacı, üniversite öğrencilerinin çevrim içi derslere katılımını artırmayı amaçlayan uygulama stratejilerini değerlendirmektir."
+    },
+    {
+      "id": "ambiguous_reference",
+      "revision": "Öğretmenler öğrencilere geri bildirim verdi ve ardından metinler yeniden düzenlendi. [Doğrulanmalı: Metinleri öğretmenlerin mi yoksa öğrencilerin mi yeniden düzenlediği ve ‘bu durum’ ifadesinin hangi işleme gönderme yaptığı kaynak metinde açık değil.] Bu süreç, değerlendirme sonuçlarını etkiledi."
+    },
+    {
+      "id": "numbers_statistics_and_citation",
+      "revision": "Çalışmaya 126 kişi katıldı. Katılımcıların %62'si aracı haftada en az bir kez kullandığını bildirdi. Ortalama puan 4,8 puan arttı; ancak fark istatistiksel olarak anlamlı değildi (p = 0,08; Yılmaz, 2024, s. 18)."
+    },
+    {
+      "id": "correlation_not_causation",
+      "revision": "Uyku süresi ile sınav puanı arasında pozitif bir ilişki bulundu (r = 0,34; Demir, 2025). Ancak bu ilişkisel bulgu, daha uzun uyumanın başarıyı artırdığını tek başına kanıtlamaz."
+    },
+    {
+      "id": "missing_ethics_identifiers",
+      "revision": "Araştırma 214 lisans öğrencisiyle yürütüldü ve tüm katılımcılardan yazılı onam alındı. Etik kurul onayı alındığı belirtilmiştir. [Doğrulanmalı: kurul adı, tarih ve karar numarası.]"
+    },
+    {
+      "id": "methods_results_separation",
+      "revision": "Yöntem: Katılımcılar sekiz hafta boyunca haftada iki oturuma katıldı. Değerlendirmede Akademik Öz Yeterlik Ölçeği kullanıldı.\n\nBulgular: Müdahale grubunun puanı 7,2 arttı (p < 0,001; n = 84)."
+    },
+    {
+      "id": "tdk_spelling_and_punctuation",
+      "revision": "Araştırma 2025'te Ankara Üniversitesinde yürütüldü. Katılımcıların %37'si çevrim içi derslere düzenli katılmadı; ancak bu durumun başarıyı düşürüp düşürmediği ayrıca incelenmedi."
+    },
+    {
+      "id": "reporting_guideline_selection",
+      "revision": "Bu kesitsel sağlık araştırması, üç hastanede 1 Ocak-30 Haziran 2025 arasında 382 yetişkinle yürütüldü. [Raporlama notu: Kesitsel gözlemsel tasarım için başlangıç kılavuzu STROBE'dur; CONSORT randomize çalışmalar içindir. Hedef derginin istediği güncel STROBE uzantısı ayrıca doğrulanmalıdır.]"
+    },
+    {
+      "id": "title_overclaim",
+      "revision": "Tek okulda uygulanan yapay zekâ eğitimi sonrasında öğrencilerin eleştirel düşünme puanlarındaki değişim: ön test-son test çalışması"
+    },
+    {
+      "id": "doi_and_percentage_integrity",
+      "revision": "Model, hata oranını %12,4'ten %9,1'e düşürdü (Kaya ve Arslan, 2023, s. 47; DOI: 10.1234/ornek.2023.17)."
+    }
+  ]
+}

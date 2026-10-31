@@ -1,0 +1,32 @@
+[
+  {
+    "name": "numbers_and_citation",
+    "source": "Çalışmada 126 katılımcının %62'si aracı haftada en az bir kez kullandığını bildirmiştir (Yılmaz, 2024, s. 18).",
+    "revision": "Çalışmaya 126 kişi katıldı. Katılımcıların %62'si aracı haftada en az bir kez kullandığını bildirdi (Yılmaz, 2024, s. 18).",
+    "must_preserve": ["126", "%62", "haftada en az bir kez", "(Yılmaz, 2024, s. 18)"]
+  },
+  {
+    "name": "non_significant_result",
+    "source": "Müdahale grubundaki ortalama puan 4,8 puan arttı; fark istatistiksel olarak anlamlı değildi (p = 0,08).",
+    "revision": "Müdahale grubunun ortalama puanı 4,8 puan yükseldi; ancak bu fark istatistiksel olarak anlamlı değildi (p = 0,08).",
+    "must_preserve": ["4,8", "istatistiksel olarak anlamlı değildi", "p = 0,08"]
+  },
+  {
+    "name": "uncertainty_marker",
+    "source": "Önerme yoğunluğu, okurun metni işlemesini zorlaştırabilir.",
+    "revision": "Bir cümlede çok sayıda önerme bulunması, okurun metni işlemesini zorlaştırabilir.",
+    "must_preserve": ["zorlaştırabilir"]
+  },
+  {
+    "name": "statistical_and_citation_integrity",
+    "source": "İlişki negatifti (β = -0,31; %95 GA [-0,45, -0,17]; p < 0,001; Akın, 2025).",
+    "revision": "Akın (2025), ilişkinin negatif olduğunu bildirdi (β = -0,31; %95 GA [-0,45, -0,17]; p < 0,001).",
+    "must_preserve": ["negatif", "β = -0,31", "%95 GA [-0,45, -0,17]", "p < 0,001", "Akın", "2025"]
+  },
+  {
+    "name": "ethics_and_registration_identifiers",
+    "source": "Araştırma, Ankara Üniversitesi Etik Kurulunun 14.03.2026 tarihli ve 2026/117 sayılı onayıyla yürütüldü; çalışma kaydı NCT06123456'dır.",
+    "revision": "Araştırma için Ankara Üniversitesi Etik Kurulundan onay alındı (14.03.2026; karar no. 2026/117). Çalışmanın kayıt numarası NCT06123456'dır.",
+    "must_preserve": ["Ankara Üniversitesi Etik Kurulu", "14.03.2026", "2026/117", "NCT06123456"]
+  }
+]

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Türkçe Açık Yazım"
+  short_description: "Doğal ve kanıta sadık Türkçe yazım"
+  default_prompt: "Use $turkish-clear-writing to revise this Turkish text for clarity while preserving claims, numbers, and citations."
+
+policy:
+  allow_implicit_invocation: true
