@@ -2,21 +2,49 @@
 
 Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşılır hâle getirirken anlamı, kanıt düzeyini, sayıları ve atıfları koruyan bir Agent Skill projesi.
 
-## Neler değişti? — v0.4.1
+## Özellikler
 
-- Fredrick & Craven (2025), Kang (2026), Murphy Odo (2025), Watanabe (2025) ve Gibson ve ark. (2019) için doğrulanmış kanıt haritası eklendi.
-- İngilizce bulgular ile Türkçeye özgü editoryal uyarlamalar açıkça ayrıldı.
-- Doğal Türkçe söz dizimi, eklemeli morfoloji, uzun isim zincirleri, açık gönderim, bağdaşıklık, bilgi yoğunluğu, tanımlama ve örnekleme için uygulanabilir yönergeler geliştirildi.
-- Akademik kesinlik, sayı ve atıf koruma zorunlu son kontrol olarak tanımlandı.
-- Önce–sonra örnekleri, değerlendirme rubriği ve otomatik koruma testleri eklendi.
-- Kullanıcının sağladığı TDK yazım ve noktalama PDF’sinden akademik yazıya yönelik yüksek etkili denetimler eklendi.
-- *Bilimsel Makale ve Yayıncılık Akademisyen El Kitabı* sınırlı ön izlemesinden doğrulanan makale planlama ve bölüm tutarlılığı iş akışı eklendi.
-- Dergi yazar rehberi, teknik gösterim ve TDK varsayımları arasındaki öncelik sırası açıklandı.
-- YÖK yayın etiği yönergesi, TR Dizin ölçütleri, TÜBİTAK ULAKBİM makale yazımı sunumu ve EQUATOR raporlama kılavuzları kaynak rolleri ayrılarak eklendi.
-- Etik kurul/onam, kayıt, yazarlık, finansman, çıkar çatışması ve veri izni bilgileri korunacak tanımlayıcılar olarak tanımlandı.
-- Sağlık araştırmalarında gerçek çalışma tasarımına göre raporlama kılavuzu seçimi ve eksik bilgi uydurmama denetimi eklendi.
-- On kontrollü sentetik vaka, örnek skill çıktıları ve otomatik davranış koruma denetimi eklendi.
-- Davranış testinin sonuçları ve bağımsızlık sınırlılığı ayrı raporda belgelendi.
+### Doğal ve açık Türkçe
+
+- İngilizce söz dizimini taklit eden cümleleri doğal Türkçe akışına dönüştürür.
+- Uzun isim zincirlerini, aşırı adlaştırmayı ve gereksiz edilgenliği azaltır.
+- Belirsiz özne ve gönderimleri görünür kılar; çözülemeyen belirsizliği tahmin etmek yerine işaretler.
+- Bağdaşıklığı, terim tutarlılığını ve paragraf içindeki bilgi akışını güçlendirir.
+- Metni yalnızca kısaltmaz; hedef okura göre tanım, açıklama ve örnekleme gereksinimini değerlendirir.
+
+### Akademik makale desteği
+
+- Başlık, özet, giriş, yöntem, bulgular ve tartışma bölümlerini kendi işlevlerine göre düzenler.
+- Araştırma amacı, örneklem, temel sonuç ve istatistiklerin bölümler arasında tutarlı kalmasını denetler.
+- Bulguları yorumdan; korelasyonu nedensellikten; veri sonucunu yazar yorumundan ayırır.
+- Hedef derginin yazar rehberini genel biçim tercihlerinden üstün tutar.
+- Sağlık araştırmalarında gerçek çalışma tasarımına göre CONSORT, STROBE, PRISMA, SRQR, CARE, STARD, TRIPOD+AI, ARRIVE, SQUIRE veya CHEERS gibi uygun raporlama kılavuzunu seçmeye yardımcı olur.
+
+### Bilimsel içeriği koruma
+
+- Sayı, yüzde, tarih, birim, p değeri, güven aralığı, DOI ve atıfları korur.
+- “Gösterir”, “ilişkilidir”, “olabilir” ve “kanıtlamaz” gibi farklı kesinlik düzeylerini birbirine dönüştürmez.
+- Etik kurul, onam, kayıt, ORCID, finansman ve çıkar çatışması bilgilerini kaynak belge olmadan tamamlamaz.
+- Eksik veya doğrulanması gereken bilgiyi görünür biçimde işaretler; kaynak ve bulgu uydurmaz.
+
+### Türkçe yazım ve noktalama
+
+- `da/de`, `ki`, soru eki, özel adlar, kurum adları, kısaltmalar ve sayı eklerini denetler.
+- Virgül, noktalı virgül, iki nokta, tırnak, parantez, kısa çizgi, eğik çizgi ve kesme işaretini bağlama göre değerlendirir.
+- TDK tercihleriyle hedef derginin teknik gösterimi çatıştığında dergi kuralını korur.
+
+### Kaynak ve etik farkındalığı
+
+- Fredrick & Craven, Kang, Murphy Odo, Watanabe ve Gibson ve ark. çalışmalarını bilimsel sınırlılıklarıyla birlikte kullanır.
+- İngilizce okunabilirlik bulgularını Türkçeye doğrudan kanıtlanmış kural olarak genellemez.
+- TDK, YÖK yayın etiği, TR Dizin, TÜBİTAK ULAKBİM ve EQUATOR kaynaklarının farklı rollerini ayırır.
+- Otomatik okunabilirlik puanını gerçek okur anlama başarısının yerine koymaz.
+
+### Test ve doğrulama
+
+- Sayı, atıf ve etik tanımlayıcı koruması için otomatik örnek testleri içerir.
+- On kontrollü davranış vakasıyla belirsizlik, nedensellik, bölüm ayrımı, TDK yazımı ve raporlama kılavuzu seçimini sınar.
+- GitHub Actions üzerinden her gönderimde paket yapısını ve davranış değişmezlerini denetler.
 
 ## Kurulum
 
