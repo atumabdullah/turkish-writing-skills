@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik, kurumsal ve bilgilendirici metinleri anlamı, kanıt düzeyini, sayıları ve atıfları koruyarak doğal, açık ve okur odaklı biçimde yazar veya düzenler. Türkçe metin sadeleştirme, yapay zekâ üslubunu azaltma ve akademik kesinliği koruma isteklerinde kullan; yaratıcı edebiyat ve yalnızca yazım denetimi için kullanma.
 metadata:
-  version: "0.4.2"
+  version: "0.5.0"
 ---
 
 # Türkçe Açık Yazım
@@ -41,7 +41,7 @@ Akademik makalede ayrıca hedef derginin yazar rehberini, makale türünü ve va
 - **Bilgi yoğunluğu:** Cümle uzunluğuna tek başına hüküm verme. Yeni kavram, önerme, koşul ve iç içe yan cümle sayısını birlikte değerlendir.
 - **Tanımlama ve örnekleme:** Okurun bilmeyebileceği terimi ilk kullanımda kısa biçimde tanımla. Soyut bir ilişkiyi açıklamak gerekiyorsa bir temsilî örnek ver ve örneği bulgu gibi sunma.
 
-Ayrıntılı tanı–eylem–kontrol yönergeleri için [references/turkish-guidelines.md](references/turkish-guidelines.md) dosyasını oku. Yazım, noktalama, sayı, özel ad veya alıntı biçimi denetiminde [references/tdk-writing-and-punctuation.md](references/tdk-writing-and-punctuation.md) dosyasını kullan. Akademik makale planlama ya da bölüm düzenleme işinde [references/academic-article-workflow.md](references/academic-article-workflow.md) dosyasını oku. Etik, yazarlık, izin/onam, şeffaflık, TR Dizin veya çalışma türüne özgü raporlama denetiminde [references/research-ethics-and-reporting.md](references/research-ethics-and-reporting.md) dosyasını kullan. Akademik veya yüksek riskli düzenlemede [references/evidence-and-limitations.md](references/evidence-and-limitations.md) dosyasındaki kanıt sınırlarını da uygula. Örnek istenirse [references/examples.md](references/examples.md) dosyasını kullan. Değerlendirme veya kalite puanı istenirse [references/evaluation.md](references/evaluation.md) dosyasını oku.
+Ayrıntılı tanı–eylem–kontrol yönergeleri için [references/turkish-guidelines.md](references/turkish-guidelines.md) dosyasını oku. Yazım, noktalama, sayı, özel ad veya alıntı biçimi denetiminde [references/tdk-writing-and-punctuation.md](references/tdk-writing-and-punctuation.md) dosyasını kullan. Akademik makale planlama ya da bölüm düzenleme işinde [references/academic-article-workflow.md](references/academic-article-workflow.md) dosyasını oku. Etik, yazarlık, izin/onam, şeffaflık, TR Dizin veya çalışma türüne özgü raporlama denetiminde [references/research-ethics-and-reporting.md](references/research-ethics-and-reporting.md) dosyasını kullan. DOI, kaynakça, geri çekme veya düzeltme kontrolü istenirse [references/doi-verification.md](references/doi-verification.md) dosyasını oku ve `scripts/verify_dois.py` aracını kullan; sıradan metin düzenlemede çevrimiçi sorgu çalıştırma ve kaynakçayı otomatik değiştirme. Akademik veya yüksek riskli düzenlemede [references/evidence-and-limitations.md](references/evidence-and-limitations.md) dosyasındaki kanıt sınırlarını da uygula. Örnek istenirse [references/examples.md](references/examples.md) dosyasını kullan. Değerlendirme veya kalite puanı istenirse [references/evaluation.md](references/evaluation.md) dosyasını oku.
 
 ## Değiştirilmemesi gerekenler
 

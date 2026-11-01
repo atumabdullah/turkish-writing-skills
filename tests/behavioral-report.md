@@ -2,7 +2,7 @@
 
 ## Sonuç
 
-- Skill sürümü: `0.4.2`
+- Skill sürümü: `0.5.0`
 - Test tarihi: 1 Kasım 2026
 - Vaka sayısı: 11
 - Otomatik koruma sonucu: 11/11 geçti

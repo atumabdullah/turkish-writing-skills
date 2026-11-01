@@ -18,3 +18,5 @@ jobs:
         run: python3 scripts/check_examples.py
       - name: Check behavioral smoke-test outputs
         run: python3 scripts/check_behavioral_outputs.py
+      - name: Check DOI verifier without network
+        run: python3 scripts/check_doi_verifier.py

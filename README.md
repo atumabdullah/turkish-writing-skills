@@ -41,11 +41,21 @@ Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşıl
 - TDK, YÖK yayın etiği, TR Dizin, TÜBİTAK ULAKBİM ve EQUATOR kaynaklarının farklı rollerini ayırır.
 - Otomatik okunabilirlik puanını gerçek okur anlama başarısının yerine koymaz.
 
+### DOI doğrulama katmanı
+
+- DOI'lerin `doi.org` üzerinden çözümlenip çözümlenmediğini denetler.
+- Crossref kaydındaki başlık, ilk yazar ve yılı kaynakça girdisiyle karşılaştırır.
+- Crossref ve Retraction Watch metadata alanlarında görülen geri çekme, düzeltme, endişe ifadesi ve diğer güncellemeleri uyarı olarak raporlar.
+- Geçerli fakat Crossref dışında kayıtlı olabilecek DOI'leri, çözümlenemeyen DOI'lerden ayırır.
+- Sonuçları düzenlenebilir `XLSX` tablosu ile `Markdown` ve `JSON` raporları olarak verir.
+- Kaynakçayı kendiliğinden değiştirmez; uyumsuzluğu ve belirsizliği inceleme için işaretler.
+
 ### Test ve doğrulama
 
 - Sayı, atıf ve etik tanımlayıcı koruması için otomatik örnek testleri içerir.
 - On bir kontrollü davranış vakasıyla belirsizlik, nedensellik, karşılaştırma kapsamı, bölüm ayrımı, TDK yazımı ve raporlama kılavuzu seçimini sınar.
 - GitHub Actions üzerinden her gönderimde paket yapısını ve davranış değişmezlerini denetler.
+- DOI doğrulayıcısını ağ gerektirmeyen sentetik kayıtlarla sınar.
 
 ## Kurulum
 
@@ -64,6 +74,17 @@ Skill beş tür iş yapar:
 3. Metni hedef okura göre açıklar veya sadeleştirir.
 4. Akademik iddia gücünü, sayıları ve kaynakları koruyarak yapay zekâ üslubunu azaltır.
 5. Akademik makalede etik/şeffaflık alanlarını ve çalışma türüne uygun raporlama eksiklerini görünür kılar.
+6. İstenirse DOI'leri, bibliyografik eşleşmeleri ve yayın sonrası güncelleme kayıtlarını denetler.
+
+DOI kontrolü için skill klasöründe örnek kullanım:
+
+```bash
+python3 scripts/verify_dois.py kaynakca.bib --output doi-dogrulama
+python3 scripts/verify_dois.py kaynakca.docx --output doi-dogrulama
+python3 scripts/verify_dois.py --doi 10.1234/ornek --output doi-dogrulama
+```
+
+Çıktı klasöründe `doi-dogrulama-raporu.xlsx`, `doi-dogrulama-raporu.md` ve `doi-dogrulama-sonuclari.json` oluşur. Çevrimiçi kontrol, kesin hüküm değil bir ön doğrulama katmanıdır; kritik uyarılar yayıncı sayfasından incelenmelidir.
 
 ## Proje yapısı
 
@@ -71,7 +92,10 @@ Skill beş tür iş yapar:
 skills/turkish-clear-writing/
 ├── SKILL.md
 ├── agents/openai.yaml
+├── scripts/
+│   └── verify_dois.py
 └── references/
+    ├── doi-verification.md
     ├── evidence-and-limitations.md
     ├── evaluation.md
     ├── examples.md
@@ -81,11 +105,13 @@ skills/turkish-clear-writing/
     └── turkish-guidelines.md
 scripts/check_examples.py
 scripts/check_behavioral_outputs.py
+scripts/check_doi_verifier.py
 scripts/validate_package.py
 tests/cases.json
 tests/behavioral-cases.json
 tests/behavioral-outputs.json
 tests/behavioral-report.md
+tests/doi-fixtures.json
 ```
 
 ## Doğrulama
@@ -95,6 +121,7 @@ tests/behavioral-report.md
 ```bash
 python3 scripts/check_examples.py
 python3 scripts/check_behavioral_outputs.py
+python3 scripts/check_doi_verifier.py
 python3 scripts/validate_package.py
 ```
 
@@ -104,7 +131,7 @@ Agent Skill yapısını doğrulamak için Skill Creator paketindeki `quick_valid
 
 Öncelikli çalışmaların çoğu İngilizce metinleri veya İngilizce öğrenen okurları inceler. Bu proje, sonuçları Türkçeye doğrudan “kanıtlanmış kural” olarak aktarmıyor. Araştırmaların desteklediği genel ilkeleri, Türkçenin eklemeli ve büyük ölçüde baş-sonlu yapısına göre temkinli editoryal yönergelere dönüştürüyor.
 
-Otomatik okunabilirlik puanları gerçek anlamayı ölçmez. Yüksek önem taşıyan akademik, hukuki, tıbbi veya kamusal metinlerde hedef okur denemesi ve alan uzmanı incelemesi gerekir.
+Otomatik okunabilirlik puanları gerçek anlamayı ölçmez. Benzer biçimde, DOI yönlendirmesinin çalışması kaynakça girdisinin bütünüyle doğru olduğunu; uyarı bulunmaması da yayının kesinlikle sorunsuz olduğunu kanıtlamaz. Crossref/Retraction Watch kapsamı ve yayıncı metadata kalitesi değişebilir. Yüksek önem taşıyan akademik, hukuki, tıbbi veya kamusal metinlerde hedef okur denemesi, asıl kaynak kontrolü ve alan uzmanı incelemesi gerekir.
 
 Kaynaklar, tarihler ve DOI notları için [kanıt haritasına](skills/turkish-clear-writing/references/evidence-and-limitations.md) bakın.
 

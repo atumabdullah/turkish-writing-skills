@@ -1,0 +1,44 @@
+{
+  "records": {
+    "10.1000/ornek.1": {
+      "resolver_status": 200,
+      "resolver_url": "https://example.org/article-1",
+      "message": {
+        "DOI": "10.1000/ornek.1",
+        "title": ["Toprak verimliliğinde örnek bir yaklaşım"],
+        "author": [{"given": "Ayşe", "family": "Yılmaz"}, {"given": "Mehmet", "family": "Kaya"}],
+        "published": {"date-parts": [[2025]]},
+        "publisher": "Örnek Yayıncı",
+        "type": "journal-article"
+      }
+    },
+    "10.1000/ornek.2": {
+      "resolver_status": 200,
+      "resolver_url": "https://example.org/article-2",
+      "message": {
+        "DOI": "10.1000/ornek.2",
+        "title": ["Tamamen farklı bir makale"],
+        "author": [{"given": "Deniz", "family": "Ak"}],
+        "published": {"date-parts": [[2024]]},
+        "publisher": "Örnek Yayıncı",
+        "type": "journal-article"
+      }
+    },
+    "10.1000/ornek.3": {
+      "resolver_status": 200,
+      "resolver_url": "https://example.org/article-3",
+      "message": {
+        "DOI": "10.1000/ornek.3",
+        "title": ["Geri çekilmiş örnek çalışma"],
+        "author": [{"given": "Ali", "family": "Demir"}],
+        "published": {"date-parts": [[2023]]},
+        "publisher": "Örnek Yayıncı",
+        "type": "journal-article",
+        "update-to": [{"type": "retraction", "label": "Retraction", "source": "retraction-watch", "DOI": "10.1000/retraction.3"}]
+      }
+    },
+    "10.1000/ornek.4": {
+      "network_error": "sentetik ağ kesintisi"
+    }
+  }
+}

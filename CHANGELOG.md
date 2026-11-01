@@ -1,5 +1,13 @@
 # Değişiklik günlüğü
 
+## 0.5.0 — 2026-11-01
+
+- DOI çözümleme, Crossref metadata sorgusu ve başlık–ilk yazar–yıl eşleştirmesi yapan doğrulama katmanı eklendi.
+- Crossref ve Retraction Watch kayıtlarındaki geri çekme, düzeltme, endişe ifadesi ve diğer yayın sonrası güncellemeler görünür uyarılara dönüştürüldü.
+- Crossref dışındaki geçerli DOI'ler, çözümlenemeyen DOI'lerden ayrıldı; kaynakça girdilerinin otomatik değiştirilmesi engellendi.
+- Sonuçların JSON, Markdown ve XLSX olarak dışa aktarılması sağlandı.
+- Ağ gerektirmeyen sentetik DOI, metadata uyumsuzluğu, geri çekme ve servis hatası testleri eklendi.
+
 ## 0.4.2 — 2026-11-01
 
 - Karşılaştırmalı özetlerde amaç veya yöntemde tanıtılan bütün grupların temel bulgularda temsil edilip edilmediğini denetleyen kural eklendi.
