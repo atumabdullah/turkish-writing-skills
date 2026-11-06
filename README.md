@@ -41,6 +41,15 @@ Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşıl
 - TDK, YÖK yayın etiği, TR Dizin, TÜBİTAK ULAKBİM ve EQUATOR kaynaklarının farklı rollerini ayırır.
 - Otomatik okunabilirlik puanını gerçek okur anlama başarısının yerine koymaz.
 
+### Türkçe üslup denetimi (v0.6.0)
+
+- Üç açık çalışma modu: `write` (yaz), `rewrite` (düzenle) ve `audit` (değiştirmeden incele).
+- Akademik, kurumsal, teknik ve genel metin profilleri; bilimsel terimler, anlam ve hedef dergi önceliği korunur.
+- Bağımlılıksız `audit_turkish.py`, belirli dil ve yazım örüntülerini satır/sütun bilgisiyle ve **bağlamsal inceleme önerisi** olarak bildirir.
+- `--compare` seçeneği düzenlenen metinde sayısal değer/DOI kaybı veya eklenmesini ön kontrol olarak gösterir; anlam eşitliğini veya atıf bağlarını doğrulamaz.
+- Kod blokları, satır içi kod, bağlantılar ve DOI'ler üslup taramasında korunur.
+- Betik bir yapay zekâ yazarlık dedektörü değildir; kelime/bağlaç yasakları veya "insanlık" eşikleri uygulamaz.
+
 ### DOI doğrulama katmanı
 
 - DOI'lerin `doi.org` üzerinden çözümlenip çözümlenmediğini denetler.
@@ -67,7 +76,7 @@ Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşıl
 
 > `$turkish-clear-writing` kullanarak bu akademik metni genel okur için düzenle. Teknik terimleri ilk kullanımda kısa biçimde tanımla; iddiaları, sayıları ve atıfları değiştirme.
 
-Skill beş tür iş yapar:
+Skill şu işleri yapar:
 
 1. Var olan Türkçe metni açık ve doğal biçimde düzenler.
 2. İngilizceden çevrilmiş gibi duran Türkçe söz dizimini düzeltir.
@@ -75,6 +84,16 @@ Skill beş tür iş yapar:
 4. Akademik iddia gücünü, sayıları ve kaynakları koruyarak yapay zekâ üslubunu azaltır.
 5. Akademik makalede etik/şeffaflık alanlarını ve çalışma türüne uygun raporlama eksiklerini görünür kılar.
 6. İstenirse DOI'leri, bibliyografik eşleşmeleri ve yayın sonrası güncelleme kayıtlarını denetler.
+
+Üslup denetimi için skill klasöründe kullanım:
+
+```bash
+python3 scripts/audit_turkish.py makale.md --register academic
+python3 scripts/audit_turkish.py duyuru.md --register institutional --json
+python3 scripts/audit_turkish.py kaynak.md --compare duzeltilmis.md --json
+```
+
+Birinci komut metni değiştirmeden bulguları gösterir. Karşılaştırma komutu yalnızca sayı ve DOI belirteçlerini kontrol eder.
 
 DOI kontrolü için skill klasöründe örnek kullanım:
 
@@ -93,8 +112,10 @@ skills/turkish-clear-writing/
 ├── SKILL.md
 ├── agents/openai.yaml
 ├── scripts/
+│   ├── audit_turkish.py
 │   └── verify_dois.py
 └── references/
+    ├── style-audit.md
     ├── doi-verification.md
     ├── evidence-and-limitations.md
     ├── evaluation.md
@@ -106,6 +127,7 @@ skills/turkish-clear-writing/
 scripts/check_examples.py
 scripts/check_behavioral_outputs.py
 scripts/check_doi_verifier.py
+scripts/check_style_audit.py
 scripts/validate_package.py
 tests/cases.json
 tests/behavioral-cases.json
@@ -122,6 +144,7 @@ tests/doi-fixtures.json
 python3 scripts/check_examples.py
 python3 scripts/check_behavioral_outputs.py
 python3 scripts/check_doi_verifier.py
+python3 scripts/check_style_audit.py
 python3 scripts/validate_package.py
 ```
 
