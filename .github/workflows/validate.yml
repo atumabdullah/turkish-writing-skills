@@ -20,3 +20,5 @@ jobs:
         run: python3 scripts/check_behavioral_outputs.py
       - name: Check DOI verifier without network
         run: python3 scripts/check_doi_verifier.py
+      - name: Check Turkish editorial audit and semantic guardrails
+        run: python3 scripts/check_style_audit.py
