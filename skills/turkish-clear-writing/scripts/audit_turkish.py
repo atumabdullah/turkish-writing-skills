@@ -63,8 +63,12 @@ def audit_text(source: str, register: str = "academic") -> dict:
     for code, category, severity, pattern, advice in COMPILED:
         for match in pattern.finditer(visible):
             index = match.start()
+            adjusted_severity = (
+                "note" if code in {"TR001", "TR002"} and register in {"academic", "technical"}
+                else severity
+            )
             findings.append({
-                "code": code, "category": category, "severity": severity,
+                "code": code, "category": category, "severity": adjusted_severity,
                 "line": source.count("\n", 0, index) + 1,
                 "column": index - source.rfind("\n", 0, index),
                 "match": source[match.start():match.end()], "advice": advice,
