@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik, kurumsal ve bilgilendirici metinleri anlamı, kanıt düzeyini, sayıları ve atıfları koruyarak doğal, açık ve okur odaklı biçimde yazar veya düzenler. Türkçe metin sadeleştirme, yapay zekâ üslubunu azaltma ve akademik kesinliği koruma isteklerinde kullan; yaratıcı edebiyat ve yalnızca yazım denetimi için kullanma.
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # Türkçe Açık Yazım
@@ -19,6 +19,14 @@ Eksikse metinden makul biçimde çıkar; sonucu kökten değiştirecek bir belir
 - Korunacaklar: teknik terimler, iddia sınırları, sayılar, birimler, özel adlar, atıflar ve biçim
 
 Akademik makalede ayrıca hedef derginin yazar rehberini, makale türünü ve varsa çalışma türüne özgü raporlama kılavuzunu belirle. Derginin açık biçim kuralları; genel örneklerden, varsayılan kaynakça biçiminden ve yerelleştirme tercihlerinden önce gelir. Etik kurul/onam, kayıt, yazarlık, finansman, çıkar çatışması, veri erişimi veya önceki yayın ilişkisi söz konusuysa bunları yalnızca üslup unsuru gibi düzenleme; doğrulanması gereken beyanlar olarak koru.
+
+## Çalışma modunu belirle
+
+- **`write` (üretim):** Kaynak veya konuya dayalı sıfırdan metin yaz. Sağlanmayan olguları, araştırma sonuçlarını, örneklem sayılarını veya anekdotları gerçek gibi ekleme.
+- **`rewrite` (düzenleme, varsayılan):** Mevcut metni anlamı, veriyi ve iddia gücünü koruyarak iyileştir. Yalnızca sözcük değiştirerek değil, bilgi akışı ve Türkçe söz dizimiyle çalış.
+- **`audit` (denetim):** Metni **değiştirme**; açık yazım hatalarını, bağlama bağlı üslup önerilerini ve doğrulanması gereken anlam/kaynak sorunlarını ayrı raporla. Metne yapay zekâ ürünü olduğuna ilişkin kesin etiket koyma.
+
+Metnin profilini (akademik, kurumsal, teknik veya genel) belirle. Alıntı, yöntem anlatımı ve hedef derginin terminolojisi gibi meşru biçem tercihlerini sırf tekrar ediyor diye silme. Ayrıntılar ve isteğe bağlı terminal denetimi için [references/style-audit.md](references/style-audit.md) dosyasını kullan.
 
 ## Düzenleme akışı
 
@@ -41,6 +49,8 @@ Akademik makalede ayrıca hedef derginin yazar rehberini, makale türünü ve va
 - **Bilgi yoğunluğu:** Cümle uzunluğuna tek başına hüküm verme. Yeni kavram, önerme, koşul ve iç içe yan cümle sayısını birlikte değerlendir.
 - **Tanımlama ve örnekleme:** Okurun bilmeyebileceği terimi ilk kullanımda kısa biçimde tanımla. Soyut bir ilişkiyi açıklamak gerekiyorsa bir temsilî örnek ver ve örneği bulgu gibi sunma.
 
+Üslup denetimi veya metni değiştirmeden inceleme istendiğinde [references/style-audit.md](references/style-audit.md) dosyasını oku; komut satırı erişimi varsa `scripts/audit_turkish.py` ile açıklanabilir bir ön tarama yap. Bu betik insan/yapay zekâ yazarlığını belirlemez ve akademik kanıt doğrulamasının yerini almaz. Normal metin düzenleme isteklerinde betiğin çalıştırılması zorunlu değildir.
+
 Ayrıntılı tanı–eylem–kontrol yönergeleri için [references/turkish-guidelines.md](references/turkish-guidelines.md) dosyasını oku. Yazım, noktalama, sayı, özel ad veya alıntı biçimi denetiminde [references/tdk-writing-and-punctuation.md](references/tdk-writing-and-punctuation.md) dosyasını kullan. Akademik makale planlama ya da bölüm düzenleme işinde [references/academic-article-workflow.md](references/academic-article-workflow.md) dosyasını oku. Etik, yazarlık, izin/onam, şeffaflık, TR Dizin veya çalışma türüne özgü raporlama denetiminde [references/research-ethics-and-reporting.md](references/research-ethics-and-reporting.md) dosyasını kullan. DOI, kaynakça, geri çekme veya düzeltme kontrolü istenirse [references/doi-verification.md](references/doi-verification.md) dosyasını oku ve `scripts/verify_dois.py` aracını kullan; sıradan metin düzenlemede çevrimiçi sorgu çalıştırma ve kaynakçayı otomatik değiştirme. Akademik veya yüksek riskli düzenlemede [references/evidence-and-limitations.md](references/evidence-and-limitations.md) dosyasındaki kanıt sınırlarını da uygula. Örnek istenirse [references/examples.md](references/examples.md) dosyasını kullan. Değerlendirme veya kalite puanı istenirse [references/evaluation.md](references/evaluation.md) dosyasını oku.
 
 ## Değiştirilmemesi gerekenler
@@ -54,6 +64,12 @@ Ayrıntılı tanı–eylem–kontrol yönergeleri için [references/turkish-guid
 - Teknik terimi sırf daha gündelik görünsün diye anlamca daraltma ya da genişletme. Gerekirse terimi koruyup kısa tanım ekle.
 - Türkçeye özgü yönergeleri beş İngilizce çalışmanın doğrudan bulgusu gibi sunma.
 
+## Değişiklik sonrası anlam kontrolü
+
+- Kaynak ve son metnin sayıları, birimleri, istatistikleri, DOI'leri, atıfları, kapsamı, yönü ve kesinlik düzeyini karşılaştır. Araştırma sonuçlarını veya nedenselliği sessizce değiştirme.
+- İstenirse `scripts/audit_turkish.py kaynak.md --compare duzeltilmis.md --json` ile **yalnızca** sayı ve DOI belirteçlerini otomatik ön kontrolden geçir. Sayıların eşit olması eşdeğer anlam kanıtı değildir.
+- Her kalıplaşmış bağlacı “AI ifşası” sayma; akademik anlatımda bağlaçlar, edilgen çatı ve `-maktadır` işlevsel olabilir. Kelime sayısı, cümle ritmi veya sabit “insan eşiği” ile yazarlık kararı verme.
+
 ## Sonucu sun
 
-Kullanıcının istediği metni önce ver. Önemli anlam değişiklikleri, çözülemeyen belirsizlikler veya olası kaynak hataları varsa ardından kısa not düş. İzleme istenirse yalnızca anlamı etkileyen değişiklikleri açıkla; her küçük üslup düzeltmesini listeleme.
+`audit` modunda özgün metni yeniden yazma; bulguları konum, gerekçe ve önceliğiyle raporla. `write` ve `rewrite` modlarında kullanıcının istediği metni önce ver. Önemli anlam değişiklikleri, çözülemeyen belirsizlikler veya olası kaynak hataları varsa ardından kısa not düş. İzleme istenirse yalnızca anlamı etkileyen değişiklikleri açıkla; her küçük üslup düzeltmesini listeleme.
