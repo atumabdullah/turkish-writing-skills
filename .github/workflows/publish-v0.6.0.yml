@@ -33,7 +33,7 @@ jobs:
           python3 scripts/check_style_audit.py
       - name: Extract v0.6.0 release notes
         run: |
-          awk '/^## 0\\.6\\.0 / { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
+          awk '/^## 0[.]6[.]0 / { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
           test -s "$RUNNER_TEMP/release-notes.md"
       - name: Create official GitHub Release and tag
         env:
