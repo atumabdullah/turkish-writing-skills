@@ -1,0 +1,50 @@
+name: Publish Turkish Writing Skills v0.6.0
+
+# One-shot release: the workflow runs only when this exact file is added/changed.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/publish-v0.6.0.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.repository == 'atumabdullah/turkish-writing-skills'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release candidate
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify version and run all regression checks
+        run: |
+          test "$(tr -d '\r\n' < VERSION)" = "0.6.0"
+          grep -Fq 'version: "0.6.0"' skills/turkish-clear-writing/SKILL.md
+          python3 scripts/validate_package.py
+          python3 scripts/check_examples.py
+          python3 scripts/check_behavioral_outputs.py
+          python3 scripts/check_doi_verifier.py
+          python3 scripts/check_style_audit.py
+      - name: Extract v0.6.0 release notes
+        run: |
+          awk '/^## 0\\.6\\.0 / { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
+          test -s "$RUNNER_TEMP/release-notes.md"
+      - name: Create official GitHub Release and tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.6.0 >/dev/null 2>&1; then
+            echo "v0.6.0 already exists; leaving the existing release unchanged."
+            exit 0
+          fi
+          gh release create v0.6.0 \
+            --target "$GITHUB_SHA" \
+            --title "Turkish Writing Skills v0.6.0" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --latest
