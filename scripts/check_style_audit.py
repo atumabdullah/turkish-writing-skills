@@ -30,6 +30,13 @@ class TestEditorialAudit(unittest.TestCase):
         self.assertNotIn("AI", [f["category"] for f in report["findings"]])
         self.assertIn("yazarlığını saptamaz", report["notice"])
 
+    def test_register_affects_priority(self) -> None:
+        phrase = "Günümüzün hızla değişen iş dünyasında somut veri gerekiyor."
+        academic = audit_text(phrase, "academic")["findings"][0]
+        general = audit_text(phrase, "general")["findings"][0]
+        self.assertEqual(academic["severity"], "note")
+        self.assertEqual(general["severity"], "warning")
+
     def test_flags_not_bans_rhetorical_structure(self) -> None:
         self.assertIn("TR003", self.codes("Sonuç sadece hızlı değil, aynı zamanda güvenilirdi."))
         self.assertEqual(self.codes("Sadece iki kişi geldi; bu sayı örneklemle sınırlıdır."), [])
