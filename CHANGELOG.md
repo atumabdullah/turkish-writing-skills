@@ -1,5 +1,14 @@
 # Değişiklik günlüğü
 
+## 0.6.0 — 2026-11-06
+
+- `write`, `rewrite` ve metni değiştirmeyen `audit` modları açıkça ayrıldı; akademik, kurumsal, teknik ve genel metin profilleri belgelendi.
+- Türkçe üslup, seçilmiş TDK yazımı ve kalıplaşmış ifadeler için bağımlılıksız, açıklanabilir bir komut satırı denetleyicisi eklendi.
+- Üslup bulguları kesin yapay zekâ yazarlık kararı olarak sunulmuyor; akademik ve teknik profillerde genel klişe uyarılarının önceliği düşürülüyor.
+- `--compare` ile kaynak ve düzenlenmiş metindeki sayısal belirteçler ve DOI değişiklikleri için sınırlı ön kontrol eklendi; anlamsal eşdeğerlik iddiası özellikle reddedildi.
+- Kod bloklarını, satır içi kodu, bağlantıları ve DOI'leri denetim dışında tutma; konum bilgisi, JSON çıktı ve 10 ağsız regresyon testi eklendi.
+- Yeni testler GitHub Actions'a ve paket doğrulamasına bağlandı. Önceki DOI ve akademik davranış koruma katmanları korundu.
+
 ## 0.5.0 — 2026-11-01
 
 - DOI çözümleme, Crossref metadata sorgusu ve başlık–ilk yazar–yıl eşleştirmesi yapan doğrulama katmanı eklendi.
