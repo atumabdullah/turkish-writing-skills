@@ -1,0 +1,56 @@
+name: Package Claude Skill v0.6.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/package-claude-skill.yml
+
+permissions:
+  contents: write
+
+jobs:
+  package-claude:
+    if: github.repository == 'atumabdullah/turkish-writing-skills'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out published v0.6.0 source
+        uses: actions/checkout@v4
+        with:
+          ref: v0.6.0
+
+      - name: Package skill with SKILL.md at archive root
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          import shutil
+
+          source = Path("skills/turkish-clear-writing")
+          archive = Path("turkish-clear-writing-v0.6.0.skill")
+          assert (source / "SKILL.md").is_file()
+          with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as output:
+              for path in sorted(source.rglob("*")):
+                  if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+                      output.write(path, path.relative_to(source).as_posix())
+          with zipfile.ZipFile(archive) as result:
+              names = set(result.namelist())
+              assert result.testzip() is None
+              for required in ("SKILL.md", "references/style-audit.md",
+                               "scripts/audit_turkish.py", "scripts/verify_dois.py"):
+                  assert required in names, f"Missing {required}"
+              assert all(not name.startswith("skills/") for name in names)
+              skill = result.read("SKILL.md").decode("utf-8")
+              assert skill.startswith("---\n") and 'name: turkish-clear-writing' in skill
+          shutil.copyfile(archive, "turkish-clear-writing-v0.6.0.zip")
+          print("Verified Claude upload structure with root SKILL.md")
+          PY
+
+      - name: Upload Claude-ready packages to official release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload v0.6.0 \
+            turkish-clear-writing-v0.6.0.skill \
+            turkish-clear-writing-v0.6.0.zip \
+            --clobber
