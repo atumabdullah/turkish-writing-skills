@@ -42,7 +42,7 @@ def artifacts(folder: Path, kind: str, n_rows: int) -> dict:
     assert meta["new_inferential_tests_performed"] is False
     assert len(meta["data_sha256"]) == len(meta["results_json_sha256"]) == 64
     assert meta["engine_version"] == "0.9.1"
-    assert len(meta["files"]) == 6, meta
+    assert len(meta["files"]) == (7 if kind == "mixed_interaction" else 6), meta
     for ext, marker in (("png", b"\x89PNG"), ("pdf", b"%PDF"), ("svg", b"<?xml")):
         image = folder / ("figure." + ext)
         assert image.stat().st_size > 1000, image
@@ -163,6 +163,7 @@ def test() -> None:
         assert model["response_column"] == "spad"
         assert model["prediction_basis"].startswith("population fixed effects")
         assert len(model["prediction_grid"]) == 8
+        assert len(model["prediction_curve"]) == 202
         assert all(row["ci95_lower"] <= row["fitted_mean"] <= row["ci95_upper"]
                    for row in model["prediction_grid"])
         outcome = root / "mixed_interaction"
@@ -172,6 +173,21 @@ def test() -> None:
         assert "not subject-level prediction intervals" in meta["caption"].lower()
         assert meta["error_bar_basis"] == "fixed effect asymptotic 95% CI"
         assert len(pd.read_csv(outcome / "interaction_table.csv")) == 8
+        dense_curve = pd.read_csv(outcome / "interaction_curve.csv")
+        assert len(dense_curve) == 202
+        for label, cells in dense_curve.groupby("group"):
+            ordered_curve = cells.sort_values("time")
+            assert len(ordered_curve) == 101
+            assert ordered_curve["time"].is_monotonic_increasing
+            start, midpoint, end = [ordered_curve.iloc[k] for k in (0, 50, 100)]
+            halfwidth = midpoint["ci95_upper"] - midpoint["fitted_mean"]
+            endpoint_linear_halfwidth = .5 * (
+                (start["ci95_upper"] - start["fitted_mean"]) +
+                (end["ci95_upper"] - end["fitted_mean"])
+            )
+            assert abs(halfwidth - endpoint_linear_halfwidth) > 1e-7, (
+                label, halfwidth, endpoint_linear_halfwidth
+            )
         fails(run(PLOTTER, longitudinal, "--results", mixed_file,
                   "--uncertainty", "sd", "--output", root / "invalid_ci"),
               "Mixed model always uses")
@@ -185,6 +201,37 @@ def test() -> None:
         succeeds(run(PLOTTER, longitudinal, "--results", plain_folder / "results.json",
                      "--output", plain_fig), "mixed no-group figure")
         assert pd.read_csv(plain_fig / "interaction_table.csv")["group"].eq("All").all()
+
+        # Codex P2: input columns can legitimately be named "_series_label".
+        # The plot must never insert a temporary column overwriting them.
+        for renamed in ("day", "spad", "subject_id"):
+            collision = repeated.rename(columns={renamed: "_series_label"})
+            collision_path = root / ("reserved_" + renamed + ".csv")
+            collision.to_csv(collision_path, index=False)
+            out_model = root / ("reserved_" + renamed + "_model")
+            unit_col = "_series_label" if renamed == "subject_id" else "subject_id"
+            time_col = "_series_label" if renamed == "day" else "day"
+            value_col = "_series_label" if renamed == "spad" else "spad"
+            succeeds(run(ANALYSIS, collision_path, "--analysis", "mixed",
+                         "--unit", unit_col, "--time", time_col,
+                         "--value", value_col, "--group", "treatment",
+                         "--interaction", "--output", out_model),
+                     "mixed model reserved header " + renamed)
+            out_figure = root / ("reserved_" + renamed + "_figure")
+            succeeds(run(PLOTTER, collision_path,
+                         "--results", out_model / "results.json",
+                         "--output", out_figure),
+                     "plot reserved header " + renamed)
+            artifacts(out_figure, "mixed_interaction", 64)
+
+        # Dense bands must agree with observed-time predictions at endpoints.
+        wrong_curve = json.loads(mixed_file.read_text(encoding="utf-8"))
+        wrong_curve["model"]["prediction_curve"][0]["ci95_lower"] -= 50
+        wrong_curve_path = root / "wrong_curve.json"
+        wrong_curve_path.write_text(json.dumps(wrong_curve), encoding="utf-8")
+        fails(run(PLOTTER, longitudinal, "--results", wrong_curve_path,
+                  "--output", root / "wrong_curve_plot"),
+              "confidence curve endpoints do not match")
 
         # A tampered mixed grid must fail, even if the input SHA matches.
         altered = json.loads(mixed_file.read_text())
