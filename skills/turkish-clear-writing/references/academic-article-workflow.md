@@ -93,6 +93,8 @@ Kitabın erişilebilen “Materyal ve Metot” bölümü, yöntemin çalışman�
 
 Bilinen bir yönteme atıf vermek, çalışmaya özgü seçimleri açıklama yükümlülüğünü kaldırmaz.
 
+İstatistiksel çözümleme veya özgün grafik üretimi talep ediliyorsa önce [statistics-and-figures.md](statistics-and-figures.md) dosyasındaki tasarım ve deney birimi kontrollerini uygula. Ham veri ve uygun model yoksa çıkarımsal istatistik uydurma. Yeniden çizilen şekillerin metin ve tablolarla uyumunu doğrula.
+
 ## 6. Bulguları yorumdan ayır
 
 - Araştırma sorusunu karşılayan bulguları mantıksal sırada ver.
