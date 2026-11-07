@@ -27,7 +27,7 @@ import pandas as pd
 import scipy
 from scipy import stats
 import statsmodels
-from statsmodels.api import OLS, add_constant
+from statsmodels.api import OLS
 from statsmodels.stats.anova import anova_lm
 from statsmodels.stats.diagnostic import het_breuschpagan
 from statsmodels.stats.multitest import multipletests

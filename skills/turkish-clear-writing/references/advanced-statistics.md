@@ -64,6 +64,7 @@ Model rastgele eğim, ek blok, seri otokorelasyon, doğrusal olmayan zaman, çap
 ## Veri denetimi, rapor ve hesaplama sınırları
 
 - Kaynak CSV/XLSX başlıkları pandas okumadan önce kontrol edilir. Mükerrer veya boş başlıklar reddedilir.
+- Veri sütunları `C`, `Q`, `const` veya başka model-terimi adları taşısa bile formüller kullanıcı başlıklarından ayrılmış iç isimlerle kurulur. Sonuçlarda özgün sütun adları korunur.
 - Seçilen sayısal sütunlarda sonsuz değer, nonnumeric giriş ve uygun olmayan eksiklikler engellenir. Korelasyonda çift bazında eksik veri politikası farklıdır ve belirtilir.
 - İstatistikler **yalnızca kullanıcı tarafından sağlanan gerçek ham veriden** hesaplanır. Anlamlılık p değeri, güven aralığı, Tukey harfi veya regresyon katsayısı uydurulmaz.
 - Her çıktı klasöründe `results.json`, `table.csv` ve `results.md` bulunur. Veri dosyası SHA-256 özeti ve kütüphane sürümleri kaydedilir; kişisel ham veri ve birim ID'leri rapora dökülmez.

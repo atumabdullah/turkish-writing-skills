@@ -7,6 +7,7 @@
 - ANOVA'da etkileşim, F/p, kısmi eta-kare, hücre örneklem sayıları ve artık/varyans tanıları; korelasyonda çiftler bazında n ve Holm/FDR düzeltmesi.
 - Regresyonda sağlam SE, güven aralığı, R², VIF ve heteroskedastisite tanısı; karma modelde doğrusal zaman × grup etkileşimi, ML yakınsama ve varyans bileşenleri.
 - Deney birimi tekrarı, uygunsuz eksik faktör hücresi, teknik alt örnek, birim-zaman tekrarı, kollinearite, grup değişimi, yetersiz veri ve yakınsamama için korumalar.
+- Codex incelemesinde bulunan `C`/`Q` Patsy formül yardımcı adı çakışmaları ve `const` adlı sayısal yordayıcının intercept ile çakışması izole edilmiş model sütunlarıyla düzeltildi; bağımsız regresyon testleri eklendi.
 - Tekrar üretilebilir JSON/CSV/Markdown çıktı; kaynak SHA-256 ve paket sürümü; kapsam sınırları ve `check_advanced_statistics.py` sentetik regresyon testleri eklendi.
 - Önceki Türkçe yazım, DOI, tek faktörlü analiz ve beş bilimsel grafik türü aynen korundu.
 
