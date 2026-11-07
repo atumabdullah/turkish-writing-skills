@@ -21,7 +21,7 @@ import math
 import warnings
 from itertools import combinations
 
-from patsy import build_design_matrices
+from patsy import build_design_matrices, dmatrix
 from pathlib import Path
 
 import numpy as np
@@ -430,6 +430,13 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
     fixed_cov = fitted.cov_params().loc[terms, terms].to_numpy(dtype=float)
     if not np.isfinite(fixed_cov).all():
         raise ValueError("Mixed-model fixed-effect covariance is not finite")
+    # statsmodels releases differ in whether fitted.model.data exposes
+    # design_info. Rebuild Patsy's design metadata from the entire ORIGINAL
+    # model frame so treatment levels and sum contrasts are never lost.
+    design_info = dmatrix(formula.split("~", 1)[1], model_frame,
+                          return_type="dataframe").design_info
+    if list(design_info.column_names) != terms:
+        raise ValueError("Mixed-model prediction design terms differ from fitted terms")
     grid_rows = []
     group_levels = sorted(frame[args.group].unique()) if args.group else [None]
     for level in group_levels:
@@ -439,7 +446,7 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
             if args.group:
                 new_row["treatment"] = level
             design_matrix = build_design_matrices(
-                [fitted.model.data.design_info], pd.DataFrame([new_row]),
+                [design_info], pd.DataFrame([new_row]),
                 return_type="dataframe"
             )[0]
             vector = design_matrix.loc[:, terms].to_numpy(dtype=float)[0]
