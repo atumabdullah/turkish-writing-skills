@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "0.7.0"
+  version: "0.7.1"
 ---
 
 # Türkçe Açık Yazım

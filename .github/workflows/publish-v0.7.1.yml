@@ -1,0 +1,73 @@
+name: Publish Turkish Writing Skills v0.7.1
+
+# One-shot release: adding this workflow on main triggers the release.
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-v0.7.1.yml
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: github.repository == 'atumabdullah/turkish-writing-skills'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install scientific-analysis test dependencies
+        run: python3 -m pip install -r skills/turkish-clear-writing/requirements-statistics.txt
+      - name: Verify version and all regression tests
+        run: |
+          test "$(tr -d '\r\n' < VERSION)" = "0.7.1"
+          grep -Fq 'version: "0.7.1"' skills/turkish-clear-writing/SKILL.md
+          python3 scripts/validate_package.py
+          python3 scripts/check_examples.py
+          python3 scripts/check_behavioral_outputs.py
+          python3 scripts/check_doi_verifier.py
+          python3 scripts/check_style_audit.py
+          python3 scripts/check_statistical_analysis.py
+      - name: Package Claude-compatible skill and release notes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          import zipfile
+          source = Path("skills/turkish-clear-writing")
+          archive = Path("turkish-clear-writing-v0.7.1.skill")
+          assert (source / "SKILL.md").is_file()
+          with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as output:
+              for path in sorted(source.rglob("*")):
+                  if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+                      output.write(path, path.relative_to(source).as_posix())
+          with zipfile.ZipFile(archive) as result:
+              assert result.testzip() is None
+              names = set(result.namelist())
+              for required in ("SKILL.md", "references/statistics-and-figures.md",
+                               "scripts/analyze_and_plot.py", "requirements-statistics.txt",
+                               "scripts/audit_turkish.py", "scripts/verify_dois.py"):
+                  assert required in names, required
+              assert all(not item.startswith("skills/") for item in names)
+          shutil.copyfile(archive, "turkish-clear-writing-v0.7.1.zip")
+          PY
+          awk '/^## 0[.]7[.]0 / { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
+          test -s "$RUNNER_TEMP/release-notes.md"
+      - name: Publish official release with Claude assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.7.1 >/dev/null 2>&1; then
+            echo "Release already exists; skipping duplicate publishing."
+            exit 0
+          fi
+          gh release create v0.7.1 \
+            turkish-clear-writing-v0.7.1.skill \
+            turkish-clear-writing-v0.7.1.zip \
+            --target "$GITHUB_SHA" \
+            --title "Turkish Writing Skills v0.7.1" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            --latest

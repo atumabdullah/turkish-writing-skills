@@ -63,8 +63,12 @@ def run(args: argparse.Namespace) -> dict:
     groups = [selected.loc[selected[args.group] == name, args.value].to_numpy(dtype=float) for name in ordered]
     if args.analysis != "descriptive" and any(len(values) < 2 for values in groups):
         raise ValueError("At least two independent experimental units per group are required")
-    if args.analysis != "descriptive" and all(np.var(a) == 0 for a in groups):
-        raise ValueError("All groups are constant; inferential test is undefined")
+    # Rank tests can compare constant *within-group* data when pooled values differ.
+    # Parametric tests retain the original safeguard against zero within-group variance.
+    if args.analysis == "kruskal" and np.ptp(selected[args.value].to_numpy(dtype=float)) == 0:
+        raise ValueError("All pooled observations are identical; Kruskal-Wallis is undefined")
+    if args.analysis in {"anova", "welch"} and all(np.var(a) == 0 for a in groups):
+        raise ValueError("All groups have zero within-group variance; parametric comparison is undefined")
 
     result = {"source": args.input.name, "group_column": args.group, "value_column": args.value,
               "unit_column": args.unit, "analysis": args.analysis,
@@ -81,7 +85,16 @@ def run(args: argparse.Namespace) -> dict:
         else:
             result["warnings"].append("Residual normality diagnostic unavailable for this sample")
         if all(len(a) >= 2 for a in groups):
-            result["diagnostics"]["levene_median_p"] = float(stats.levene(*groups, center="median").pvalue)
+            levene_p = float(stats.levene(*groups, center="median").pvalue)
+            if np.isfinite(levene_p):
+                result["diagnostics"]["levene_median_p"] = levene_p
+            else:
+                # For instance, identical absolute deviations can make Levene
+                # undefined while the requested inferential test remains valid.
+                result["diagnostics"]["levene_median_p"] = None
+                result["warnings"].append(
+                    "Median-centered Levene diagnostic is undefined for these data; recorded as null"
+                )
         result["warnings"].append("Diagnostics are not automatic pass/fail gates; inspect residuals, design and sample size")
         if args.analysis == "anova":
             test = stats.f_oneway(*groups)
