@@ -1,8 +1,8 @@
 ---
 name: turkish-clear-writing
-description: Türkçe akademik, kurumsal ve bilgilendirici metinleri anlamı, kanıt düzeyini, sayıları ve atıfları koruyarak doğal, açık ve okur odaklı biçimde yazar veya düzenler. Türkçe metin sadeleştirme, yapay zekâ üslubunu azaltma ve akademik kesinliği koruma isteklerinde kullan; yaratıcı edebiyat ve yalnızca yazım denetimi için kullanma.
+description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # Türkçe Açık Yazım
@@ -38,6 +38,12 @@ Metnin profilini (akademik, kurumsal, teknik veya genel) belirle. Alıntı, yön
 6. **Yoğunluğu ayarla.** Kısaltmayı amaç edinme. Bir cümle çok sayıda yeni kavram veya önermeyi taşıyorsa böl, tanım ya da kısa örnek ekle. Bölme sırasında mantıksal ilişkiyi kaybetme.
 7. **Kesinliği koru.** “Gösterir”, “ilişkilidir”, “olabilir”, “öne sürer” ve “kanıtlamaz” aynı güçte değildir. Kaynağın iddia düzeyini yükseltme veya düşürme.
 8. **Son doğrulamayı yap.** Düzenlenen metni koruma dökümüyle karşılaştır; sayı, yüzde, tarih, birim, denklem, dipnot, atıf ve etik/şeffaflık beyanlarını tek tek denetle.
+
+## İstatistik ve bilimsel grafik karar adımı
+
+Akademik çalışma, tez, makale veya araştırma raporunda istatistiksel karşılaştırma, yeni şekil ya da sonuçların yeniden hesaplanması **gerekiyorsa** önce [references/statistics-and-figures.md](references/statistics-and-figures.md) dosyasını oku. Hangi deney biriminin bağımsız olduğunu, faktörleri, örneklem yapısını, eksik verileri, hipotezleri ve hedef dergi kuralını değerlendir. Yalnızca doğru veri ve uygun çalışma deseni varsa analiz/şekli **gerçekten üret**; çalıştırılabilir ortamda tek faktörlü bağımsız gruplar için isteğe bağlı `scripts/analyze_and_plot.py` aracını kullanabilirsin. Veri veya uygun tasarım bilgisi yoksa test sonucu, p değeri, anlamlılık harfi ya da grafik uydurma.
+
+Sıradan bir metin düzenlemesinde analiz veya çizim yapma. `audit` modunda mevcut metne müdahale etmeden istatistik/şekil tutarsızlıklarını işaretle. Faktöriyel, bloklu, iç içe, tekrarlı ölçümlü, eşleştirilmiş veya zaman serisi desenlerinde bu tek faktörlü betiği kullanma; gerçek desene uygun model belirle. Raporlanan grafikler için veriye uygun grafik türünü seç, gerekirse yüksek çözünürlüklü PNG ve vektör PDF/SVG olarak çıktı ver. Analiz kararlarını, kullanılan betiği, veri birimini ve belirsizlikleri açıkla.
 
 ## Türkçeye özgü kararlar
 

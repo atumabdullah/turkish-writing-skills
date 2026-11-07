@@ -59,6 +59,23 @@ Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşıl
 - Sonuçları düzenlenebilir `XLSX` tablosu ile `Markdown` ve `JSON` raporları olarak verir.
 - Kaynakçayı kendiliğinden değiştirmez; uyumsuzluğu ve belirsizliği inceleme için işaretler.
 
+### İstatistiksel analiz ve bilimsel şekiller (v0.7.0)
+
+- Akademik iş akışında istatistik veya şekil gereksinimini veri ve deney desenine göre değerlendirir; sıradan metin düzenleme için analiz çalıştırmaz.
+- Gerçek ham veri ve bağımsız deney birimi tanımı varsa tek faktörlü gruplarda betimsel analiz, ANOVA + Tukey HSD, Welch ANOVA + Holm düzeltilmiş ikili Welch testleri veya Kruskal–Wallis uygulanabilir.
+- Ham noktaları gösteren kutu grafiklerini 300 DPI PNG, vektör PDF ve SVG olarak kaydeder; `results.json` analiz kaydı oluşturur.
+- Tekrarlı, bloklu, faktöriyel veya iç içe geçmiş veri için tek faktörlü aracı **kullanmaz**; uygun modeli belirlemek üzere tasarımı denetler.
+- Ham veri olmadan p değeri, Tukey harfi veya örneklem icat etmez; kaynak [Figures for Papers](https://github.com/ChenLiu-1996/figures4papers) kodunu kopyalamadan yayın tasarım ilkelerinden yararlanır.
+
+İsteğe bağlı bağımlılıkları yükleyin:
+
+```bash
+python3 -m pip install -r skills/turkish-clear-writing/requirements-statistics.txt
+python3 skills/turkish-clear-writing/scripts/analyze_and_plot.py deney.csv --group uygulama --value bitki_boyu_cm --unit saksi_id --analysis anova --output sonuclar
+```
+
+Tekrarlı ölçümler, alt örnekler ve deney birimi bağımsızlığı için [istatistik ve şekil kılavuzunu](skills/turkish-clear-writing/references/statistics-and-figures.md) okuyun. Betik, tasarım doğrulamasının yerini almaz.
+
 ### Test ve doğrulama
 
 - Sayı, atıf ve etik tanımlayıcı koruması için otomatik örnek testleri içerir.
@@ -113,13 +130,16 @@ skills/turkish-clear-writing/
 ├── agents/openai.yaml
 ├── scripts/
 │   ├── audit_turkish.py
-│   └── verify_dois.py
+│   ├── verify_dois.py
+│   └── analyze_and_plot.py
+├── requirements-statistics.txt
 └── references/
     ├── style-audit.md
     ├── doi-verification.md
     ├── evidence-and-limitations.md
     ├── evaluation.md
     ├── examples.md
+    ├── statistics-and-figures.md
     ├── academic-article-workflow.md
     ├── research-ethics-and-reporting.md
     ├── tdk-writing-and-punctuation.md
@@ -128,6 +148,7 @@ scripts/check_examples.py
 scripts/check_behavioral_outputs.py
 scripts/check_doi_verifier.py
 scripts/check_style_audit.py
+scripts/check_statistical_analysis.py
 scripts/validate_package.py
 tests/cases.json
 tests/behavioral-cases.json
@@ -145,6 +166,7 @@ python3 scripts/check_examples.py
 python3 scripts/check_behavioral_outputs.py
 python3 scripts/check_doi_verifier.py
 python3 scripts/check_style_audit.py
+python3 scripts/check_statistical_analysis.py
 python3 scripts/validate_package.py
 ```
 

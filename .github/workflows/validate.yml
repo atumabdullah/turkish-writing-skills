@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Install optional statistics dependencies for regression tests
+        run: python3 -m pip install -r skills/turkish-clear-writing/requirements-statistics.txt
       - name: Validate package
         run: python3 scripts/validate_package.py
       - name: Check preservation examples
@@ -22,3 +24,5 @@ jobs:
         run: python3 scripts/check_doi_verifier.py
       - name: Check Turkish editorial audit and semantic guardrails
         run: python3 scripts/check_style_audit.py
+      - name: Check statistical workflow with synthetic data
+        run: python3 scripts/check_statistical_analysis.py
