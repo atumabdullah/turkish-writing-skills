@@ -9,6 +9,7 @@ supported inferential designs.
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 from pathlib import Path
@@ -44,6 +45,33 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--dpi", type=int, default=300)
     p.add_argument("--output", type=Path, default=Path("figure-output"))
     return p
+
+
+def validate_source_headers(path: Path) -> None:
+    """Reject ambiguous original headers before pandas mangles duplicate names.
+
+    The default first Excel sheet is read to match pd.read_excel's behavior.
+    """
+    if path.suffix.lower() == ".csv":
+        with path.open("r", encoding="utf-8-sig", newline="") as source:
+            header = next(csv.reader(source), None)
+    else:
+        from openpyxl import load_workbook
+        workbook = load_workbook(path, read_only=True, data_only=True)
+        try:
+            header = next(
+                workbook.worksheets[0].iter_rows(min_row=1, max_row=1, values_only=True),
+                None,
+            )
+        finally:
+            workbook.close()
+    if not header:
+        raise ValueError("Input has no header row")
+    labels = [str(value).strip() if value is not None else "" for value in header]
+    if any(not label for label in labels):
+        raise ValueError("Input has empty column headers")
+    if len(labels) != len(set(labels)):
+        raise ValueError("Duplicate column headers detected in original data; rename them before plotting")
 
 
 def require_columns(frame: pd.DataFrame, names: list[str]) -> None:
@@ -220,12 +248,13 @@ def draw_multi(fig, frame: pd.DataFrame, group: str, columns: list[str]) -> None
 def plot(args: argparse.Namespace) -> dict:
     if not args.input.is_file():
         raise ValueError(f"Input file not found: {args.input}")
+    if args.input.suffix.lower() not in {".csv", ".xlsx", ".xlsm"}:
+        raise ValueError("Only CSV, XLSX and XLSM files are supported")
+    validate_source_headers(args.input)
     if args.input.suffix.lower() == ".csv":
         frame = pd.read_csv(args.input)
-    elif args.input.suffix.lower() in {".xlsx", ".xlsm"}:
-        frame = pd.read_excel(args.input)
     else:
-        raise ValueError("Only CSV, XLSX and XLSM files are supported")
+        frame = pd.read_excel(args.input)
     if frame.empty or frame.columns.duplicated().any():
         raise ValueError("Input must have data and uniquely named columns")
     if not (200 <= args.dpi <= 600):
