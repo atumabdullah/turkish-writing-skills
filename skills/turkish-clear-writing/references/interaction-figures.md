@@ -25,7 +25,7 @@ python3 skills/turkish-clear-writing/scripts/plot_interactions.py deneme.xlsx \
 ```
 
 Faktöriyel grafik:
-- X ekseninde **ikinci faktörün düzeyleri** (örn. 0, 50, 100 mg Zn L⁻¹); sayısal dozda **gerçek sayısal aralıklar** korunur.
+- X ekseninde **ikinci faktörün düzeyleri** (örn. 0, 50, 100 mg Zn L⁻¹); sayısal dozda **gerçek sayısal aralıklar** korunur. Sayısal dozlarda seri ortalamaları **hiç kaydırılmaz**; yalnızca ham noktaların küçük yatay saçılımı en yakın iki doz arasındaki farkla sınırlandırılır (0, 1, 1000 gibi düzensiz dozlar dâhil).
 - Her çizgi birinci faktörü (örn. kimyasal, yeşil sentez), büyük işaretler hücre ortalamasını, küçük yarı saydam noktalar **bağımsız deney birimlerini** gösterir.
 - Hata çubuğu varsayılan olarak **hücre ortalaması için ayrı ayrı Student t tabanlı %95 güven aralığıdır**. `--uncertainty sd`, `sem` veya `none` tercih edilebilir. Bu aralıklar iki ortalamanın farkı için güven aralığı değildir.
 - Type III ANOVA modelinin etkileşim F ve p değerleri **bağlı analiz raporunda** kalır; şekle anlamlılık yıldızı, harf veya doğrulanmamış karşılaştırma eklenmez. Farklı veya örtüşen güven aralıkları tek başına etkileşimin anlamlılığına karar vermez.

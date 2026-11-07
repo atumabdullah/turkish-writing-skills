@@ -92,6 +92,17 @@ def test() -> None:
         assert np.isclose(table.loc[0, "halfwidth"], expected, rtol=1e-7)
         assert meta["error_bar_basis"] == "ci95"
 
+        # Codex P2: doses 0, 1, 1000 must remain at exact scientific
+        # coordinates for ALL series, not be shifted by total-axis-span dodge.
+        sys.path.insert(0, str(SKILL))
+        from plot_interactions import series_x_positions, sorted_categories
+        doses, exact_x, is_numeric = sorted_categories(["1000", "1", "0"])
+        assert is_numeric and doses == ["0", "1", "1000"]
+        assert np.array_equal(exact_x, [0.0, 1.0, 1000.0])
+        for series_index in range(7):
+            shown = series_x_positions(exact_x, numeric=True, index=series_index, nseries=7)
+            assert np.array_equal(shown, exact_x), shown
+
         # SD and SEM must be visibly distinguishable and not mislabeled as CI.
         sd_output = root / "sd_figure"
         succeeds(run(PLOTTER, raw, "--results", report_file, "--uncertainty", "sd",
