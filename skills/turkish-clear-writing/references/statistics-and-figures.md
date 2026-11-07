@@ -63,3 +63,9 @@ Yapraktan Zn uygulaması denemesinde fenolojik dönemler aynı saksıda tekrarla
 ## Kaynak ve lisans sınırı
 
 Grafik tasarımında [Chen Liu, Figures for Papers](https://github.com/ChenLiu-1996/figures4papers) içindeki yayın görselleştirmesi ilkelerinden **kavramsal olarak** yararlanılır. Kaynak deponun lisansı [CC BY-NC 4.0](https://github.com/ChenLiu-1996/figures4papers/blob/main/LICENSE) olduğundan kodu, görselleri veya metinleri bu MIT lisanslı projeye kopyalamadık. Buradaki analiz ve çizim betiği ayrı yazılmıştır; upstream projenin onayını veya aynı işlev kapsamını iddia etmez.
+
+## v0.7.1 istatistiksel sınır durumları
+
+- Levene'in medyan merkezli varyans tanısı veri yapısı nedeniyle tanımsız kalırsa (ör. her grubun mutlak medyan sapmaları özdeş), çıkarımsal test uygulanabiliyorsa rapor devam eder. JSON'da `diagnostics.levene_median_p = null` ve açıklayıcı uyarı yer alır; tanımsız tanı için p değeri uydurulmaz.
+- Kruskal–Wallis, her grubun kendi içinde sabit olduğu fakat grupların farklı değerler taşıdığı verilerde hesaplanabilir. Tüm havuzlanmış gözlemler aynıysa test tanımsızdır ve güvenli biçimde durdurulur.
+- Parametrik yöntemlerin sıfır grup içi varyans denetimi korunur. Test varsayımları veri desenine göre ayrıca incelenmelidir.

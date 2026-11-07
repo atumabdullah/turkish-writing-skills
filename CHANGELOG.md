@@ -1,5 +1,13 @@
 # Değişiklik günlüğü
 
+## 0.7.1 — 2026-11-07
+
+- Codex incelemesindeki Levene tanısının NaN üretmesi durumunda raporun durması düzeltildi; tanı değeri `null` ve gerekçeli uyarı olarak kaydediliyor, geçerli analiz çıktıları korunuyor.
+- Kruskal–Wallis için grup içi sabit veriler, gruplar farklıysa yanlışlıkla reddedilmiyor; bütün gözlemler aynı olduğunda uygun hata korunuyor.
+- Her iki sınır durumu, ayrışan sabit gruplar ve bütünüyle aynı gözlemler için sentetik regresyon testleri eklendi.
+- Eski yazım/DOI testleri ve Claude kurulum paketi değişmeden korunarak sürüm 0.7.1'e yükseltildi.
+
+
 ## 0.7.0 — 2026-11-07
 
 - Akademik veri analizi ve yayın kalitesinde bilimsel grafik ihtiyacı için isteğe bağlı yönlendirme eklendi; yalnızca metin düzenlemede hesaplama zorunlu değil.

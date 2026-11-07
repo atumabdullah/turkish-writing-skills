@@ -59,11 +59,11 @@ Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşıl
 - Sonuçları düzenlenebilir `XLSX` tablosu ile `Markdown` ve `JSON` raporları olarak verir.
 - Kaynakçayı kendiliğinden değiştirmez; uyumsuzluğu ve belirsizliği inceleme için işaretler.
 
-### İstatistiksel analiz ve bilimsel şekiller (v0.7.0)
+### İstatistiksel analiz ve bilimsel şekiller (v0.7.1)
 
 - Akademik iş akışında istatistik veya şekil gereksinimini veri ve deney desenine göre değerlendirir; sıradan metin düzenleme için analiz çalıştırmaz.
 - Gerçek ham veri ve bağımsız deney birimi tanımı varsa tek faktörlü gruplarda betimsel analiz, ANOVA + Tukey HSD, Welch ANOVA + Holm düzeltilmiş ikili Welch testleri veya Kruskal–Wallis uygulanabilir.
-- Ham noktaları gösteren kutu grafiklerini 300 DPI PNG, vektör PDF ve SVG olarak kaydeder; `results.json` analiz kaydı oluşturur.
+- Ham noktaları gösteren kutu grafiklerini 300 DPI PNG, vektör PDF ve SVG olarak kaydeder; `results.json` analiz kaydı oluşturur. Tanı testi hesaplanamıyorsa raporda `null` ve bir uyarı kullanır (v0.7.1).
 - Tekrarlı, bloklu, faktöriyel veya iç içe geçmiş veri için tek faktörlü aracı **kullanmaz**; uygun modeli belirlemek üzere tasarımı denetler.
 - Ham veri olmadan p değeri, Tukey harfi veya örneklem icat etmez; kaynak [Figures for Papers](https://github.com/ChenLiu-1996/figures4papers) kodunu kopyalamadan yayın tasarım ilkelerinden yararlanır.
 
