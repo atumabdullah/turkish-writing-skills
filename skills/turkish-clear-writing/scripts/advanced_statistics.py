@@ -126,11 +126,6 @@ def category(frame: pd.DataFrame, column: str) -> pd.Series:
     return values
 
 
-def q(name: str) -> str:
-    """Quote user-supplied column names safely for Patsy formulas."""
-    return "Q(" + json.dumps(name, ensure_ascii=True) + ")"
-
-
 def finite(value) -> float | None:
     """Strict JSON: undefined or nonfinite statistics must be represented by null."""
     if value is None:
@@ -184,9 +179,15 @@ def factorial(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> li
     if counts.min() < 2:
         raise ValueError("At least two independent experimental units per factorial cell required")
 
-    left = f"C({q(args.factor_a)}, Sum)"
-    right = f"C({q(args.factor_b)}, Sum)"
-    fitted = ols(f"{q(args.value)} ~ {left} * {right}", data=frame).fit()
+    # Isolate Patsy's C/Q helpers from arbitrary user column names.
+    # In particular, columns literally named "C" or "Q" otherwise shadow
+    # Patsy's built-in formula helpers before those helpers are evaluated.
+    model_frame = pd.DataFrame({
+        "outcome": frame[args.value].to_numpy(dtype=float),
+        "factor_a": frame[args.factor_a].to_numpy(),
+        "factor_b": frame[args.factor_b].to_numpy(),
+    })
+    fitted = ols("outcome ~ C(factor_a, Sum) * C(factor_b, Sum)", data=model_frame).fit()
     design = fitted.model.exog
     if np.linalg.matrix_rank(design) != design.shape[1] or fitted.df_resid <= 0:
         raise ValueError("Factorial design is rank deficient or has insufficient residual degrees of freedom")
@@ -199,8 +200,10 @@ def factorial(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> li
         if name in ("Intercept", "Residual"):
             continue
         ss = finite(row["sum_sq"])
+        display_term = name.replace("C(factor_a, Sum)", args.factor_a).replace(
+            "C(factor_b, Sum)", args.factor_b)
         effects.append({
-            "term": name, "df_num": finite(row["df"]), "df_den": finite(fitted.df_resid),
+            "term": display_term, "df_num": finite(row["df"]), "df_den": finite(fitted.df_resid),
             "F": finite(row["F"]), "p": finite(row["PR(>F)"]),
             "sum_squares": ss,
             "partial_eta_squared": finite(ss / (ss + residual_ss)) if ss is not None else None,
@@ -288,7 +291,14 @@ def regression(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> l
         raise ValueError("Insufficient independent units for this regression (minimum 5 per fitted coefficient, at least 10)")
     if frame[args.value].nunique() < 2:
         raise ValueError("Constant response cannot be regressed")
-    matrix = add_constant(frame[preds], has_constant="add")
+    # Internal design labels avoid the collision when a predictor is named
+    # "const", "Intercept" or another model-reserved identifier.
+    matrix = pd.DataFrame({"__intercept__": np.ones(len(frame), dtype=float)}, index=frame.index)
+    labels = {"__intercept__": "Intercept"}
+    for index, predictor in enumerate(preds):
+        internal = f"predictor_{index}"
+        matrix[internal] = frame[predictor].to_numpy(dtype=float)
+        labels[internal] = predictor
     if np.linalg.matrix_rank(matrix.to_numpy(dtype=float)) != matrix.shape[1]:
         raise ValueError("Collinear or constant predictors: design matrix is rank deficient")
     fit = OLS(frame[args.value], matrix).fit(cov_type="HC3")
@@ -297,13 +307,17 @@ def regression(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> l
     intervals = fit.conf_int(alpha=0.05)
     rows = []
     for name in fit.params.index:
-        rows.append({"term": name, "estimate": finite(fit.params[name]),
+        rows.append({"term": labels[name],
+                     "term_type": "intercept" if name == "__intercept__" else "predictor",
+                     "source_column": None if name == "__intercept__" else labels[name],
+                     "estimate": finite(fit.params[name]),
                      "se_hc3": finite(fit.bse[name]),
                      "z": finite(fit.tvalues[name]),
                      "p": finite(fit.pvalues[name]),
                      "ci95_lower": finite(intervals.loc[name].iloc[0]),
                      "ci95_upper": finite(intervals.loc[name].iloc[1])})
-    vif = [{"predictor": name, "vif": finite(variance_inflation_factor(matrix.to_numpy(), i))}
+    vif = [{"predictor": labels[name],
+            "vif": finite(variance_inflation_factor(matrix.to_numpy(), i))}
            for i, name in enumerate(matrix.columns) if i > 0]
     if any(row["vif"] is None or row["vif"] > 5 for row in vif):
         add_warning(report, "Possible predictor multicollinearity (VIF > 5 or undefined)")
@@ -349,9 +363,17 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
         if unit_counts.min() < 3:
             raise ValueError("Each between-unit treatment needs at least three independent units")
 
-    formula = q(args.value) + " ~ " + q(args.time)
+    # Patsy must only see safe internal names; never pass the full input
+    # frame with user-defined "C" or "Q" helper collisions.
+    model_frame = pd.DataFrame({
+        "outcome": frame[args.value].to_numpy(dtype=float),
+        "numeric_time": frame[args.time].to_numpy(dtype=float),
+        "unit_id": frame[args.unit].to_numpy(),
+    })
+    formula = "outcome ~ numeric_time"
     if args.group:
-        fixed_group = f"C({q(args.group)}, Sum)"
+        model_frame["treatment"] = frame[args.group].to_numpy()
+        fixed_group = "C(treatment, Sum)"
         formula += f" * {fixed_group}" if args.interaction else f" + {fixed_group}"
     if len(frame) <= (3 + int(args.group is not None) * 3) * 2:
         raise ValueError("Too few repeated observations for the requested mixed-model fixed effects")
@@ -361,7 +383,7 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
         try:
             with warnings.catch_warnings(record=True) as caught:
                 warnings.simplefilter("always")
-                candidate = mixedlm(formula, data=frame, groups=frame[args.unit], re_formula="1").fit(
+                candidate = mixedlm(formula, data=model_frame, groups=model_frame["unit_id"], re_formula="1").fit(
                     reml=False, method=optimizer, maxiter=500, disp=False
                 )
             if candidate.converged:
@@ -387,7 +409,10 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
     conf = fitted.conf_int(alpha=0.05)
     rows = []
     for term in fitted.fe_params.index:
-        rows.append({"term": term, "estimate": finite(fitted.fe_params[term]),
+        display_term = term.replace("numeric_time", args.time)
+        if args.group:
+            display_term = display_term.replace("C(treatment, Sum)", args.group)
+        rows.append({"term": display_term, "estimate": finite(fitted.fe_params[term]),
                      "se": finite(fitted.bse_fe[term]), "z": finite(fitted.tvalues[term]),
                      "p": finite(fitted.pvalues[term]),
                      "ci95_lower": finite(conf.loc[term].iloc[0]),
