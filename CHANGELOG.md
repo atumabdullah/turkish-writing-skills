@@ -1,5 +1,14 @@
 # Değişiklik günlüğü
 
+## 0.7.0 — 2026-11-07
+
+- Akademik veri analizi ve yayın kalitesinde bilimsel grafik ihtiyacı için isteğe bağlı yönlendirme eklendi; yalnızca metin düzenlemede hesaplama zorunlu değil.
+- Deney birimi, yalancı tekerrür, faktöriyel/bloklu/tekrarlı desen, eksik veri, varsayımlar ve çoklu karşılaştırma kontrolleri belgelendi.
+- Tek faktörlü bağımsız gruplar için CSV/XLSX tabanlı betimsel analiz, tek yönlü ANOVA + Tukey, Welch ANOVA + Holm düzeltilmiş ikili Welch testleri ve Kruskal–Wallis içeren Python betiği eklendi.
+- Ham noktaları gösteren yayın şekilleri 300 DPI PNG ve vektör PDF/SVG olarak dışa aktarılıyor; JSON raporlar ve sentetik regresyon testleri eklendi.
+- Chen Liu'nun Figures for Papers deposuna kaynak verildi; CC BY-NC lisanslı kaynak kodu/görselleri MIT projemize aktarılmadı.
+
+
 ## 0.6.0 — 2026-11-06
 
 - `write`, `rewrite` ve metni değiştirmeyen `audit` modları açıkça ayrıldı; akademik, kurumsal, teknik ve genel metin profilleri belgelendi.
