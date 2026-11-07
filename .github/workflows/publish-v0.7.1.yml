@@ -54,14 +54,18 @@ jobs:
               assert all(not item.startswith("skills/") for item in names)
           shutil.copyfile(archive, "turkish-clear-writing-v0.7.1.zip")
           PY
-          awk '/^## 0[.]7[.]0 / { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
+          # Read exactly the changelog entry for the package's own VERSION.
+          awk -v section="## $(tr -d '\r\n' < VERSION) " 'index($0, section) == 1 { found=1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
           test -s "$RUNNER_TEMP/release-notes.md"
+          grep -Fq 'Levene' "$RUNNER_TEMP/release-notes.md"
+          grep -Fq 'Kruskal' "$RUNNER_TEMP/release-notes.md"
       - name: Publish official release with Claude assets
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view v0.7.1 >/dev/null 2>&1; then
-            echo "Release already exists; skipping duplicate publishing."
+            echo "Release already exists; correcting its notes without altering the tag or downloadable assets."
+            gh release edit v0.7.1 --notes-file "$RUNNER_TEMP/release-notes.md"
             exit 0
           fi
           gh release create v0.7.1 \
