@@ -4,6 +4,7 @@
 
 - Yayın kalitesinde betimsel grafikler için ortak Matplotlib stili ve beş grafik türü (`box_jitter`, `grouped_bar`, `line_plot`, `correlation_heatmap`, `multi_panel`) eklendi.
 - CSV/XLSX okuma, sayısal/kategorik sütun denetimi, eksik değer politikası, deney birimi ID denetimi ve sayısal doz sıralaması eklendi.
+- Codex incelemesinde yakalanan, pandas'ın tekrar eden CSV/Excel sütunlarını sessizce yeniden adlandırması önlendi; özgün başlık satırında mükerrer/boş ad denetimi ve regresyon testleri eklendi.
 - 200–600 DPI PNG ve vektörel PDF/SVG, kaynak dosya SHA-256 özeti ve makine okunabilir `plot_metadata.json` ile yeniden üretilebilir çıktı desteği eklendi.
 - Korelasyon haritalarında çift bazında n, undefined korelasyon için NA ve eksik veriye ilişkin açıklama eklendi; grafikler istatistiksel anlamlılık iddiasında bulunmaz.
 - Sınırlamalar, dergi öncesi kalite kontrolü, kullanma örnekleri ve sentetik örnek dosyası belgelendi.
