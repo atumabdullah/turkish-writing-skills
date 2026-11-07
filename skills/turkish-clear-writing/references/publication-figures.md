@@ -83,3 +83,7 @@ python3 scripts/check_publication_figures.py
 ```
 
 Sentetik CSV/XLSX kayıtları üzerinde beş grafik türü, SVG/PDF/PNG dışa aktarma, açıklayıcı JSON raporu, eksik değerler, tekerrür ID'leri ve geçersiz parametreler test edilir. Gerçek bir araştırmanın tasarım ve biyolojik yorumunun yerini almaz.
+
+## v0.9.1: analiz sonuçlarına bağlı iki faktörlü etkileşimler
+
+`plot_scientific.py` betimsel genel grafik motorudur; istatistiksel model sonuçlarıyla eşleşmesi için [interaction-figures.md](interaction-figures.md) içindeki `plot_interactions.py` aracını kullan. Bu araç, faktöriyel hücre ortalamalarını ve karma modelin sabit etki kestirimlerini **birbirine karıştırmadan** gösterir, aynı ham dosyanın SHA-256 özetini kontrol eder ve yeni p değeri uydurmaz.

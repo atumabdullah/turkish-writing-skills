@@ -30,3 +30,5 @@ jobs:
         run: python3 scripts/check_publication_figures.py
       - name: Check four advanced statistics modes with synthetic data
         run: python3 scripts/check_advanced_statistics.py
+      - name: Verify model-linked factorial and mixed interaction figures
+        run: python3 scripts/check_interaction_graphs.py

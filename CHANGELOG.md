@@ -1,5 +1,16 @@
 # Değişiklik günlüğü
 
+## 0.9.1 — 2026-11-08
+
+- Özgün `plot_interactions.py` eklendi: faktöriyel `factorial_interaction` ve karma model `mixed_interaction` görselleştirmeleri, bilimsel şekil stili ve ham noktalar.
+- Faktöriyel `uygulama × doz` çizimlerinde sayısal doz aralıkları, hücre ortalamaları ve seçilebilir SD/SEM/ayrı hücre Student t %95 güven aralıkları sağlandı.
+- Karma modelin `prediction_grid` alanında sabit etkilere ait popülasyon kestirimleri ve asimptotik %95 güven bantları hesaplanıyor; grafik modelleri yeniden çalıştırmadan bunları kullanıyor.
+- Ham veri SHA-256, deney birimi, örneklem ve faktöriyel hücre/tahmin ızgarası tutarlılığı kontrol ediliyor; uyumsuz veri/rapor çiftleri reddediliyor. Yeni anlamlılık p değeri, güven aralığı fark testi veya harf uydurulmuyor.
+- PNG/PDF/SVG yayın şekilleri, `interaction_table.csv`, `interaction_metadata.json` ve `interaction_caption.md` alt yazı dosyası ile örnek ve bilimsel sınır belgeleri eklendi.
+- `check_interaction_graphs.py` ile modeli gerçekten çalıştıran uçtan uca sentetik testler; veri/rapor çakışması ve bozulmuş model girdileri için regresyon testleri GitHub Actions'a eklendi.
+- Önceki akademik yazım, DOI, genel grafik ve gelişmiş istatistik modülleri korundu.
+
+
 ## 0.9.0 — 2026-11-08
 
 - Açık analiz seçimi ve deney birimi denetimleriyle dört gelişmiş istatistik yöntemi için `advanced_statistics.py` eklendi: iki faktörlü Type III ANOVA (sum-kodlama), Pearson/Spearman korelasyonu, HC3 çoklu doğrusal regresyon ve rastgele kesişimli doğrusal karma model.

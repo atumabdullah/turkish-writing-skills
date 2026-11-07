@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "0.9.0"
+  version: "0.9.1"
 ---
 
 # Türkçe Açık Yazım
@@ -61,6 +61,14 @@ Ham veriyle faktöriyel ANOVA, korelasyon, doğrusal regresyon veya tekrarlı ö
 - `mixed`: aynı deney biriminde tekrarlı ölçüm, sayısal doğrusal zaman, rastgele kesişim, isteğe bağlı uygulama ve zaman×uygulama. Ek blok, rastgele eğim, seri otokorelasyon ve eksik gözlem süreçleri bu basit modelin dışında kalabilir.
 
 Karmaşık desenlerde sınırları açıkla; veri veya gerekli tasarım bilgisi eksikse istatistik veya p değeri uydurma. JSON, CSV ve Markdown raporlarında birimi, yöntemi, `n` bilgisini, uyarıları ve yeniden üretilebilir kaynak özetini koru. Görselleştirme için [references/publication-figures.md](references/publication-figures.md) dosyasını ayrı kullan; ileri istatistik sonuçlarını grafik üzerinde otomatik anlamlılık harfine dönüştürme.
+
+## Model sonuçlarına bağlı etkileşim grafik üretimi (v0.9.1)
+
+Faktöriyel uygulama×doz veya karma model zaman×uygulama etkileşim grafiği gerekiyorsa [references/interaction-figures.md](references/interaction-figures.md) dosyasını izle. Önce gerçek ham veri üzerinde **tasarıma uygun** `advanced_statistics.py` analizini çalıştırıp `results.json` üret. Ardından **aynı kaynak dosyayla** `scripts/plot_interactions.py` aracını `--results` parametresiyle çalıştır; kaynak SHA-256, n, deney birimi, yanıt sütunu ve model-hücre/tahmin ızgarası eşleşmiyorsa çizimi reddet.
+
+- `factorial` çizimi uygulama × doz hücre ortalamalarını, bağımsız ham noktaları ve varsayılan ayrı hücre **Student t %95 güven aralıklarını** gösterir. Bu aralıklar iki grubun farkına ilişkin CI değildir; etkileşim testi p değeri yalnızca ilişkili analiz raporundadır.
+- `mixed` çizimi, aynı raporda hesaplanmış **sabit etkilere dayalı popülasyon ortalaması tahminlerini** ve bunların asimptotik %95 güven bantlarını gösterir. Bireysel tahmin aralığı değildir; noktalar gözlenen grup×zaman ortalamalarıdır.
+- Hiçbir çizim yeni çıkarımsal test, anlamlılık harfi, otomatik post-hoc karşılaştırma veya nedensellik kanıtı üretmez. Deney desenini doğrulama ve dergi biçim kontrolü sürer.
 
 ## Türkçeye özgü kararlar
 

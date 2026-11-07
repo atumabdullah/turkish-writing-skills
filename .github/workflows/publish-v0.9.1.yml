@@ -1,0 +1,86 @@
+name: Publish Turkish Writing Skills v0.9.1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/publish-v0.9.1.yml
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository == 'atumabdullah/turkish-writing-skills'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install optional scientific dependencies
+        run: python3 -m pip install -r skills/turkish-clear-writing/requirements-statistics.txt
+      - name: Run all package, writing, DOI and scientific regressions
+        run: |
+          test "$(tr -d '\r\n' < VERSION)" = "0.9.1"
+          grep -Fq 'version: "0.9.1"' skills/turkish-clear-writing/SKILL.md
+          python3 scripts/validate_package.py
+          python3 scripts/check_examples.py
+          python3 scripts/check_behavioral_outputs.py
+          python3 scripts/check_doi_verifier.py
+          python3 scripts/check_style_audit.py
+          python3 scripts/check_statistical_analysis.py
+          python3 scripts/check_publication_figures.py
+          python3 scripts/check_advanced_statistics.py
+          python3 scripts/check_interaction_graphs.py
+      - name: Package Claude skill and extract correct release notes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          import zipfile
+          source = Path("skills/turkish-clear-writing")
+          version = Path("VERSION").read_text(encoding="utf-8").strip()
+          assert version == "0.9.1"
+          archive = Path(f"turkish-clear-writing-v{version}.skill")
+          with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as handle:
+              for path in sorted(source.rglob("*")):
+                  if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+                      handle.write(path, path.relative_to(source).as_posix())
+          with zipfile.ZipFile(archive) as handle:
+              assert handle.testzip() is None
+              names = set(handle.namelist())
+              for needed in (
+                  "SKILL.md", "references/publication-figures.md",
+                  "references/statistics-and-figures.md",
+                  "scripts/plot_scientific.py", "scripts/figure_style.py",
+                  "scripts/analyze_and_plot.py", "scripts/verify_dois.py",
+                  "scripts/advanced_statistics.py", "references/advanced-statistics.md",
+                  "scripts/plot_interactions.py", "references/interaction-figures.md",
+                  "requirements-statistics.txt"
+              ):
+                  assert needed in names, needed
+              assert all(not n.startswith("skills/") for n in names)
+          shutil.copyfile(archive, archive.with_suffix(".zip"))
+          changelog = Path("CHANGELOG.md").read_text(encoding="utf-8")
+          header = f"## {version} "
+          assert header in changelog, f"Missing {version} changelog section"
+          section = changelog.split(header, 1)[1].split("\n## ", 1)[0].strip()
+          assert all(word in section for word in ("factorial_interaction", "mixed_interaction", "SHA-256"))
+          Path("release-notes.md").write_text(section + "\n", encoding="utf-8")
+          PY
+      - name: Publish release and Claude-ready archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.9.1 >/dev/null 2>&1; then
+            echo "Release already exists; refusing to silently overwrite published assets."
+            exit 1
+          fi
+          gh release create v0.9.1 \
+            turkish-clear-writing-v0.9.1.skill \
+            turkish-clear-writing-v0.9.1.zip \
+            --target "$GITHUB_SHA" \
+            --title "Turkish Writing Skills v0.9.1 — Model-linked interaction figures" \
+            --notes-file release-notes.md \
+            --latest
