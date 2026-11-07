@@ -64,6 +64,14 @@ def sorted_categories(values: list[str]) -> tuple[list[str], np.ndarray, bool]:
     return [labels[i] for i in order], x[order], True
 
 
+def series_x_positions(x: np.ndarray, *, numeric: bool, index: int, nseries: int) -> np.ndarray:
+    """Never displace scientific numeric x-values away from their real dose/time."""
+    values = np.asarray(x, dtype=float)
+    if numeric:
+        return values.copy()
+    return values + 0.035 * (index - (nseries - 1) / 2)
+
+
 def check_link(raw: pd.DataFrame, args: argparse.Namespace, report: dict) -> str:
     if report.get("analysis") not in ("factorial", "mixed"):
         raise ValueError("Only factorial or mixed analysis results may be plotted")
@@ -128,8 +136,10 @@ def factorial_panel(fig, raw: pd.DataFrame, report: dict, uncertainty: str) -> t
 
     ax = fig.add_subplot(111)
     rows = []
-    scale = float(np.max(xpos) - np.min(xpos)) if numeric_x else 1.0
-    offset = 0.016 * scale if numeric_x else 0.035
+    # For numeric doses, the MINIMUM adjacent gap limits raw-point jitter.
+    # Line means and CI endpoints remain exactly on their actual numeric x.
+    smallest_gap = float(np.min(np.diff(xpos))) if numeric_x else 1.0
+    jitter_radius = 0.015 * smallest_gap
     rng = np.random.default_rng(2026)
     for index, group in enumerate(groups):
         xvals = np.asarray(xpos, dtype=float)
@@ -149,17 +159,17 @@ def factorial_panel(fig, raw: pd.DataFrame, report: dict, uncertainty: str) -> t
             errors.append(halfwidth)
             rows.append({**row, "uncertainty_type": uncertainty, "halfwidth": halfwidth,
                          "lower": row["mean"] - halfwidth, "upper": row["mean"] + halfwidth})
-        x_offset = offset * (index - (len(groups)-1) / 2)
-        ax.plot(xvals + x_offset, means, marker=MARKERS[index], linewidth=1.8,
+        shown_x = series_x_positions(xvals, numeric=numeric_x, index=index, nseries=len(groups))
+        ax.plot(shown_x, means, marker=MARKERS[index], linewidth=1.8,
                 markersize=5, label=group, color=PALETTE[index])
         if uncertainty != "none":
-            ax.errorbar(xvals + x_offset, means, yerr=errors, capsize=3,
+            ax.errorbar(shown_x, means, yerr=errors, capsize=3,
                         fmt="none", color=PALETTE[index], linewidth=1.1)
         # Individual values show experimental-unit variability, not just means.
-        for level, x in zip(x_labels, xvals):
+        for level, displayed_x in zip(x_labels, shown_x):
             values = raw.loc[(raw[a] == group) & (raw[b] == level), response].to_numpy()
-            jitter = rng.uniform(-offset * .28, offset * .28, size=len(values))
-            ax.scatter(np.full(len(values), x + x_offset) + jitter, values,
+            jitter = rng.uniform(-jitter_radius, jitter_radius, size=len(values))
+            ax.scatter(np.full(len(values), displayed_x) + jitter, values,
                        color=PALETTE[index], alpha=.25, s=14, linewidths=0)
     ax.set_xticks(xpos, x_labels)
     ax.set_xlabel(b)
