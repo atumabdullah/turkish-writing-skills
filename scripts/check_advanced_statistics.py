@@ -128,6 +128,47 @@ def test() -> None:
         assert mixed["model"]["subject_intercept_variance"] >= 0
         assert len(mixed["model"]["fixed_effects"]) == 4
 
+        # Codex P2: user column names C and Q must not shadow Patsy helpers.
+        collision_factor = factor.rename(columns={"source": "C", "biomass": "Q"})
+        collision_factor_path = root / "patsy_factor_collision.csv"
+        collision_factor.to_csv(collision_factor_path, index=False)
+        collide_factor = positive_result(
+            collision_factor_path, root / "patsy_factor_output", "factorial",
+            "--analysis", "factorial", "--unit", "pot_id",
+            "--value", "Q", "--factor-a", "C", "--factor-b", "dose"
+        )
+        assert len(collide_factor["model"]["effects"]) == 3
+        assert all(effect["p"] is not None for effect in collide_factor["model"]["effects"])
+
+        collision_mixed = repeated.rename(columns={"treatment": "C", "spad": "Q"})
+        collision_mixed_path = root / "patsy_mixed_collision.xlsx"
+        collision_mixed.to_excel(collision_mixed_path, index=False)
+        collide_mixed = positive_result(
+            collision_mixed_path, root / "patsy_mixed_output", "mixed",
+            "--analysis", "mixed", "--unit", "subject", "--time", "day",
+            "--value", "Q", "--group", "C", "--interaction"
+        )
+        assert collide_mixed["model"]["converged"] is True
+        assert len(collide_mixed["model"]["fixed_effects"]) == 4
+
+        # Codex P2: a numerical predictor called "const" must not collide
+        # with the regression intercept or silently null valid statistics.
+        collision_regression = reg.rename(columns={"x_one": "const"})
+        collision_regression_path = root / "ols_const_column.csv"
+        collision_regression.to_csv(collision_regression_path, index=False)
+        collide_regression = positive_result(
+            collision_regression_path, root / "ols_const_output", "regression",
+            "--analysis", "regression", "--unit", "sample_id",
+            "--value", "response", "--predictors", "const,x_two"
+        )
+        coefficients = collide_regression["model"]["coefficients"]
+        assert len(coefficients) == 3
+        assert [c["term_type"] for c in coefficients] == ["intercept", "predictor", "predictor"]
+        assert coefficients[1]["source_column"] == "const"
+        for c in coefficients:
+            assert all(c[key] is not None for key in
+                       ("estimate", "se_hc3", "p", "ci95_lower", "ci95_upper"))
+
         # Explicit scientific design violations must fail, not silently fall back.
         fails(factor_path, root, "missingfactor", "--factor-b",
               "--analysis", "factorial", "--unit", "pot_id",
