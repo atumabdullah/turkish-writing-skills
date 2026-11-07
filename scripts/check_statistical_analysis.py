@@ -42,7 +42,7 @@ def test() -> None:
         # otherwise valid one-way analyses or strict JSON serialization.
         levene_file = root / "undefined_levene.csv"
         levene_file.write_text(
-            "unit,group,biomass\\nA1,A,1\\nA2,A,3\\nB1,B,5\\nB2,B,7\n",
+            "unit,group,biomass\nA1,A,1\nA2,A,3\nB1,B,5\nB2,B,7\n",
             encoding="utf-8",
         )
         for name in ("anova", "welch", "kruskal"):
@@ -65,7 +65,7 @@ def test() -> None:
         # valid rank comparison when group locations differ.
         distinct_constants = root / "rank_constants.csv"
         distinct_constants.write_text(
-            "unit,group,biomass\\nA1,A,1\\nA2,A,1\\nA3,A,1\\nB1,B,2\\nB2,B,2\\nB3,B,2\n",
+            "unit,group,biomass\nA1,A,1\nA2,A,1\nA3,A,1\nB1,B,2\nB2,B,2\nB3,B,2\n",
             encoding="utf-8",
         )
         out = root / "rank_constants_result"
@@ -83,7 +83,7 @@ def test() -> None:
         # True degeneracy: all pooled ranks identical must remain rejected.
         identical = root / "rank_all_identical.csv"
         identical.write_text(
-            "unit,group,biomass\\nA1,A,1\\nA2,A,1\\nB1,B,1\\nB2,B,1\n",
+            "unit,group,biomass\nA1,A,1\nA2,A,1\nB1,B,1\nB2,B,1\n",
             encoding="utf-8",
         )
         run = execute(
