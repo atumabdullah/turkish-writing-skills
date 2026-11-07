@@ -92,6 +92,29 @@ def test() -> None:
         must_fail(csv, "multi_panel", "two to four", "--group", "treatment", "--columns", "biomass")
         must_fail(csv, "line_plot", "requires --x", "--y", "biomass")
 
+        # Codex review: pandas mangles duplicate input headers by appending
+        # suffixes, which would otherwise silently select the wrong variable.
+        duplicate_headers_csv = root / "duplicate_headers.csv"
+        duplicate_headers_csv.write_text(
+            "pot_id,treatment,biomass,biomass\\nA1,A,1,2\\nB1,B,3,4\\n".replace("\\n", "\n"),
+            encoding="utf-8"
+        )
+        must_fail(duplicate_headers_csv, "box_jitter", "Duplicate column headers",
+                  "--group", "treatment", "--y", "biomass")
+
+        duplicate_headers_xlsx = root / "duplicate_headers.xlsx"
+        pd.DataFrame(
+            [["A1", "A", 1, 2], ["B1", "B", 3, 4]],
+            columns=["pot_id", "treatment", "biomass", "biomass"],
+        ).to_excel(duplicate_headers_xlsx, index=False)
+        must_fail(duplicate_headers_xlsx, "box_jitter", "Duplicate column headers",
+                  "--group", "treatment", "--y", "biomass")
+
+        blank_headers_csv = root / "blank_headers.csv"
+        blank_headers_csv.write_text("pot_id,,biomass\\nA1,A,1\\n".replace("\\n", "\n"), encoding="utf-8")
+        must_fail(blank_headers_csv, "box_jitter", "empty column headers",
+                  "--group", "treatment", "--y", "biomass")
+
         bad = data.copy()
         bad.loc[0, "biomass"] = None
         missing_csv = root / "missing.csv"
