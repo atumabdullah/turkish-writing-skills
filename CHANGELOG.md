@@ -1,5 +1,15 @@
 # Değişiklik günlüğü
 
+## 0.9.0 — 2026-11-08
+
+- Açık analiz seçimi ve deney birimi denetimleriyle dört gelişmiş istatistik yöntemi için `advanced_statistics.py` eklendi: iki faktörlü Type III ANOVA (sum-kodlama), Pearson/Spearman korelasyonu, HC3 çoklu doğrusal regresyon ve rastgele kesişimli doğrusal karma model.
+- ANOVA'da etkileşim, F/p, kısmi eta-kare, hücre örneklem sayıları ve artık/varyans tanıları; korelasyonda çiftler bazında n ve Holm/FDR düzeltmesi.
+- Regresyonda sağlam SE, güven aralığı, R², VIF ve heteroskedastisite tanısı; karma modelde doğrusal zaman × grup etkileşimi, ML yakınsama ve varyans bileşenleri.
+- Deney birimi tekrarı, uygunsuz eksik faktör hücresi, teknik alt örnek, birim-zaman tekrarı, kollinearite, grup değişimi, yetersiz veri ve yakınsamama için korumalar.
+- Tekrar üretilebilir JSON/CSV/Markdown çıktı; kaynak SHA-256 ve paket sürümü; kapsam sınırları ve `check_advanced_statistics.py` sentetik regresyon testleri eklendi.
+- Önceki Türkçe yazım, DOI, tek faktörlü analiz ve beş bilimsel grafik türü aynen korundu.
+
+
 ## 0.8.0 — 2026-11-08
 
 - Yayın kalitesinde betimsel grafikler için ortak Matplotlib stili ve beş grafik türü (`box_jitter`, `grouped_bar`, `line_plot`, `correlation_heatmap`, `multi_panel`) eklendi.
