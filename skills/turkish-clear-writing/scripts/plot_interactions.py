@@ -185,12 +185,12 @@ def factorial_panel(fig, raw: pd.DataFrame, report: dict, uncertainty: str) -> t
     return rows, caption
 
 
-def mixed_panel(fig, raw: pd.DataFrame, report: dict) -> tuple[list[dict], str]:
+def mixed_panel(fig, raw: pd.DataFrame, report: dict) -> tuple[list[dict], str, list[dict]]:
     model = report["model"]
     if model.get("converged") is not True or model.get("prediction_basis") != (
         "population fixed effects; normal approximation 95% CI"
     ):
-        raise ValueError("Only converged mixed models with v0.9.1 fixed-effect prediction grid are supported")
+        raise ValueError("Only converged mixed models with v0.9.1 fixed-effect predictions are supported")
     time = model.get("time_column")
     group = model.get("group_column")
     response = model.get("response_column")
@@ -201,16 +201,20 @@ def mixed_panel(fig, raw: pd.DataFrame, report: dict) -> tuple[list[dict], str]:
     raw[response] = numeric(raw, response)
     if group:
         raw[group] = category(raw, group)
-    raw["_series_label"] = raw[group] if group else "All"
-    labels = sorted(raw["_series_label"].unique())
+
+    # Never assign a temporary "_series_label" into the original frame.
+    # Real, valid user columns can themselves have that name.
+    series_labels = (raw[group] if group else
+                     pd.Series(["All"] * len(raw), index=raw.index))
+    labels = sorted(series_labels.unique())
     if not 1 <= len(labels) <= 7:
         raise ValueError("Mixed plot supports at most seven treatment series")
 
     grid = model.get("prediction_grid")
-    if not isinstance(grid, list) or len(grid) == 0:
-        raise ValueError("No model prediction grid found; rerun v0.9.1 mixed analysis")
+    if not isinstance(grid, list) or not grid:
+        raise ValueError("No mixed-model observation grid found; rerun v0.9.1 analysis")
     expected = {}
-    for (label, timepoint), sub in raw.groupby(["_series_label", time], sort=True, observed=True):
+    for (label, timepoint), sub in raw.groupby([series_labels, raw[time]], sort=True, observed=True):
         expected[(str(label), float(timepoint))] = {
             "n_units_at_time": int(sub[unit].nunique()),
             "observed_mean": float(sub[response].mean()),
@@ -219,7 +223,7 @@ def mixed_panel(fig, raw: pd.DataFrame, report: dict) -> tuple[list[dict], str]:
     for entry in grid:
         key = (str(entry["group"]), finite_number(entry["time"], "prediction time"))
         if key not in expected or key in validated:
-            raise ValueError("Unexpected or duplicate model prediction grid entry")
+            raise ValueError("Unexpected or duplicate model observation grid entry")
         ref = expected[key]
         if int(entry["n_units_at_time"]) != ref["n_units_at_time"]:
             raise ValueError("Model prediction group-time sample size mismatch")
@@ -227,30 +231,72 @@ def mixed_panel(fig, raw: pd.DataFrame, report: dict) -> tuple[list[dict], str]:
             raise ValueError("Model prediction observed means differ from data")
         vals = {key_: finite_number(entry[key_], key_) for key_ in
                 ("fitted_mean", "ci95_lower", "ci95_upper", "fixed_effect_se")}
-        if vals["fixed_effect_se"] < 0 or not (vals["ci95_lower"] <= vals["fitted_mean"] <= vals["ci95_upper"]):
-            raise ValueError("Invalid mixed-model confidence interval")
+        if vals["fixed_effect_se"] < 0 or not (
+            vals["ci95_lower"] <= vals["fitted_mean"] <= vals["ci95_upper"]
+        ):
+            raise ValueError("Invalid mixed-model observation confidence interval")
         validated[key] = {**entry, **vals}
     if set(validated) != set(expected):
-        raise ValueError("Model prediction grid has missing group-time combinations")
+        raise ValueError("Model observation grid has missing group-time combinations")
+
+    # The nonlinearity of sqrt(X Cov(beta) X^T) means CI boundaries cannot
+    # be linearly interpolated between sparse observation times.
+    curve = model.get("prediction_curve")
+    if not isinstance(curve, list) or not curve:
+        raise ValueError("Mixed model has no dense confidence curve; rerun v0.9.1 analysis")
+    curves: dict[str, list[dict]] = {label: [] for label in labels}
+    curve_keys = set()
+    for item in curve:
+        label = str(item["group"])
+        timepoint = finite_number(item["time"], "curve time")
+        key = (label, timepoint)
+        if label not in curves or key in curve_keys:
+            raise ValueError("Unexpected or duplicate mixed-model confidence curve point")
+        curve_keys.add(key)
+        nums = {name: finite_number(item[name], name) for name in
+                ("fitted_mean", "ci95_lower", "ci95_upper", "fixed_effect_se")}
+        if nums["fixed_effect_se"] < 0 or not (
+            nums["ci95_lower"] <= nums["fitted_mean"] <= nums["ci95_upper"]
+        ):
+            raise ValueError("Invalid mixed-model curve confidence interval")
+        curves[label].append({"group": label, "time": timepoint, **nums})
+    for label in labels:
+        measured = sorted(t for group_name, t in expected if group_name == label)
+        points = sorted(curves[label], key=lambda row: row["time"])
+        if len(measured) < 2 or len(points) < 20:
+            raise ValueError("At least two observed times and a dense prediction curve are required per series")
+        if not equal(points[0]["time"], measured[0]) or not equal(points[-1]["time"], measured[-1]):
+            raise ValueError("Confidence curve must span only the group's observed time range")
+        if any(not points[i]["time"] < points[i + 1]["time"] for i in range(len(points) - 1)):
+            raise ValueError("Confidence curve time coordinates must increase strictly")
+        # Endpoints of the dense model curve must reproduce the modeled
+        # confidence intervals evaluated at the original observation times.
+        for point in (points[0], points[-1]):
+            matched = validated[(label, point["time"])]
+            for name in ("fitted_mean", "ci95_lower", "ci95_upper"):
+                if not equal(point[name], matched[name]):
+                    raise ValueError("Mixed-model confidence curve endpoints do not match observation predictions")
+        curves[label] = points
 
     ax = fig.add_subplot(111)
-    rows = []
+    observed_rows, curve_rows = [], []
     for index, label in enumerate(labels):
         series = sorted((row for (group_key, _), row in validated.items() if group_key == label),
                         key=lambda row: float(row["time"]))
-        if len(series) < 2:
-            raise ValueError("At least two time points per series are required")
-        x = np.array([row["time"] for row in series], dtype=float)
-        y = np.array([row["fitted_mean"] for row in series], dtype=float)
-        lo = np.array([row["ci95_lower"] for row in series], dtype=float)
-        hi = np.array([row["ci95_upper"] for row in series], dtype=float)
-        observed = np.array([row["observed_mean"] for row in series], dtype=float)
+        smooth = curves[label]
+        x = np.array([row["time"] for row in smooth], dtype=float)
+        y = np.array([row["fitted_mean"] for row in smooth], dtype=float)
+        lo = np.array([row["ci95_lower"] for row in smooth], dtype=float)
+        hi = np.array([row["ci95_upper"] for row in smooth], dtype=float)
+        observed_x = np.array([row["time"] for row in series], dtype=float)
+        observed_y = np.array([row["observed_mean"] for row in series], dtype=float)
         color = PALETTE[index]
         ax.plot(x, y, "-", color=color, linewidth=1.9, label=f"{label} (model)")
         ax.fill_between(x, lo, hi, color=color, alpha=.16, linewidth=0)
-        ax.scatter(x, observed, color=color, edgecolor="white", linewidth=.8,
+        ax.scatter(observed_x, observed_y, color=color, edgecolor="white", linewidth=.8,
                    marker=MARKERS[index], s=32, zorder=4)
-        rows.extend(series)
+        observed_rows.extend(series)
+        curve_rows.extend(smooth)
     ax.set_xlabel(time)
     ax.set_ylabel(response)
     if group:
@@ -258,11 +304,12 @@ def mixed_panel(fig, raw: pd.DataFrame, report: dict) -> tuple[list[dict], str]:
     finish_axes(ax)
     caption = (f"Population-level, random-intercept mixed model: fitted {response} across {time}"
                + (f" by {group}" if group else "") +
-               ". Lines are fixed-effect fitted means, shaded regions are asymptotic 95% "
-               "confidence intervals of the population mean, and points are observed cell means. "
-               "Bands are not subject-level prediction intervals. Repeated measurements "
-               "are not independent; no pairwise significance test is implied by band overlap.")
-    return rows, caption
+               ". Lines are fixed-effect fitted means; shaded regions are asymptotic 95% "
+               "confidence intervals evaluated on a dense time grid from the fitted fixed-effect "
+               "covariance. Points are observed cell means. Bands are not subject-level "
+               "prediction intervals. Repeated measurements are not independent; "
+               "no pairwise significance test is implied by band overlap.")
+    return observed_rows, caption, curve_rows
 
 
 def run(args: argparse.Namespace) -> dict:
@@ -285,8 +332,9 @@ def run(args: argparse.Namespace) -> dict:
         fig = plt.figure(figsize=(8.3, 5.6))
         if analysis == "factorial":
             rows, caption = factorial_panel(fig, raw, report, args.uncertainty)
+            curve_rows = []
         else:
-            rows, caption = mixed_panel(fig, raw, report)
+            rows, caption, curve_rows = mixed_panel(fig, raw, report)
         ax = fig.axes[0]
         if args.xlabel:
             ax.set_xlabel(args.xlabel)
@@ -301,6 +349,13 @@ def run(args: argparse.Namespace) -> dict:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
+    if curve_rows:
+        with (args.output / "interaction_curve.csv").open(
+            "w", newline="", encoding="utf-8"
+        ) as stream:
+            writer = csv.DictWriter(stream, fieldnames=list(curve_rows[0]))
+            writer.writeheader()
+            writer.writerows(curve_rows)
     (args.output / "interaction_caption.md").write_text(caption + "\n", encoding="utf-8")
     metadata = {
         "engine_version": "0.9.1",
@@ -318,7 +373,9 @@ def run(args: argparse.Namespace) -> dict:
         "new_inferential_tests_performed": False,
         "caption": caption,
         "warnings": list(report.get("warnings", [])),
-        "files": files + ["interaction_table.csv", "interaction_caption.md", "interaction_metadata.json"],
+        "files": files + ["interaction_table.csv"] +
+                 (["interaction_curve.csv"] if curve_rows else []) +
+                 ["interaction_caption.md", "interaction_metadata.json"],
     }
     (args.output / "interaction_metadata.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2, allow_nan=False),
