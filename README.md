@@ -95,6 +95,23 @@ python3 skills/turkish-clear-writing/scripts/plot_scientific.py deneme.xlsx \
 
 Sentetik örnek veriler `examples/figures-demo.csv` içindedir; gerçek araştırma sonuçları değildir.
 
+### Gelişmiş istatistiksel analiz (v0.9.0)
+
+- **İki faktörlü bağımsız gruplar:** Type III (sum-kontrastlı) ANOVA; iki ana etki, etkileşim, F/p, kısmi eta-kare, Levene ve artık normalliği.
+- **Korelasyon:** Pearson/Spearman, ikili örneklem sayısı, Holm veya FDR-BH düzeltmeli çoklu karşılaştırmalar; sabit değişken ve eksik veri uyarıları.
+- **Regresyon:** 1–8 sayısal yordayıcı ile çoklu OLS; HC3 heteroskedastisiteye dayanıklı standart hatalar, %95 güven aralıkları, R², VIF ve Breusch–Pagan.
+- **Tekrarlı ölçümler:** Aynı deney biriminin zaman içindeki verisi için ML rastgele kesişimli karma etkili model; doğrusal zaman, isteğe bağlı grup ve zaman × grup etkileşimi.
+- **Tasarım güvenceleri:** deney birimi zorunlu, faktöriyel hücre eksikliği, ölçüm tekrarları, kollinearite, yetersiz birim sayısı, yakınsamayan model ve yinelenen kaynak sütun başlıkları için korumalar.
+- Çıktılar: `results.json`, `table.csv`, `results.md`; kaynak SHA-256, varsayımlar ve uyarılar raporlanır.
+
+Bu **tasarım sınırlı** modül, araştırma planını kendiliğinden doğrulamaz. Karma modelde rastgele eğim/karmaşık blok yoktur; faktöriyel analiz post-hoc anlamlılık harfleri üretmez. Aynı saksı/katılımcıdan gelen alt örnekleri bağımsız saymayın. Ayrıntılar için [gelişmiş istatistik kılavuzu](skills/turkish-clear-writing/references/advanced-statistics.md).
+
+```bash
+python3 skills/turkish-clear-writing/scripts/advanced_statistics.py deney.xlsx \
+  --analysis factorial --unit saksi_id --value kuru_agirlik_g \
+  --factor-a uygulama --factor-b doz --output analiz/iki_faktor
+```
+
 ### Test ve doğrulama
 
 - Sayı, atıf ve etik tanımlayıcı koruması için otomatik örnek testleri içerir.
@@ -151,6 +168,7 @@ skills/turkish-clear-writing/
 │   ├── audit_turkish.py
 │   ├── verify_dois.py
 │   ├── analyze_and_plot.py
+│   ├── advanced_statistics.py
 │   ├── plot_scientific.py
 │   └── figure_style.py
 ├── requirements-statistics.txt
@@ -162,6 +180,7 @@ skills/turkish-clear-writing/
     ├── examples.md
     ├── statistics-and-figures.md
     ├── publication-figures.md
+    ├── advanced-statistics.md
     ├── academic-article-workflow.md
     ├── research-ethics-and-reporting.md
     ├── tdk-writing-and-punctuation.md
@@ -172,6 +191,7 @@ scripts/check_doi_verifier.py
 scripts/check_style_audit.py
 scripts/check_statistical_analysis.py
 scripts/check_publication_figures.py
+scripts/check_advanced_statistics.py
 scripts/validate_package.py
 tests/cases.json
 tests/behavioral-cases.json
@@ -191,6 +211,7 @@ python3 scripts/check_doi_verifier.py
 python3 scripts/check_style_audit.py
 python3 scripts/check_statistical_analysis.py
 python3 scripts/check_publication_figures.py
+python3 scripts/check_advanced_statistics.py
 python3 scripts/validate_package.py
 ```
 

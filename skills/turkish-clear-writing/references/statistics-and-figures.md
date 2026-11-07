@@ -69,3 +69,7 @@ Grafik tasarımında [Chen Liu, Figures for Papers](https://github.com/ChenLiu-1
 - Levene'in medyan merkezli varyans tanısı veri yapısı nedeniyle tanımsız kalırsa (ör. her grubun mutlak medyan sapmaları özdeş), çıkarımsal test uygulanabiliyorsa rapor devam eder. JSON'da `diagnostics.levene_median_p = null` ve açıklayıcı uyarı yer alır; tanımsız tanı için p değeri uydurulmaz.
 - Kruskal–Wallis, her grubun kendi içinde sabit olduğu fakat grupların farklı değerler taşıdığı verilerde hesaplanabilir. Tüm havuzlanmış gözlemler aynıysa test tanımsızdır ve güvenli biçimde durdurulur.
 - Parametrik yöntemlerin sıfır grup içi varyans denetimi korunur. Test varsayımları veri desenine göre ayrıca incelenmelidir.
+
+## Gelişmiş analiz katmanı (v0.9.0)
+
+İki faktörlü bağımsız gruplar, korelasyon, çoklu doğrusal regresyon veya tekrarlı ölçümler istenirse [advanced-statistics.md](advanced-statistics.md) dosyasına bak. `scripts/advanced_statistics.py` ayrı bir **tasarım sınırları belirlenmiş** betiktir: açık `factorial`, `correlation`, `regression`, `mixed` kipleri; verinin yapısına göre güvenli ret kontrolleri; sıkı JSON/CSV/Markdown özetleri. Bu kipler genel amaçlı karma model, bloklu desen, otomatik post-hoc veya güvenilir yöntem hakemliği iddiası taşımaz. Çizimler için ayrı `publication-figures.md` kılavuzunu kullan.

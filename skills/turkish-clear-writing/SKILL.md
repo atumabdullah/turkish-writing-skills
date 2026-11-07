@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # Türkçe Açık Yazım
@@ -50,6 +50,17 @@ Sıradan bir metin düzenlemesinde analiz veya çizim yapma. `audit` modunda mev
 Ham CSV/XLSX verileri üzerinden grafik isteniyorsa önce [references/publication-figures.md](references/publication-figures.md) dosyasını oku; gerçek ölçüm birimini, grup/faktörleri, eksik verileri, grafik amacını ve hedef derginin şekil kurallarını kontrol et. Kullanıcıdan gelen somut veriler ve çalıştırılabilir Python ortamı varsa `scripts/plot_scientific.py` aracını kullan: `box_jitter`, `grouped_bar`, `line_plot`, `correlation_heatmap`, `multi_panel`. Yalnızca gereken şekilleri oluştur; sıradan `rewrite` veya `audit` isteklerinde kendiliğinden çizim yapma. Araç PNG (varsayılan 300 DPI), vektörel PDF/SVG ve doğrulama metadatası üretebilir. Araç mevcut değilse çizimi gerçekten üretmiş gibi sunma.
 
 Bu şekiller **yalnızca betimseldir**: grafikten otomatik p değeri, post-hoc harfi, nedensellik veya güven aralığı türetme. Gruplu çubuklarda SD/SEM açıklamasını koru; ısı haritasında çiftler bazındaki `n` farklarını bildir. Aynı deney biriminden gelen tekrarlı ölçümler veya alt örnekler varsa bağımsız tekerrür gibi yorumlama. Analiz gerekiyorsa `references/statistics-and-figures.md` içindeki desen eşleme ve analiz kararlarına geri dön. Grafiklerin gerçekten üretildiğini, dosya çıktısını ve birim/eksen doğruluğunu kontrol et.
+
+## Gelişmiş çıkarımsal istatistik (v0.9.0)
+
+Ham veriyle faktöriyel ANOVA, korelasyon, doğrusal regresyon veya tekrarlı ölçüm analizi gerektiğinde **önce** [references/advanced-statistics.md](references/advanced-statistics.md) dosyasını oku. Gerçek deney birimini, randomizasyonu, faktör yapısını, bağımsızlık/tekrarlı ölçümleri, ölçüm birimlerini, hipotezi ve model varsayımlarını doğrula. Desteklenen tasarım için `scripts/advanced_statistics.py` ile yalnızca açık seçilen `factorial`, `correlation`, `regression` veya `mixed` kipini çalıştır. İleri yöntemleri otomatik seçme; sıradan yazım düzenlemede istatistik çalıştırma.
+
+- `factorial`: iki faktör, her hücrede bağımsız tekerrür; Type III sum-kontrastlı ANOVA ve etkileşim. Bloklu, iç içe, tekrarlı verileri kabul etme.
+- `correlation`: Pearson/Spearman, Holm veya FDR çoklu karşılaştırma düzeltmesi, ikili n ve eksik veri raporu. Nedensellik iddia etme.
+- `regression`: bağımsız birimler, sayısal değişkenlerle OLS ve HC3 güvenilir standart hatalar; regresyon katsayıları tasarımın neden-sonuç kanıtı değildir.
+- `mixed`: aynı deney biriminde tekrarlı ölçüm, sayısal doğrusal zaman, rastgele kesişim, isteğe bağlı uygulama ve zaman×uygulama. Ek blok, rastgele eğim, seri otokorelasyon ve eksik gözlem süreçleri bu basit modelin dışında kalabilir.
+
+Karmaşık desenlerde sınırları açıkla; veri veya gerekli tasarım bilgisi eksikse istatistik veya p değeri uydurma. JSON, CSV ve Markdown raporlarında birimi, yöntemi, `n` bilgisini, uyarıları ve yeniden üretilebilir kaynak özetini koru. Görselleştirme için [references/publication-figures.md](references/publication-figures.md) dosyasını ayrı kullan; ileri istatistik sonuçlarını grafik üzerinde otomatik anlamlılık harfine dönüştürme.
 
 ## Türkçeye özgü kararlar
 
