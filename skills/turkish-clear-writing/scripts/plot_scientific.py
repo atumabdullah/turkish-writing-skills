@@ -78,8 +78,12 @@ def category_column(frame: pd.DataFrame, column: str) -> pd.Series:
 
 
 def ordered(values: pd.Series) -> list[str]:
-    """Sorted categories ensure stable outputs when input row order changes."""
-    return sorted(values.unique().tolist())
+    """Deterministic ordering; numerical dose categories retain numeric order."""
+    labels = values.unique().tolist()
+    try:
+        return sorted(labels, key=lambda value: (float(value), value))
+    except (ValueError, TypeError):
+        return sorted(labels)
 
 
 def grouped_stats(frame: pd.DataFrame, keys: list[str], value: str) -> list[dict]:
