@@ -46,14 +46,14 @@ Karma model grafiği:
 - Sürekli çizgiler **modelin popülasyon düzeyindeki sabit etki kestirimleridir**, yarı saydam bölgeler **bu kestirimlere ait asimptotik %95 güven aralıklarıdır**, küçük simgeler ise her zaman–grup için **gözlenen aritmetik ortalamalardır**.
 - Aralıklar **bireysel gözlem tahmin aralığı değildir** ve saksı/deneklerin gelecekteki değişkenliğini temsil etmez.
 - Model yalnızca **sayısal, doğrusal zaman** ve **rastgele kesişim** içerir. Rastgele eğim, seri otokorelasyon, bloklama, doğrusal olmayan eğilim ve karmaşık eksik veri mekanizmaları hâlen tasarım dışıdır.
-- Tahmin noktaları, **ilgili grupta gerçekten ölçüm yapılmış zamanlarla** sınırlıdır; grup gözlemleri dışında görünmez ekstrapolasyon yapılmaz. Noktalar arasındaki çizgiler, önceden kurulmuş doğrusal modelin kestirimidir.
+- Gözlenen grup ortalamaları sadece gerçek ölçüm zamanlarında gösterilir. Model çizgisi ve güven bandı ise her grubun **ilk ve son gözlem zamanı arasındaki 101 noktada**, model sabit etki kovaryansı kullanılarak ayrı ayrı hesaplanır. CI sınırları ölçüm zamanları arasında doğrusal enterpole edilmez; grubun ölçüm aralığının dışına ekstrapolasyon yapılmaz.
 - Tekrarlı gözlemler bağımsız birimler gibi gösterilmez. Bir gruptan diğerine farklı görünen eğimler, otomatik ikili anlamlılık karşılaştırması değildir.
 
 ## Çıktı ve yeniden üretilebilirlik
 
 `--output` klasöründe:
 - `figure.png` (varsayılan 300 DPI; desteklenen 200–600), `figure.pdf` ve `figure.svg` (vektör);
-- `interaction_table.csv` (grafikte çizilen bütün hücre veya kestirim sayıları);
+- `interaction_table.csv` (gözlenen hücre veya grup-zaman istatistikleri) ve karma modelde ayrıca `interaction_curve.csv` (101 ara model kestirimi/grup ve asimptotik CI değerleri);
 - `interaction_caption.md` (hangi ortalama/CI'nin gösterildiğini ve sınırları açıklayan alt yazı);
 - `interaction_metadata.json` (kaynak veri ve raporun SHA-256 özeti, analiz türü, kullanılan belirsizlik ölçüsü, satır sayısı, sürüm ve uyarılar).
 
@@ -74,3 +74,8 @@ python3 scripts/check_interaction_graphs.py
 ```
 
 Sentetik iki faktörlü ve tekrarlı veri üretilir; ileri analiz betiği gerçek test modelini hesaplar, etkileşim betiği modeli kaynağa bağlayarak PNG/PDF/SVG üretir. Değiştirilmiş kaynak özeti, bozulmuş model hücreleri, mükerrer CSV sütunu, bozulmuş karma tahmin ızgarası ve yanlış analiz türleri reddedilir.
+
+## Codex v0.9.1 sağlamlık düzeltmeleri
+
+- Karma modelin %95 güven bandı, gruba özgü gözlenen zaman aralığı içinde 101 noktada tasarım vektörü × sabit etki kovaryansı × tasarım vektörü üzerinden hesaplanır; yanlış doğrusal CI enterpolasyonu yapılmaz.
+- `_series_label` adı gerçek zaman, yanıt veya deney birimi sütununda bulunabilir. Bu isimde bir yardımcı sütun ham veriye eklenmez; seri etiketleri dışarıdan gruplama anahtarı olarak geçirilir.

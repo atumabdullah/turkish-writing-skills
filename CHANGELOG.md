@@ -6,6 +6,8 @@
 - Faktöriyel `uygulama × doz` çizimlerinde sayısal doz aralıkları, hücre ortalamaları ve seçilebilir SD/SEM/ayrı hücre Student t %95 güven aralıkları sağlandı.
 - Codex incelemesinde düzensiz sayısal dozların eksende yanlış kaydırılabileceği bildirildi. Sayısal ortalama/CI noktaları gerçek x koordinatına sabitlendi, ham nokta saçılımı en küçük doz aralığıyla sınırlandırıldı ve 0–1–1000 regresyon testi eklendi.
 - Karma modelin `prediction_grid` alanında sabit etkilere ait popülasyon kestirimleri ve asimptotik %95 güven bantları hesaplanıyor; grafik modelleri yeniden çalıştırmadan bunları kullanıyor.
+- Codex düzeltmesi: Seyrek zamanların güven aralıkları enterpole edilmek yerine sabit-etki kovaryansından 101 noktalı `prediction_curve` üzerinde hesaplanıyor ve `interaction_curve.csv` dosyasına aktarılıyor.
+- Codex düzeltmesi: `_series_label` adını taşıyan gerçek veri sütunlarının yardımcı sütun tarafından ezilmesi önlendi; zaman, yanıt ve deney birimi için regresyon testleri eklendi.
 - Ham veri SHA-256, deney birimi, örneklem ve faktöriyel hücre/tahmin ızgarası tutarlılığı kontrol ediliyor; uyumsuz veri/rapor çiftleri reddediliyor. Yeni anlamlılık p değeri, güven aralığı fark testi veya harf uydurulmuyor.
 - PNG/PDF/SVG yayın şekilleri, `interaction_table.csv`, `interaction_metadata.json` ve `interaction_caption.md` alt yazı dosyası ile örnek ve bilimsel sınır belgeleri eklendi.
 - `check_interaction_graphs.py` ile modeli gerçekten çalıştıran uçtan uca sentetik testler; veri/rapor çakışması ve bozulmuş model girdileri için regresyon testleri GitHub Actions'a eklendi.

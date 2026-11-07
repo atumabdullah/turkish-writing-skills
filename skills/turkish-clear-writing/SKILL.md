@@ -67,7 +67,7 @@ Karmaşık desenlerde sınırları açıkla; veri veya gerekli tasarım bilgisi 
 Faktöriyel uygulama×doz veya karma model zaman×uygulama etkileşim grafiği gerekiyorsa [references/interaction-figures.md](references/interaction-figures.md) dosyasını izle. Önce gerçek ham veri üzerinde **tasarıma uygun** `advanced_statistics.py` analizini çalıştırıp `results.json` üret. Ardından **aynı kaynak dosyayla** `scripts/plot_interactions.py` aracını `--results` parametresiyle çalıştır; kaynak SHA-256, n, deney birimi, yanıt sütunu ve model-hücre/tahmin ızgarası eşleşmiyorsa çizimi reddet.
 
 - `factorial` çizimi uygulama × doz hücre ortalamalarını, bağımsız ham noktaları ve varsayılan ayrı hücre **Student t %95 güven aralıklarını** gösterir. Bu aralıklar iki grubun farkına ilişkin CI değildir; etkileşim testi p değeri yalnızca ilişkili analiz raporundadır.
-- `mixed` çizimi, aynı raporda hesaplanmış **sabit etkilere dayalı popülasyon ortalaması tahminlerini** ve bunların asimptotik %95 güven bantlarını gösterir. Bireysel tahmin aralığı değildir; noktalar gözlenen grup×zaman ortalamalarıdır.
+- `mixed` çizimi, aynı raporda hesaplanmış **sabit etkilere dayalı popülasyon ortalaması tahminlerini** ve gözlenen grup zaman aralığında yoğun bir ızgarada kovaryanstan yeniden hesaplanan asimptotik %95 güven bantlarını gösterir. Bireysel tahmin aralığı değildir; noktalar gözlenen grup×zaman ortalamalarıdır.
 - Hiçbir çizim yeni çıkarımsal test, anlamlılık harfi, otomatik post-hoc karşılaştırma veya nedensellik kanıtı üretmez. Deney desenini doğrulama ve dergi biçim kontrolü sürer.
 
 ## Türkçeye özgü kararlar

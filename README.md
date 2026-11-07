@@ -115,9 +115,9 @@ python3 skills/turkish-clear-writing/scripts/advanced_statistics.py deney.xlsx \
 ### İstatistiksel modellerle bağlantılı etkileşim grafikleri (v0.9.1)
 
 - **Uygulama × doz:** Faktöriyel ANOVA'daki iki kategorik faktörü birbirine karşı çizer. Gerçek sayısal doz aralıklarını korur; ham birim noktalarını, hücre ortalamalarını ve seçilen SD/SEM/%95 t güven aralığını sunar.
-- **Zaman × uygulama:** Rastgele kesişimli karma modelde tahmin edilen **sabit etkili popülasyon ortalamalarını**, bunların asimptotik %95 güven bantlarını ve gözlenen grup ortalamalarını ayrı gösterir.
+- **Zaman × uygulama:** Rastgele kesişimli karma modelde tahmin edilen **sabit etkili popülasyon ortalamalarını**, her grubun ölçülmüş zaman aralığındaki 101 noktada ayrı hesaplanan asimptotik %95 güven bantlarını ve gözlenen grup ortalamalarını gösterir.
 - **Model-veri denetimi:** Kaynak CSV/XLSX SHA-256 ve satır sayısı, bağımsız birim, değişken adları, faktöriyel hücre istatistikleri veya karma tahmin ızgarası uyumsuzsa grafik üretmez.
-- **Yayın çıktısı:** 300 DPI PNG, vektörel PDF/SVG, `interaction_table.csv`, `interaction_metadata.json` ve yorum sınırlarını belirten `interaction_caption.md`.
+- **Yayın çıktısı:** 300 DPI PNG, vektörel PDF/SVG, `interaction_table.csv`, karma modelde `interaction_curve.csv`, `interaction_metadata.json` ve yorum sınırlarını belirten `interaction_caption.md`.
 - Var olan v0.8.0 genel grafik motoru ve v0.9.0 istatistik modülü korunur; **grafik betiği hiçbir p değeri veya post-hoc anlamlılık harfi üretmez**.
 
 ```bash
