@@ -1,5 +1,16 @@
 # Değişiklik günlüğü
 
+## 0.8.0 — 2026-11-08
+
+- Yayın kalitesinde betimsel grafikler için ortak Matplotlib stili ve beş grafik türü (`box_jitter`, `grouped_bar`, `line_plot`, `correlation_heatmap`, `multi_panel`) eklendi.
+- CSV/XLSX okuma, sayısal/kategorik sütun denetimi, eksik değer politikası, deney birimi ID denetimi ve sayısal doz sıralaması eklendi.
+- 200–600 DPI PNG ve vektörel PDF/SVG, kaynak dosya SHA-256 özeti ve makine okunabilir `plot_metadata.json` ile yeniden üretilebilir çıktı desteği eklendi.
+- Korelasyon haritalarında çift bazında n, undefined korelasyon için NA ve eksik veriye ilişkin açıklama eklendi; grafikler istatistiksel anlamlılık iddiasında bulunmaz.
+- Sınırlamalar, dergi öncesi kalite kontrolü, kullanma örnekleri ve sentetik örnek dosyası belgelendi.
+- Beş grafik türü, çıktı dosyaları, CSV/XLSX, istatistiksel belirsizlik uyarıları ve hatalı veri durumları için sentetik GitHub Actions regresyon testleri eklendi.
+- Önceki Türkçe yazım, etik, DOI ve tek faktörlü çıkarımsal istatistik modülleri korundu.
+
+
 ## 0.7.1 — 2026-11-07
 
 - Codex incelemesindeki Levene tanısının NaN üretmesi durumunda raporun durması düzeltildi; tanı değeri `null` ve gerekçeli uyarı olarak kaydediliyor, geçerli analiz çıktıları korunuyor.

@@ -26,3 +26,5 @@ jobs:
         run: python3 scripts/check_style_audit.py
       - name: Check statistical workflow with synthetic data
         run: python3 scripts/check_statistical_analysis.py
+      - name: Check all five publication charts with synthetic data
+        run: python3 scripts/check_publication_figures.py
