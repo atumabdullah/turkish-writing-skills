@@ -31,6 +31,8 @@ def validate() -> None:
         ROOT / "scripts" / "check_doi_verifier.py",
         ROOT / "scripts" / "check_style_audit.py",
         ROOT / "scripts" / "check_statistical_analysis.py",
+        ROOT / "scripts" / "check_publication_figures.py",
+        ROOT / "examples" / "figures-demo.csv",
         ROOT / "tests" / "doi-fixtures.json",
         SKILL_MD,
         SKILL_DIR / "agents" / "openai.yaml",
@@ -46,6 +48,9 @@ def validate() -> None:
         SKILL_DIR / "scripts" / "audit_turkish.py",
         SKILL_DIR / "references" / "style-audit.md",
         SKILL_DIR / "references" / "statistics-and-figures.md",
+        SKILL_DIR / "references" / "publication-figures.md",
+        SKILL_DIR / "scripts" / "plot_scientific.py",
+        SKILL_DIR / "scripts" / "figure_style.py",
         SKILL_DIR / "scripts" / "analyze_and_plot.py",
         SKILL_DIR / "requirements-statistics.txt",
     ]

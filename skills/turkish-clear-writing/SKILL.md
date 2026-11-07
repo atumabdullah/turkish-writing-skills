@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "0.7.1"
+  version: "0.8.0"
 ---
 
 # Türkçe Açık Yazım
@@ -44,6 +44,12 @@ Metnin profilini (akademik, kurumsal, teknik veya genel) belirle. Alıntı, yön
 Akademik çalışma, tez, makale veya araştırma raporunda istatistiksel karşılaştırma, yeni şekil ya da sonuçların yeniden hesaplanması **gerekiyorsa** önce [references/statistics-and-figures.md](references/statistics-and-figures.md) dosyasını oku. Hangi deney biriminin bağımsız olduğunu, faktörleri, örneklem yapısını, eksik verileri, hipotezleri ve hedef dergi kuralını değerlendir. Yalnızca doğru veri ve uygun çalışma deseni varsa analiz/şekli **gerçekten üret**; çalıştırılabilir ortamda tek faktörlü bağımsız gruplar için isteğe bağlı `scripts/analyze_and_plot.py` aracını kullanabilirsin. Veri veya uygun tasarım bilgisi yoksa test sonucu, p değeri, anlamlılık harfi ya da grafik uydurma.
 
 Sıradan bir metin düzenlemesinde analiz veya çizim yapma. `audit` modunda mevcut metne müdahale etmeden istatistik/şekil tutarsızlıklarını işaretle. Faktöriyel, bloklu, iç içe, tekrarlı ölçümlü, eşleştirilmiş veya zaman serisi desenlerinde bu tek faktörlü betiği kullanma; gerçek desene uygun model belirle. Raporlanan grafikler için veriye uygun grafik türünü seç, gerekirse yüksek çözünürlüklü PNG ve vektör PDF/SVG olarak çıktı ver. Analiz kararlarını, kullanılan betiği, veri birimini ve belirsizlikleri açıkla.
+
+## Yayın kalitesinde betimsel grafik üretimi (v0.8.0)
+
+Ham CSV/XLSX verileri üzerinden grafik isteniyorsa önce [references/publication-figures.md](references/publication-figures.md) dosyasını oku; gerçek ölçüm birimini, grup/faktörleri, eksik verileri, grafik amacını ve hedef derginin şekil kurallarını kontrol et. Kullanıcıdan gelen somut veriler ve çalıştırılabilir Python ortamı varsa `scripts/plot_scientific.py` aracını kullan: `box_jitter`, `grouped_bar`, `line_plot`, `correlation_heatmap`, `multi_panel`. Yalnızca gereken şekilleri oluştur; sıradan `rewrite` veya `audit` isteklerinde kendiliğinden çizim yapma. Araç PNG (varsayılan 300 DPI), vektörel PDF/SVG ve doğrulama metadatası üretebilir. Araç mevcut değilse çizimi gerçekten üretmiş gibi sunma.
+
+Bu şekiller **yalnızca betimseldir**: grafikten otomatik p değeri, post-hoc harfi, nedensellik veya güven aralığı türetme. Gruplu çubuklarda SD/SEM açıklamasını koru; ısı haritasında çiftler bazındaki `n` farklarını bildir. Aynı deney biriminden gelen tekrarlı ölçümler veya alt örnekler varsa bağımsız tekerrür gibi yorumlama. Analiz gerekiyorsa `references/statistics-and-figures.md` içindeki desen eşleme ve analiz kararlarına geri dön. Grafiklerin gerçekten üretildiğini, dosya çıktısını ve birim/eksen doğruluğunu kontrol et.
 
 ## Türkçeye özgü kararlar
 

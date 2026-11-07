@@ -76,6 +76,25 @@ python3 skills/turkish-clear-writing/scripts/analyze_and_plot.py deney.csv --gro
 
 Tekrarlı ölçümler, alt örnekler ve deney birimi bağımsızlığı için [istatistik ve şekil kılavuzunu](skills/turkish-clear-writing/references/statistics-and-figures.md) okuyun. Betik, tasarım doğrulamasının yerini almaz.
 
+### Bilimsel grafik motoru (v0.8.0)
+
+- Beş çalıştırılabilir betimsel grafik türü: `box_jitter` (kutu + ham noktalar), `grouped_bar` (iki faktörlü grup ortalamaları), `line_plot` (sayısal doz/zaman çizgileri), `correlation_heatmap` (Pearson/Spearman), `multi_panel` (2–4 bağımsız panel).
+- CSV ve XLSX verilerini okur. Seçilen sütunların veri türlerini ve eksik ölçümleri kontrol eder; isteğe bağlı `--unit` ile tekrar eden deney birimi ID'lerini yakalar.
+- 300 DPI PNG, vektörel PDF/SVG ve grup/örneklem bilgilerini, korelasyon katsayılarını, çift bazında n değerlerini ve veri dosyası özetini saklayan `plot_metadata.json` üretir.
+- Matplotlib ve renk körlüğünü dikkate alan ortak stil, sayısal doz sıralaması, doğru eksen/etiket, hata çubuğu türü ve kaynak doğrulaması içerir.
+- **Henüz çıkarımsal test, otomatik anlamlılık harfi veya karma model üretmez**; istatistik modülüyle karıştırılmaz. Şablonlar özgündür; Figures for Papers kodu kopyalanmamıştır.
+
+Kurulum ve beş örnek komut için [bilimsel grafik kullanım kılavuzuna](skills/turkish-clear-writing/references/publication-figures.md) bakın. Kısa örnek:
+
+```bash
+python3 -m pip install -r skills/turkish-clear-writing/requirements-statistics.txt
+python3 skills/turkish-clear-writing/scripts/plot_scientific.py deneme.xlsx \
+  --kind box_jitter --group uygulama --y bitki_boyu_cm \
+  --unit saksi_id --output figurler/bitki_boyu
+```
+
+Sentetik örnek veriler `examples/figures-demo.csv` içindedir; gerçek araştırma sonuçları değildir.
+
 ### Test ve doğrulama
 
 - Sayı, atıf ve etik tanımlayıcı koruması için otomatik örnek testleri içerir.
@@ -131,7 +150,9 @@ skills/turkish-clear-writing/
 ├── scripts/
 │   ├── audit_turkish.py
 │   ├── verify_dois.py
-│   └── analyze_and_plot.py
+│   ├── analyze_and_plot.py
+│   ├── plot_scientific.py
+│   └── figure_style.py
 ├── requirements-statistics.txt
 └── references/
     ├── style-audit.md
@@ -140,6 +161,7 @@ skills/turkish-clear-writing/
     ├── evaluation.md
     ├── examples.md
     ├── statistics-and-figures.md
+    ├── publication-figures.md
     ├── academic-article-workflow.md
     ├── research-ethics-and-reporting.md
     ├── tdk-writing-and-punctuation.md
@@ -149,6 +171,7 @@ scripts/check_behavioral_outputs.py
 scripts/check_doi_verifier.py
 scripts/check_style_audit.py
 scripts/check_statistical_analysis.py
+scripts/check_publication_figures.py
 scripts/validate_package.py
 tests/cases.json
 tests/behavioral-cases.json
@@ -167,6 +190,7 @@ python3 scripts/check_behavioral_outputs.py
 python3 scripts/check_doi_verifier.py
 python3 scripts/check_style_audit.py
 python3 scripts/check_statistical_analysis.py
+python3 scripts/check_publication_figures.py
 python3 scripts/validate_package.py
 ```
 
