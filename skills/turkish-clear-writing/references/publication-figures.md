@@ -16,7 +16,7 @@ Her komutta `--output` ile **ayrı bir çıktı klasörü** belirleyin. Çıktı
 
 ## Veri hazırlığı
 
-- CSV veya XLSX/XLSM dosyası; ilk satır sütun adları, sonraki satırlar gözlemler.
+- CSV veya XLSX/XLSM dosyası; ilk satır sütun adları, sonraki satırlar gözlemler. **Aynı veya boş sütun başlıkları**, pandas yeniden adlandırmadan önce özgün CSV/Excel başlık satırında kontrol edilerek reddedilir.
 - Bir sütundaki gerçek birim ve ölçek değişmemeli. Tekrarlı ölçüm veya alt örnekler aynı birimmiş gibi birleştirilmemeli.
 - `--unit saksi_id` kullanılırsa deney birimi ID'leri eksiksiz ve tekil olmalıdır; aynı ID birden fazla satırdaysa betik analizi reddeder. Bunun olmadığı veri otomatik bağımsız kabul edilmez; araştırmacı deseni ayrıca doğrular.
 - Sayısal değişkenler gerçek sayılar olmalıdır. Türkçe Excel'den aktarımda ondalık ayırıcıları kontrol edin. Eksik değerler box/bar/line/multi-panel için hata verir; korelasyon ısı haritasında **yalnızca eksik çiftler dışlanır**, ikili örneklem sayıları rapora yazılır.
