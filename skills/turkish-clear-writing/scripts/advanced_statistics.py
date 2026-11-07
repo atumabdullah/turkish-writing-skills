@@ -20,6 +20,8 @@ import json
 import math
 import warnings
 from itertools import combinations
+
+from patsy import build_design_matrices, dmatrix
 from pathlib import Path
 
 import numpy as np
@@ -236,6 +238,7 @@ def factorial(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> li
     report["model"] = {
         "method": "two-factor between-unit ANOVA", "anova_type": "III",
         "contrasts": "sum-to-zero", "factors": [args.factor_a, args.factor_b],
+        "response_column": args.value,
         "r_squared": finite(fitted.rsquared), "effects": effects, "cells": cells
     }
     return effects
@@ -419,15 +422,88 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
                      "ci95_upper": finite(conf.loc[term].iloc[1])})
     if any(row["p"] is None for row in rows):
         raise ValueError("Undefined fixed-effect inference; inspect model identifiability")
+    # Store population-level fitted trajectories with uncertainty from the
+    # FIXED-EFFECT covariance matrix, not prediction intervals for individuals.
+    # Grid uses only measurement times actually observed in each group so the
+    # figure never silently extrapolates beyond group-specific study windows.
+    terms = list(fitted.fe_params.index)
+    fixed_cov = fitted.cov_params().loc[terms, terms].to_numpy(dtype=float)
+    if not np.isfinite(fixed_cov).all():
+        raise ValueError("Mixed-model fixed-effect covariance is not finite")
+    # statsmodels releases differ in whether fitted.model.data exposes
+    # design_info. Rebuild Patsy's design metadata from the entire ORIGINAL
+    # model frame so treatment levels and sum contrasts are never lost.
+    design_info = dmatrix(formula.split("~", 1)[1], model_frame,
+                          return_type="dataframe").design_info
+    if list(design_info.column_names) != terms:
+        raise ValueError("Mixed-model prediction design terms differ from fitted terms")
+    fixed_beta = fitted.fe_params.to_numpy(dtype=float)
+
+    def prediction_at(level, time_value: float) -> dict:
+        # Re-evaluate CI from covariance at EACH time, never interpolate
+        # confidence limits between sparse observed visits.
+        new_row = {"numeric_time": float(time_value)}
+        if args.group:
+            new_row["treatment"] = level
+        design_matrix = build_design_matrices(
+            [design_info], pd.DataFrame([new_row]), return_type="dataframe"
+        )[0]
+        vector = design_matrix.loc[:, terms].to_numpy(dtype=float)[0]
+        estimate = float(vector @ fixed_beta)
+        sampling_var = float(vector @ fixed_cov @ vector)
+        if sampling_var < -1e-9:
+            raise ValueError("Mixed-model fixed effect prediction variance is negative")
+        se = float(np.sqrt(max(0.0, sampling_var)))
+        halfwidth = float(stats.norm.ppf(.975)) * se
+        result = {
+            "group": str(level) if args.group else "All",
+            "time": float(time_value),
+            "fitted_mean": finite(estimate),
+            "fixed_effect_se": finite(se),
+            "ci95_lower": finite(estimate - halfwidth),
+            "ci95_upper": finite(estimate + halfwidth),
+        }
+        if any(result[key] is None for key in
+               ("fitted_mean", "fixed_effect_se", "ci95_lower", "ci95_upper")):
+            raise ValueError("Mixed-model prediction contains nonfinite values")
+        return result
+
+    grid_rows = []
+    curve_rows = []
+    group_levels = sorted(frame[args.group].unique()) if args.group else [None]
+    for level in group_levels:
+        selection = frame.loc[frame[args.group] == level] if args.group else frame
+        observed_times = sorted(selection[args.time].unique().tolist())
+        for time in observed_times:
+            estimate = prediction_at(level, time)
+            data_at_time = selection.loc[selection[args.time] == time]
+            estimate["n_units_at_time"] = int(data_at_time[args.unit].nunique())
+            estimate["observed_mean"] = finite(data_at_time[args.value].mean())
+            if estimate["observed_mean"] is None:
+                raise ValueError("Observed group-time mean is nonfinite")
+            grid_rows.append(estimate)
+        if len(observed_times) >= 2:
+            # Evaluate actual model covariance at all 101 points within
+            # each group's observed time domain. No extrapolation.
+            for time in np.linspace(observed_times[0], observed_times[-1], 101):
+                curve_rows.append(prediction_at(level, float(time)))
+        else:
+            curve_rows.append(prediction_at(level, observed_times[0]))
+    add_warning(report, "Model prediction bands show uncertainty in population-level fixed effects, not variability of individual outcomes")
     add_warning(report, "Random-intercept model assumes independent subjects, conditional normality and no additional serial correlation")
     add_warning(report, "Time is modelled as a linear numeric effect; no random slope, blocking or post-hoc comparisons")
     report["model"] = {"method": "linear mixed-effects model", "estimation": "ML",
                        "random_effects": "unit random intercept", "converged": True,
                        "units": int(frame[args.unit].nunique()), "observations": len(frame),
                        "time_column": args.time, "group_column": args.group,
+                       "response_column": args.value,
                        "time_by_group_interaction": bool(args.interaction),
                        "subject_intercept_variance": variance,
-                       "residual_variance": residual_var, "fixed_effects": rows}
+                       "residual_variance": residual_var, "fixed_effects": rows,
+                       "prediction_basis": "population fixed effects; normal approximation 95% CI",
+                       "prediction_grid": grid_rows,
+                       "prediction_curve": curve_rows,
+                       "prediction_curve_points_per_group": 101}
     report["diagnostics"] = {"unit_observations_min": int(per_unit.min()),
                               "unit_observations_max": int(per_unit.max())}
     return rows

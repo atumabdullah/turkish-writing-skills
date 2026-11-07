@@ -127,6 +127,10 @@ def test() -> None:
         assert mixed["model"]["time_by_group_interaction"] is True
         assert mixed["model"]["subject_intercept_variance"] >= 0
         assert len(mixed["model"]["fixed_effects"]) == 4
+        assert len(mixed["model"]["prediction_grid"]) == 10
+        assert len(mixed["model"]["prediction_curve"]) == 202
+        assert all(p["ci95_lower"] <= p["fitted_mean"] <= p["ci95_upper"]
+                   for p in mixed["model"]["prediction_curve"])
 
         # Codex P2: user column names C and Q must not shadow Patsy helpers.
         collision_factor = factor.rename(columns={"source": "C", "biomass": "Q"})

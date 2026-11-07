@@ -87,3 +87,7 @@ python3 scripts/check_advanced_statistics.py
 ```
 
 Yalnızca **sentetik** veri ile dört modelin sonuçları, eksik hücre, tekrar eden birim, yetersiz örneklem, kollinearite, birim-zaman tekrarı, grup değişimi, duplicate dosya başlığı ve tanımsız korelasyon durumları doğrulanır.
+
+## Model sonuçlarıyla etkileşim grafiği (v0.9.1)
+
+Faktöriyel ve karma model sonuçlarından grafik gerekiyorsa [interaction-figures.md](interaction-figures.md) dosyasını kullan. `model.response_column` kayıtlıdır; karma modelde `model.prediction_grid` içinde her gözlenmiş grup-zaman noktası için kestirim, asimptotik %95 CI, gözlenen ortalama ve birim sayısı; `model.prediction_curve` içinde ise gruba özgü gözlenmiş zaman aralığında 101 noktada ayrıca hesaplanmış sabit etki güven bantları bulunur. Bunlar bireysel tahmin aralığı değildir. Grafik modülü ayrı bir çıkarımsal model yeniden çalıştırmaz ve yalnızca veri özeti ve hücreler eşleşirse çizim yapar.
