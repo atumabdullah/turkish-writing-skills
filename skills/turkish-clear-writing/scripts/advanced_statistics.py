@@ -20,6 +20,8 @@ import json
 import math
 import warnings
 from itertools import combinations
+
+from patsy import build_design_matrices
 from pathlib import Path
 
 import numpy as np
@@ -236,6 +238,7 @@ def factorial(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> li
     report["model"] = {
         "method": "two-factor between-unit ANOVA", "anova_type": "III",
         "contrasts": "sum-to-zero", "factors": [args.factor_a, args.factor_b],
+        "response_column": args.value,
         "r_squared": finite(fitted.rsquared), "effects": effects, "cells": cells
     }
     return effects
@@ -419,15 +422,61 @@ def mixed(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> list[d
                      "ci95_upper": finite(conf.loc[term].iloc[1])})
     if any(row["p"] is None for row in rows):
         raise ValueError("Undefined fixed-effect inference; inspect model identifiability")
+    # Store population-level fitted trajectories with uncertainty from the
+    # FIXED-EFFECT covariance matrix, not prediction intervals for individuals.
+    # Grid uses only measurement times actually observed in each group so the
+    # figure never silently extrapolates beyond group-specific study windows.
+    terms = list(fitted.fe_params.index)
+    fixed_cov = fitted.cov_params().loc[terms, terms].to_numpy(dtype=float)
+    if not np.isfinite(fixed_cov).all():
+        raise ValueError("Mixed-model fixed-effect covariance is not finite")
+    grid_rows = []
+    group_levels = sorted(frame[args.group].unique()) if args.group else [None]
+    for level in group_levels:
+        selection = frame.loc[frame[args.group] == level] if args.group else frame
+        for time in sorted(selection[args.time].unique().tolist()):
+            new_row = {"numeric_time": float(time)}
+            if args.group:
+                new_row["treatment"] = level
+            design_matrix = build_design_matrices(
+                [fitted.model.data.design_info], pd.DataFrame([new_row]),
+                return_type="dataframe"
+            )[0]
+            vector = design_matrix.loc[:, terms].to_numpy(dtype=float)[0]
+            estimate = float(vector @ fitted.fe_params.to_numpy(dtype=float))
+            sampling_var = float(vector @ fixed_cov @ vector)
+            if sampling_var < -1e-9:
+                raise ValueError("Mixed-model fixed effect prediction variance is negative")
+            se = float(np.sqrt(max(0.0, sampling_var)))
+            interval_halfwidth = float(stats.norm.ppf(.975)) * se
+            data_at_time = selection.loc[selection[args.time] == time]
+            row = {
+                "group": str(level) if args.group else "All",
+                "time": float(time),
+                "n_units_at_time": int(data_at_time[args.unit].nunique()),
+                "observed_mean": finite(data_at_time[args.value].mean()),
+                "fitted_mean": finite(estimate),
+                "fixed_effect_se": finite(se),
+                "ci95_lower": finite(estimate - interval_halfwidth),
+                "ci95_upper": finite(estimate + interval_halfwidth),
+            }
+            if any(row[k] is None for k in
+                   ("observed_mean", "fitted_mean", "fixed_effect_se", "ci95_lower", "ci95_upper")):
+                raise ValueError("Mixed-model prediction contains nonfinite values")
+            grid_rows.append(row)
+    add_warning(report, "Model prediction bands show uncertainty in population-level fixed effects, not variability of individual outcomes")
     add_warning(report, "Random-intercept model assumes independent subjects, conditional normality and no additional serial correlation")
     add_warning(report, "Time is modelled as a linear numeric effect; no random slope, blocking or post-hoc comparisons")
     report["model"] = {"method": "linear mixed-effects model", "estimation": "ML",
                        "random_effects": "unit random intercept", "converged": True,
                        "units": int(frame[args.unit].nunique()), "observations": len(frame),
                        "time_column": args.time, "group_column": args.group,
+                       "response_column": args.value,
                        "time_by_group_interaction": bool(args.interaction),
                        "subject_intercept_variance": variance,
-                       "residual_variance": residual_var, "fixed_effects": rows}
+                       "residual_variance": residual_var, "fixed_effects": rows,
+                       "prediction_basis": "population fixed effects; normal approximation 95% CI",
+                       "prediction_grid": grid_rows}
     report["diagnostics"] = {"unit_observations_min": int(per_unit.min()),
                               "unit_observations_max": int(per_unit.max())}
     return rows
