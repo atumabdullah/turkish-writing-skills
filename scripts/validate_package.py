@@ -30,6 +30,7 @@ def validate() -> None:
         ROOT / "scripts" / "check_behavioral_outputs.py",
         ROOT / "scripts" / "check_doi_verifier.py",
         ROOT / "scripts" / "check_style_audit.py",
+        ROOT / "scripts" / "check_statistical_analysis.py",
         ROOT / "tests" / "doi-fixtures.json",
         SKILL_MD,
         SKILL_DIR / "agents" / "openai.yaml",
@@ -44,6 +45,9 @@ def validate() -> None:
         SKILL_DIR / "scripts" / "verify_dois.py",
         SKILL_DIR / "scripts" / "audit_turkish.py",
         SKILL_DIR / "references" / "style-audit.md",
+        SKILL_DIR / "references" / "statistics-and-figures.md",
+        SKILL_DIR / "scripts" / "analyze_and_plot.py",
+        SKILL_DIR / "requirements-statistics.txt",
     ]
     missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]
     if missing:
