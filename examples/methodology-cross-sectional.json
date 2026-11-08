@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "study": {
+    "design": "observational_cross_sectional",
+    "research_question": "Uyku süresi ve algılanan stres puanı arasında ilişki var mı?",
+    "causal_claim": false
+  },
+  "sampling": {
+    "unit_of_analysis": "participant_id",
+    "unit_of_observation": "participant_id",
+    "independent_units": 60,
+    "repeated_measurements": false,
+    "clustered": false,
+    "factors": []
+  },
+  "procedures": {
+    "randomization": "not_applicable",
+    "control_group": "not_applicable",
+    "blinding": "not_applicable"
+  },
+  "measurements": {
+    "primary_outcome": "stress_score",
+    "unit": "ölçek puanı (0–40)",
+    "method": "Geçerli ve güvenilir bir Türkçe ölçek ile tek seferlik öz-bildirim.",
+    "validated_instrument": "yes",
+    "timepoints": [
+      "baseline"
+    ]
+  },
+  "analysis": {
+    "methods": [
+      "correlation",
+      "regression"
+    ],
+    "missing_data_plan": "Eksik değerlerin dağılımı raporlanır; gerekçeli tam-vaka/duyarlılık yaklaşımı uygulanır.",
+    "confounder_plan": "Yaş ve cinsiyet gibi önceden tanımlanmış etmenler değerlendirilir.",
+    "multiple_comparisons": "Aynı hipotez ailesi için Holm."
+  },
+  "ethics": {
+    "human_participants": true,
+    "animal_research": false,
+    "approval": "yes",
+    "consent": "yes"
+  },
+  "reporting": {
+    "guideline": "STROBE",
+    "funding_statement": "yes",
+    "conflicts_statement": "yes",
+    "data_sharing_statement": "yes"
+  }
+}
