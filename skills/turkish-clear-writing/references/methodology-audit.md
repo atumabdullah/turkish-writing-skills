@@ -56,7 +56,7 @@ sampling.factors listesinde her faktörün name alanı ve sıfır veya en az iki
 
 **Gözlemsel araştırma:** nedensellik dili, karıştırıcılar, eksik veri, etik/onam ve raporlama.
 
-**Analiz ve grafik uyumu:** isteğe bağlı v0.9.x results.json ile protokolün model türü, yanıt/faktör ve deney birimi kontrol edilir. v0.9.1 interaction_metadata.json bağlanırsa grafikteki ham veri SHA-256, analiz birimi ve model türü de karşılaştırılır. Kontrol, gerçek veriyi bağımsız olarak doğrulamaz.
+**Analiz ve grafik uyumu:** isteğe bağlı v0.9.x results.json ile protokolün model türü, yanıt/faktör ve deney birimi kontrol edilir. v0.9.1 interaction_metadata.json bağlanırsa grafikteki ham veri SHA-256, analiz birimi ve model türü de karşılaştırılır. Grafiğin results_json_sha256 alanı bağlı analiz dosyasının **tam SHA-256** özetiyle, response_column alanı ise modelin yanıt sütunuyla ayrıca eşleştirilir. Böylece aynı ham veri üzerinde kurulmuş farklı modellerin grafikleri sessizce karıştırılamaz. Kontrol, gerçek veriyi bağımsız olarak doğrulamaz.
 
 **Etik ve şeffaflık:** insan/hayvan araştırmalarında kurul onayı, geçerli muafiyet ve onam belgeleri uzman tarafından değerlendirilmelidir. Yalnız rapor alanının boşluğu üzerinden usulsüzlük iddia edilmez.
 

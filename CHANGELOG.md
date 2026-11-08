@@ -7,6 +7,7 @@
 - v0.9.x analiz raporuyla yöntem, faktörler ve deney birimi; v0.9.1 grafik metadatasıyla kaynak veri SHA-256 ve model–grafik uygunluğu karşılaştırılır.
 - JSON protokol şablonu, sentetik tarımsal faktöriyel ve gözlemsel çalışma örnekleri, methodology_report.json / methodology_report.md çıktıları ve kullanım kılavuzu eklendi.
 - check_methodology_audit.py regresyon testleri; ciddi çelişki, eksik bilgi, etik kayıt uyarısı, geçersiz JSON ve yanlış veri/analiz/grafik birim eşleşmelerini kapsar.
+- Codex P1 test çağrısı düzeltilerek --fail-on-high çıkış kodu doğru alt işlemden doğrulanıyor. Codex P2 model karışması, grafiğin results_json_sha256 değerini analiz raporunun tam dosya SHA-256 değeriyle ve yanıt sütunuyla karşılaştırarak önlendi; ek regresyon testleri eklendi.
 - Tüm mevcut Türkçe yazım, DOI, tek faktörlü analiz, gelişmiş istatistik ve bilimsel grafik özellikleri korunur.
 
 
