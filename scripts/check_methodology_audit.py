@@ -182,6 +182,46 @@ def check() -> None:
                    "timepoints")
         bad_schema("bad_design", lambda d: d["study"].update(design="not_a_design"), "study.design")
 
+        # Codex P2: linking an ordinary regression/correlation remains risky
+        # even if another dependence-aware method is also listed in the plan.
+        for method in ("regression", "correlation"):
+            for dependency in ("clustered", "repeated_measurements"):
+                dependent = copy.deepcopy(cross)
+                dependent["sampling"][dependency] = True
+                if dependency == "repeated_measurements":
+                    dependent["measurements"]["timepoints"] = [0, 1]
+                    dependent["analysis"]["methods"] = [method, "mixed_model"]
+                else:
+                    dependent["analysis"]["methods"] = [method, "cluster_robust_regression"]
+                dependent_path = root / ("dependent_" + method + "_" + dependency + ".json")
+                dump(dependent_path, dependent)
+                attached = {
+                    "analysis": method, "experimental_unit": "participant_id",
+                    "input_sha256": "a" * 64, "model": {"method": method}
+                }
+                attached_path = root / ("attached_" + method + ".json")
+                dump(attached_path, attached)
+                audit_out = root / ("dependent_audit_" + method + "_" + dependency)
+                check_result = execute(dependent_path, audit_out,
+                                       "--analysis-results", str(attached_path))
+                assert check_result.returncode == 0, check_result.stderr
+                findings = ids(result(audit_out))
+                assert {"M086", ("M022" if dependency == "clustered" else "M023")} <= findings, findings
+
+        # A fully independent study remains compatible with linked correlation.
+        independent_protocol = root / "independent_observation.json"
+        dump(independent_protocol, cross)
+        independent_report = root / "linked_correlation.json"
+        dump(independent_report, {
+            "analysis": "correlation", "experimental_unit": "participant_id",
+            "input_sha256": "b" * 64, "model": {"method": "pearson correlation"}
+        })
+        independent_out = root / "independent_observation_out"
+        check_result = execute(independent_protocol, independent_out,
+                               "--analysis-results", str(independent_report))
+        assert check_result.returncode == 0, check_result.stderr
+        assert "M086" not in ids(result(independent_out))
+
         # The linked reports are fixtures modeled on v0.9.1 metadata; no model
         # is refitted by the methodology checker.
         actual = {

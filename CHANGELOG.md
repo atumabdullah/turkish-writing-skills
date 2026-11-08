@@ -9,6 +9,7 @@
 - check_methodology_audit.py regresyon testleri; ciddi çelişki, eksik bilgi, etik kayıt uyarısı, geçersiz JSON ve yanlış veri/analiz/grafik birim eşleşmelerini kapsar.
 - Codex P1 test çağrısı düzeltilerek --fail-on-high çıkış kodu doğru alt işlemden doğrulanıyor. Codex P2 model karışması, grafiğin results_json_sha256 değerini analiz raporunun tam dosya SHA-256 değeriyle ve yanıt sütunuyla karşılaştırarak önlendi; ek regresyon testleri eklendi.
 - Codex ikinci P2 incelemesi: kümeli/tekrarlı verilerde bağımsız birimli HC3 regresyon ve korelasyon da istatistik–desen uyumsuzluğu kurallarına dahil edildi; insan/hayvan araştırmasının kapsamlarından yalnız biri bilinmiyorsa belge açığı raporlanıyor.
+- Son Codex P2 düzeltmesi: Protokolde küme duyarlı modelin de listelenmesi sıradan regresyon/korelasyon analizini otomatik aklamaz; bağlı sonuç raporunda bağımsız-birim yöntemi clustered/repeated yapıdan bağımsız kontrol eden M086 ve karma yöntem regresyon testleri eklendi.
 - Tüm mevcut Türkçe yazım, DOI, tek faktörlü analiz, gelişmiş istatistik ve bilimsel grafik özellikleri korunur.
 
 
