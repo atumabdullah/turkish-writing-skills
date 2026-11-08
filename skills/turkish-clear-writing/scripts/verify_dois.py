@@ -23,7 +23,7 @@ from xml.sax.saxutils import escape
 import zipfile
 
 
-VERSION = "0.5.0"
+VERSION = "1.0.1"
 DOI_PATTERN = re.compile(r"10\.\d{4,9}/[-._;()/:A-Z0-9]+", re.IGNORECASE)
 YEAR_PATTERN = re.compile(r"(?<!\d)(?:19|20)\d{2}(?!\d)")
 SUPPORTED_TEXT = {".txt", ".md", ".bib", ".ris", ".json", ".csv", ".tsv"}
@@ -216,6 +216,41 @@ def crossref_message(doi: str, mailto: str = "") -> dict:
     return payload["message"]
 
 
+def datacite_message(doi: str) -> dict:
+    """Retrieve DataCite JSON API metadata as a minimal Crossref-style shape.
+
+    DataCite's API is an independent alternate *registry lookup*, not a way
+    to bypass an application's URL-approval or sandbox restrictions.
+    """
+    url = f"https://api.datacite.org/dois/{quote(doi, safe='')}"
+    headers = {"User-Agent": f"TurkishWritingSkills/{VERSION} DOI verifier",
+               "Accept": "application/vnd.api+json"}
+    status, _url, payload = fetch_json(url, headers)
+    attrs = payload.get("data", {}).get("attributes") if isinstance(payload, dict) else None
+    if status != 200 or not isinstance(attrs, dict):
+        raise ValueError("DataCite beklenen metadata biçimini döndürmedi.")
+    actual = normalize_doi(str(attrs.get("doi", "")))
+    if actual != normalize_doi(doi):
+        raise ValueError("DataCite DOI alanı talep edilen DOI ile uyuşmuyor.")
+    titles = [row.get("title", "") for row in attrs.get("titles", []) if isinstance(row, dict)]
+    authors = []
+    for author in attrs.get("creators", []) or []:
+        if not isinstance(author, dict):
+            continue
+        given = author.get("givenName", "")
+        family = author.get("familyName", "")
+        if not given and not family:
+            family = author.get("name", "")
+        authors.append({"given": str(given), "family": str(family)})
+    year = attrs.get("publicationYear")
+    return {
+        "DOI": actual, "title": titles, "author": authors,
+        "published": {"date-parts": [[year]]} if isinstance(year, int) else {},
+        "publisher": attrs.get("publisher", ""),
+        "type": (attrs.get("types") or {}).get("resourceTypeGeneral", ""),
+    }
+
+
 def resolve_doi(doi: str) -> tuple[int, str]:
     headers = {
         "Accept": "application/vnd.citationstyles.csl+json, application/json;q=0.9, text/html;q=0.5",
@@ -294,109 +329,190 @@ def match_value(source: str, registry: str, kind: str) -> str:
 
 def verify_record(record: ReferenceRecord, mailto: str = "", fixture: dict | None = None) -> dict:
     result = asdict(record)
-    result.update(
-        {
-            "resolver_status": "",
-            "resolver_url": "",
-            "registry_title": "",
-            "registry_authors": "",
-            "registry_year": "",
-            "publisher": "",
-            "type": "",
-            "title_match": "KARSILASTIRILAMADI",
-            "author_match": "KARSILASTIRILAMADI",
-            "year_match": "KARSILASTIRILAMADI",
-            "update_notice": "",
-            "overall_status": "",
-            "note": "",
-        }
-    )
+    result.update({
+        "resolver_status": "", "resolver_url": "", "registry_source": "",
+        "registry_title": "", "registry_authors": "", "registry_year": "",
+        "publisher": "", "type": "",
+        "title_match": "KARSILASTIRILAMADI",
+        "author_match": "KARSILASTIRILAMADI",
+        "year_match": "KARSILASTIRILAMADI",
+        "update_notice": "", "access_issues": "",
+        "overall_status": "", "note": "",
+    })
+    item = fixture.get("records", {}).get(record.doi) if fixture is not None else None
+    if fixture is not None and item is None:
+        result["overall_status"] = "KONTROL_EDILEMEDI"
+        result["note"] = "Bu DOI için test kaydı yok; kayıt yokluğundan geçersizlik çıkarılamaz."
+        return result
+
+    issues = []
+    resolved = False
+    resolver_missing = False
+
+    def issue(where: str, detail: str) -> None:
+        issues.append(f"{where}: {detail}")
+        result["access_issues"] = "; ".join(issues)
+
+    def http_error(code: int, url: str) -> HTTPError:
+        return HTTPError(url, code, "fixture HTTP error", {}, None)
+
+    # Resolver failure must NEVER prevent an independent registry lookup.
     try:
         if fixture is None:
             status, final_url = resolve_doi(record.doi)
         else:
-            item = fixture.get("records", {}).get(record.doi)
-            if not item:
-                raise HTTPError(record.doi, 404, "fixture not found", {}, None)
-            if item.get("network_error"):
-                raise URLError(item["network_error"])
+            if item.get("network_error") or item.get("resolver_network_error"):
+                raise URLError(item.get("network_error") or item["resolver_network_error"])
+            if item.get("resolver_http_error"):
+                raise http_error(int(item["resolver_http_error"]), record.doi)
             status = int(item.get("resolver_status", 200))
             final_url = item.get("resolver_url", f"https://doi.org/{record.doi}")
+        if not 200 <= status < 400:
+            raise http_error(status, record.doi)
+        resolved = True
         result["resolver_status"] = f"HTTP {status}"
         result["resolver_url"] = final_url
     except HTTPError as error:
         result["resolver_status"] = f"HTTP {error.code}"
-        result["overall_status"] = "COZUMLENEMEDI"
-        result["note"] = "DOI çözümleyici kaydı bulamadı. Yazım hatasını ve kaynağın asıl sayfasını elle inceleyin."
-        return result
-    except (URLError, TimeoutError, OSError) as error:
-        result["overall_status"] = "KONTROL_EDILEMEDI"
-        result["note"] = f"Ağ/servis hatası: {error}. Bu sonuç DOI'nin geçersiz olduğunu göstermez."
-        return result
-    except (ValueError, json.JSONDecodeError) as error:
-        result["overall_status"] = "KONTROL_EDILEMEDI"
-        result["note"] = f"Metadata yanıtı işlenemedi: {error}"
-        return result
+        resolver_missing = error.code == 404
+        issue("DOI resolver", f"HTTP {error.code}")
+    except (URLError, TimeoutError, OSError, ValueError) as error:
+        result["resolver_status"] = "ERISIM_HATASI"
+        issue("DOI resolver", f"erişim/yanıt hatası: {error}")
 
+    # Prefer Crossref, but a 404 there only means NOT REGISTERED AT CROSSREF.
+    message = None
+    crossref_missing = False
     try:
-        message = crossref_message(record.doi, mailto) if fixture is None else item.get("message", {})
+        if fixture is None:
+            message = crossref_message(record.doi, mailto)
+        else:
+            if item.get("crossref_network_error"):
+                raise URLError(item["crossref_network_error"])
+            if item.get("crossref_http_error"):
+                raise http_error(int(item["crossref_http_error"]), record.doi)
+            if "message" not in item:
+                raise http_error(404, record.doi)
+            message = item["message"]
+        if not isinstance(message, dict):
+            raise ValueError("Crossref metadata nesnesi bekleniyordu")
+        recorded = normalize_doi(str(message.get("DOI", "")))
+        if recorded != record.doi:
+            raise ValueError("Crossref yanıtı istenen DOI ile uyuşmuyor")
+        result["registry_source"] = "Crossref"
     except HTTPError as error:
-        if error.code == 404:
+        crossref_missing = error.code == 404
+        issue("Crossref", f"HTTP {error.code}")
+    except (URLError, TimeoutError, OSError, ValueError) as error:
+        issue("Crossref", f"erişim/metadata hatası: {error}")
+
+    # DataCite is a second registry, not an alternative claim of Crossref
+    # retraction coverage. No inference of invalidity from inaccessible APIs.
+    datacite_missing = False
+    if message is None:
+        try:
+            if fixture is None:
+                message = datacite_message(record.doi)
+            else:
+                if item.get("datacite_network_error"):
+                    raise URLError(item["datacite_network_error"])
+                if item.get("datacite_http_error"):
+                    raise http_error(int(item["datacite_http_error"]), record.doi)
+                if "datacite_attributes" not in item:
+                    raise http_error(404, record.doi)
+                attrs = item["datacite_attributes"]
+                if normalize_doi(str(attrs.get("doi", ""))) != record.doi:
+                    raise ValueError("DataCite DOI alanı istenen DOI ile uyuşmuyor")
+                message = {
+                    "DOI": record.doi,
+                    "title": [x.get("title", "") for x in attrs.get("titles", [])],
+                    "author": [{"given": x.get("givenName", ""),
+                                "family": x.get("familyName", x.get("name", ""))}
+                               for x in attrs.get("creators", [])],
+                    "published": {"date-parts": [[attrs["publicationYear"]]]}
+                                 if isinstance(attrs.get("publicationYear"), int) else {},
+                    "publisher": attrs.get("publisher", ""),
+                    "type": (attrs.get("types") or {}).get("resourceTypeGeneral", ""),
+                }
+            result["registry_source"] = "DataCite"
+        except HTTPError as error:
+            datacite_missing = error.code == 404
+            issue("DataCite", f"HTTP {error.code}")
+        except (URLError, TimeoutError, OSError, ValueError) as error:
+            issue("DataCite", f"erişim/metadata hatası: {error}")
+
+    if message is None:
+        if resolved and crossref_missing and datacite_missing:
             result["overall_status"] = "GECERLI_DOI_CROSSREF_DISI_INCELENMELI"
             result["note"] = (
-                "DOI çözümlendi ancak Crossref kaydı bulunamadı. DOI başka bir kayıt ajansına ait olabilir; "
-                "metadata ve yayın sonrası güncellemeleri asıl kayıt/yayıncı sayfasından doğrulayın."
+                "DOI yönlendiricisi çalıştı ancak iki kayıt servisinde metadata bulunmadı. "
+                "Diğer kayıt ajansını/yayıncıyı elle inceleyin."
             )
-            return result
-        result["overall_status"] = "KONTROL_EDILEMEDI"
-        result["note"] = f"Crossref HTTP hatası: {error.code}. Bu sonuç DOI'nin geçersiz olduğunu göstermez."
-        return result
-    except (URLError, TimeoutError, OSError) as error:
-        result["overall_status"] = "KONTROL_EDILEMEDI"
-        result["note"] = f"Crossref ağ/servis hatası: {error}. Bu sonuç DOI'nin geçersiz olduğunu göstermez."
-        return result
-    except (ValueError, json.JSONDecodeError) as error:
-        result["overall_status"] = "KONTROL_EDILEMEDI"
-        result["note"] = f"Crossref metadata yanıtı işlenemedi: {error}"
+        elif resolver_missing and crossref_missing and datacite_missing:
+            result["overall_status"] = "COZUMLENEMEDI"
+            result["note"] = (
+                "DOI yönlendiricisi ve iki kayıt servisi 404 döndürdü; olası yazım "
+                "hatasını ve asıl kaynağı kontrol edin. Bu, kesin geçersizlik hükmü değildir."
+            )
+        else:
+            result["overall_status"] = "KONTROL_EDILEMEDI"
+            result["note"] = (
+                "Erişim, bağlantı izni veya servis yanıtı nedeniyle bibliyografik doğrulama "
+                "tamamlanamadı. Bu sonuç DOI'nin geçersiz olduğunu göstermez."
+            )
         return result
 
-    title = " ".join(message.get("title", [])[:1]) if isinstance(message.get("title"), list) else str(message.get("title", ""))
+    title = (" ".join(message.get("title", [])[:1])
+             if isinstance(message.get("title"), list)
+             else str(message.get("title", "")))
     authors = metadata_authors(message)
     year = metadata_year(message)
-    result.update(
-        {
-            "registry_title": title,
-            "registry_authors": authors,
-            "registry_year": year,
-            "publisher": str(message.get("publisher", "")),
-            "type": str(message.get("type", "")),
-            "title_match": match_value(record.source_title, title, "title"),
-            "author_match": match_value(record.source_authors, authors, "author"),
-            "year_match": match_value(record.source_year, year, "year"),
-        }
-    )
-    notices = update_notices(message)
+    result.update({
+        "registry_title": title, "registry_authors": authors,
+        "registry_year": year, "publisher": str(message.get("publisher", "")),
+        "type": str(message.get("type", "")),
+        "title_match": match_value(record.source_title, title, "title"),
+        "author_match": match_value(record.source_authors, authors, "author"),
+        "year_match": match_value(record.source_year, year, "year"),
+    })
+    notices = update_notices(message) if result["registry_source"] == "Crossref" else []
     result["update_notice"] = "; ".join(
         f"{notice['type'] or notice['label']} ({notice['source'] or 'kaynak belirtilmemiş'}; {notice['doi'] or 'DOI yok'})"
         for notice in notices
     )
     notice_text = normalize_text(result["update_notice"])
     comparisons = [result[key] for key in ("title_match", "author_match", "year_match")]
+    source = result["registry_source"]
     if any(word in notice_text for word in ("retraction", "withdrawal", "geri cek")):
         result["overall_status"] = "GERI_CEKME_UYARISI"
-        result["note"] = "Crossref/Retraction Watch metadata kaydında geri çekme veya yayından kaldırma bildirimi bulundu; asıl bildirimi kontrol edin."
+        result["note"] = "Crossref metadata kaydında geri çekme bildirimi bulundu; asıl bildirimi kontrol edin."
     elif result["update_notice"]:
         result["overall_status"] = "GUNCELLEME_UYARISI"
-        result["note"] = "Düzeltme, endişe ifadesi veya başka bir güncelleme kaydı bulundu; bildirimi kontrol edin."
+        result["note"] = "Güncelleme bildirimi bulundu; yayının asıl kaydını inceleyin."
     elif "UYUSMUYOR" in comparisons:
         result["overall_status"] = "UYUSMAZLIK"
-        result["note"] = "Kaynakçadaki bibliyografik bilgi Crossref metadata kaydıyla uyuşmuyor. Otomatik değişiklik yapmadan asıl kaynağı inceleyin."
+        result["note"] = (
+            f"Kaynakçadaki bibliyografik bilgi {source} metadata kaydıyla uyuşmuyor; "
+            "asıl kaynağa bakmadan düzeltmeyin."
+        )
     elif any(value == "ESLESIYOR" for value in comparisons):
         result["overall_status"] = "DOGRULANDI"
-        result["note"] = "DOI çözümlendi ve sağlanan bibliyografik alanlar Crossref kaydıyla eşleşti."
+        result["note"] = (
+            f"Sağlanan bibliyografik alanlar {source} kayıt bilgileriyle eşleşti. "
+            + ("DOI yönlendirmesi de çalıştı." if resolved else
+               "DOI yönlendiricisi bağımsız doğrulanamadı.")
+        )
     else:
         result["overall_status"] = "GECERLI_DOI_METADATA_INCELENMELI"
-        result["note"] = "DOI çözümlendi; karşılaştırılacak yeterli başlık/yazar/yıl bilgisi bulunmadı."
+        result["note"] = (
+            f"{source} metadata kaydı bulundu; ancak karşılaştırılabilir yeterli "
+            "kaynakça bilgisi yok."
+        )
+    if source == "DataCite":
+        result["note"] += (
+            " DataCite kaydı Crossref geri çekme/düzeltme taramasının yerini almaz; "
+            "yayıncı ve güncel bildirimler ayrıca kontrol edilmelidir."
+        )
     return result
 
 
@@ -404,6 +520,8 @@ REPORT_FIELDS = [
     ("DOI", "doi"),
     ("Genel_Durum", "overall_status"),
     ("Cozumleme", "resolver_status"),
+    ("Kayit_Ajansi", "registry_source"),
+    ("Erisim_Sorunlari", "access_issues"),
     ("Kaynak_Baslik", "source_title"),
     ("Kayit_Baslik", "registry_title"),
     ("Baslik_Eslesmesi", "title_match"),
