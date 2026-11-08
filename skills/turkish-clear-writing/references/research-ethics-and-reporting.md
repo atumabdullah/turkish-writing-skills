@@ -96,3 +96,8 @@ Kılavuzu yazım sonunda biçimsel kutucuk işaretlemek için bekletme; taslak i
 ## Korunacak tanımlayıcılar
 
 Kurul/kurum adı, karar veya protokol numarası, tarih, kayıt numarası, ORCID, fon numarası, DOI, veri deposu bağlantısı, lisans ve katkı rolleri düzenleme sırasında değişmez değerlerdir. Kaynak belge olmadan bunları normalleştirme, çevirmeye çalışma veya tamamlamaya kalkma.
+
+
+## Yapılandırılmış bilimsel yöntem denetimi (v1.0.0)
+
+İçerik denetimi gerekiyorsa [methodology-audit.md](methodology-audit.md) içindeki örnek şablonu ve belgelenen kuralları kullan. Eksik etik onay numarası, **onayın hiç alınmadığı** sonucuna tek başına gerekçe olamaz. Yetkili kurul kararı, gerekli muafiyet ve onam ancak özgün belgeden doğrulanabilir. Raporlama kılavuzu uyumu, çalışmanın yöntemsel geçerliği veya etik uygunluğu anlamına gelmez.

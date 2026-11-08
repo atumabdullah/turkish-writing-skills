@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "study": {
+    "design": "factorial_experiment",
+    "research_question": "Çinko kaynağı ve dozunun fasulye kuru ağırlığı üzerindeki ana ve etkileşim etkileri nelerdir?",
+    "causal_claim": false
+  },
+  "sampling": {
+    "unit_of_randomization": "pot_id",
+    "unit_of_analysis": "pot_id",
+    "unit_of_observation": "plant",
+    "independent_units": 36,
+    "replicates_per_cell": 4,
+    "technical_subsamples_per_unit": 2,
+    "subsample_handling": "Aynı saksıdaki iki teknik ölçümün saksı ortalaması analiz edilir.",
+    "repeated_measurements": false,
+    "clustered": false,
+    "factors": [
+      {
+        "name": "source",
+        "levels": [
+          "Green ZnO",
+          "Chemical ZnO",
+          "ZnSO4"
+        ]
+      },
+      {
+        "name": "dose",
+        "levels": [
+          "10",
+          "50",
+          "100"
+        ]
+      }
+    ]
+  },
+  "procedures": {
+    "randomization": "yes",
+    "randomization_method": "Saksılar rastgele sayı üreteciyle uygulama gruplarına atandı.",
+    "control_group": "yes",
+    "blinding": "no",
+    "sample_size_justification": "Bu değer yalnızca sentetik örnek veriye aittir; gerçek araştırmada gerekçe ayrıca belgelenmelidir."
+  },
+  "measurements": {
+    "primary_outcome": "dry_mass_g",
+    "unit": "g/pot",
+    "method": "Her saksıdaki örnekler sabit ağırlığa kadar kurutuldu ve saksı ortalaması kaydedildi.",
+    "calibration": "yes",
+    "timepoints": [
+      "harvest"
+    ]
+  },
+  "analysis": {
+    "methods": [
+      "factorial_anova"
+    ],
+    "missing_data_plan": "Eksik saksılar ve nedenleri grup bazında raporlanır; dışlama önceden tanımlanır.",
+    "assumption_checks": "Artık normalliği, bağımsızlık, hücre varyansları ve model uyumu incelenir.",
+    "multiple_comparisons": "Önceden belirlenmiş karşılaştırmalarda gerektiğinde çoklu test düzeltmesi."
+  },
+  "ethics": {
+    "human_participants": false,
+    "animal_research": false,
+    "approval": "not_applicable",
+    "consent": "not_applicable"
+  },
+  "reporting": {
+    "guideline": "Derginin tarımsal deney raporlama koşulları",
+    "funding_statement": "yes",
+    "conflicts_statement": "yes",
+    "data_sharing_statement": "yes"
+  }
+}

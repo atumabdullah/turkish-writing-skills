@@ -86,6 +86,7 @@ def test() -> None:
                                  "--unit", "sample_id", "--value", "response",
                                  "--predictors", "x_one,x_two")
         assert fitted["model"]["covariance"] == "HC3"
+        assert fitted["model"]["response_column"] == "response"
         assert fitted["model"]["r_squared"] > 0.65
         coefficients = fitted["model"]["coefficients"]
         assert len(coefficients) == 3

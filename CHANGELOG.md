@@ -1,5 +1,19 @@
 # Değişiklik günlüğü
 
+## 1.0.0 — 2026-11-08
+
+- Yapılandırılmış ve bağımlılıksız scientific methodology audit için audit_methodology.py eklendi: araştırma deseni, bağımsız deney birimi, teknik alt örnek/pseudoreplication, randomizasyon, örneklem, faktöriyel ve tekrarlı ölçüm uygunluğu, cihaz/ölçüm, etik ve şeffaflık alanları.
+- Eksik dokümantasyon, doğrulanabilir beyan tutarsızlığı ve uzman incelemesi gerektiren durumlar ayrı bulgu sınıfları ve kanıt alanlarıyla raporlanır; otomatik bilimsel kalite puanı/onay üretilmez.
+- v0.9.x analiz raporuyla yöntem, faktörler ve deney birimi; v0.9.1 grafik metadatasıyla kaynak veri SHA-256 ve model–grafik uygunluğu karşılaştırılır.
+- JSON protokol şablonu, sentetik tarımsal faktöriyel ve gözlemsel çalışma örnekleri, methodology_report.json / methodology_report.md çıktıları ve kullanım kılavuzu eklendi.
+- check_methodology_audit.py regresyon testleri; ciddi çelişki, eksik bilgi, etik kayıt uyarısı, geçersiz JSON ve yanlış veri/analiz/grafik birim eşleşmelerini kapsar.
+- Codex P1 test çağrısı düzeltilerek --fail-on-high çıkış kodu doğru alt işlemden doğrulanıyor. Codex P2 model karışması, grafiğin results_json_sha256 değerini analiz raporunun tam dosya SHA-256 değeriyle ve yanıt sütunuyla karşılaştırarak önlendi; ek regresyon testleri eklendi.
+- Codex ikinci P2 incelemesi: kümeli/tekrarlı verilerde bağımsız birimli HC3 regresyon ve korelasyon da istatistik–desen uyumsuzluğu kurallarına dahil edildi; insan/hayvan araştırmasının kapsamlarından yalnız biri bilinmiyorsa belge açığı raporlanıyor.
+- Son Codex P2 düzeltmesi: Protokolde küme duyarlı modelin de listelenmesi sıradan regresyon/korelasyon analizini otomatik aklamaz; bağlı sonuç raporunda bağımsız-birim yöntemi clustered/repeated yapıdan bağımsız kontrol eden M086 ve karma yöntem regresyon testleri eklendi.
+- Codex üçüncü P2 düzeltmesi: korelasyon değişkenleri arasında beyan edilen birincil sonuç bulunmuyorsa M087 uyarısı, regresyonda farklı veya eksik birincil yanıt için M083/M088 uyarısı eklendi; ileri OLS sonuç JSON'u artık response_column içeriyor.
+- Tüm mevcut Türkçe yazım, DOI, tek faktörlü analiz, gelişmiş istatistik ve bilimsel grafik özellikleri korunur.
+
+
 ## 0.9.1 — 2026-11-08
 
 - Özgün `plot_interactions.py` eklendi: faktöriyel `factorial_interaction` ve karma model `mixed_interaction` görselleştirmeleri, bilimsel şekil stili ve ham noktalar.
