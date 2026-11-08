@@ -157,6 +157,21 @@ def audit(protocol: dict, filename: str, fingerprint: str, linked: dict | None =
         section(protocol, name) for name in
         ("study", "sampling", "procedures", "measurements", "analysis", "ethics", "reporting")
     ]
+    # Validate all declared status/boolean fields irrespective of whether
+    # they apply to the selected study design; no invalid values may hide in
+    # an unused branch of the scientific checks.
+    for values, keys in (
+        (procedures, ("randomization", "control_group", "blinding",
+                      "allocation_concealment")),
+        (measurement, ("calibration", "validated_instrument")),
+        (ethics, ("approval", "consent")),
+        (reporting, ("funding_statement", "conflicts_statement",
+                     "data_sharing_statement", "protocol_registration")),
+    ):
+        for key in keys:
+            yesno(values, key)
+    boolean(study, "causal_claim")
+
     design = string(study, "design")
     if design and design not in DESIGNS:
         raise ValueError("study.design is not a recognized design enum")
