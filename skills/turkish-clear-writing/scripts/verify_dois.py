@@ -624,12 +624,13 @@ def write_reports(results: list[dict], output_dir: Path) -> None:
     markdown = ["# DOI doğrulama raporu", "", f"Toplam DOI: {len(results)}", ""]
     for status, count in sorted(counts.items()):
         markdown.append(f"- `{status}`: {count}")
-    markdown.extend(["", "| DOI | Durum | Başlık | Yıl | Güncelleme |", "|---|---|---|---|---|"])
+    markdown.extend(["", "| DOI | Durum | Kayıt ajansı | Başlık | Yıl | Erişim / izin sorunu | Güncelleme |", "|---|---|---|---|---|---|---|"])
     for result in results:
         safe = lambda value: str(value or "").replace("|", "\\|").replace("\n", " ")
         markdown.append(
-            f"| {safe(result['doi'])} | {safe(result['overall_status'])} | {safe(result['registry_title'])} | "
-            f"{safe(result['registry_year'])} | {safe(result['update_notice'])} |"
+            f"| {safe(result['doi'])} | {safe(result['overall_status'])} | {safe(result.get('registry_source'))} | "
+            f"{safe(result['registry_title'])} | {safe(result['registry_year'])} | "
+            f"{safe(result.get('access_issues'))} | {safe(result['update_notice'])} |"
         )
     markdown.extend(
         [
@@ -686,12 +687,17 @@ def main() -> int:
     print(f"Rapor: {args.output.resolve()}")
     critical = {
         "COZUMLENEMEDI",
-        "GECERLI_DOI_CROSSREF_DISI_INCELENMELI",
         "UYUSMAZLIK",
         "GUNCELLEME_UYARISI",
         "GERI_CEKME_UYARISI",
-        "KONTROL_EDILEMEDI",
     }
+    unresolved = [entry for entry in results if entry["overall_status"] == "KONTROL_EDILEMEDI"]
+    if unresolved:
+        print(
+            f"UYARI: {len(unresolved)} DOI erişim nedeniyle doğrulanamadı; geçersiz sayılmadı. "
+            "Raporu ve son kontrol listesini inceleyin.",
+            file=sys.stderr,
+        )
     return 1 if any(result["overall_status"] in critical for result in results) else 0
 
 
