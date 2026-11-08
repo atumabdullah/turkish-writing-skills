@@ -401,9 +401,11 @@ def verify_record(record: ReferenceRecord, mailto: str = "", fixture: dict | Non
             raise ValueError("Crossref yanıtı istenen DOI ile uyuşmuyor")
         result["registry_source"] = "Crossref"
     except HTTPError as error:
+        message = None
         crossref_missing = error.code == 404
         issue("Crossref", f"HTTP {error.code}")
     except (URLError, TimeoutError, OSError, ValueError) as error:
+        message = None
         issue("Crossref", f"erişim/metadata hatası: {error}")
 
     # DataCite is a second registry, not an alternative claim of Crossref
