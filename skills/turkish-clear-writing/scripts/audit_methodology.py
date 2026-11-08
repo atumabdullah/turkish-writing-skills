@@ -507,6 +507,29 @@ def audit(protocol: dict, filename: str, fingerprint: str, linked: dict | None =
     if figure is not None:
         if linked is None:
             raise ValueError("--figure-metadata requires --analysis-results")
+        # Linking by raw-data hash alone is not enough: two different models
+        # can fit the same file and experimental unit. The plotting module
+        # records the exact source results.json hash, which must also match.
+        plotted_results_hash = figure.get("results_json_sha256")
+        if not plotted_results_hash:
+            add("M094", "medium", "documentation_gap", "integration",
+                "Şekil hangi istatistik raporuna dayandığını belgelemiyor.",
+                ["figure_metadata.results_json_sha256"],
+                "Source data identity alone cannot link a figure to exact model results.",
+                "Şekli güncel model raporuna bağlayıp yeniden oluşturun.")
+        elif plotted_results_hash != linked_sha:
+            add("M094", "high", "confirmed_inconsistency", "integration",
+                "Şekil farklı bir istatistik raporundan oluşturulmuş.",
+                ["figure_metadata.results_json_sha256", "linked_results.sha256"],
+                "Two models on identical raw data can produce different predictions.",
+                "Doğru sonuç JSON dosyasıyla grafiği yeniden üretin.")
+        actual_outcome = linked.get("model", {}).get("response_column")
+        if figure.get("response_column") and actual_outcome and figure["response_column"] != actual_outcome:
+            add("M095", "high", "confirmed_inconsistency", "integration",
+                "Grafiğin yanıt değişkeni bağlı analiz raporundan farklı.",
+                ["figure_metadata.response_column", "linked_results.model.response_column"],
+                "A wrong response label can misrepresent the reported effect.",
+                "Birincil/ikincil yanıtı kontrol edip doğru modeli kullanın.")
         actual_hash = linked.get("input_sha256")
         if not isinstance(actual_hash, str) or len(actual_hash) != 64:
             raise ValueError("Linked results need a valid input_sha256")

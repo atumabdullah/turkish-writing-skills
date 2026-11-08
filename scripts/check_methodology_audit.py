@@ -93,7 +93,7 @@ def check() -> None:
         report, _ = modified("uneven",
                              lambda d: d["sampling"].update(independent_units=32))
         assert "M029" in ids(report)
-        report, _ = modified("randomized_without_random",
+        report, run = modified("randomized_without_random",
                              lambda d: (
                                  d["study"].update(design="randomized_trial"),
                                  d["procedures"].update(randomization="no")
@@ -161,6 +161,8 @@ def check() -> None:
         }
         linked_path, figure_path = root / "results.json", root / "interaction_metadata.json"
         dump(linked_path, actual)
+        graph["results_json_sha256"] = hashlib.sha256(linked_path.read_bytes()).hexdigest()
+        graph["response_column"] = "dry_mass_g"
         dump(figure_path, graph)
         linked_out = root / "linked_ok"
         run = execute(EXAMPLE, linked_out, "--analysis-results", str(linked_path),
@@ -170,11 +172,30 @@ def check() -> None:
         assert not linked_result["findings"]
         assert linked_result["scope"]["linked_interaction_figure"]
 
+        # Exact model report hash, not just source data SHA, is required.
+        stale = copy.deepcopy(graph)
+        stale["results_json_sha256"] = "c" * 64
+        dump(figure_path, stale)
+        run = execute(EXAMPLE, root / "stale_report", "--analysis-results", str(linked_path),
+                      "--figure-metadata", str(figure_path))
+        assert run.returncode == 0, run.stderr
+        assert "M094" in ids(result(root / "stale_report"))
+
+        # The plotted response must also match the audited model.
+        wrong_response = copy.deepcopy(graph)
+        wrong_response["response_column"] = "spad"
+        dump(figure_path, wrong_response)
+        run = execute(EXAMPLE, root / "bad_response", "--analysis-results", str(linked_path),
+                      "--figure-metadata", str(figure_path))
+        assert run.returncode == 0, run.stderr
+        assert "M095" in ids(result(root / "bad_response"))
+
         actual["analysis"] = "mixed"
         actual["experimental_unit"] = "plant_id"
         graph["kind"] = "factorial_interaction"
         graph["data_sha256"] = "b" * 64
         dump(linked_path, actual)
+        graph["results_json_sha256"] = hashlib.sha256(linked_path.read_bytes()).hexdigest()
         dump(figure_path, graph)
         run = execute(EXAMPLE, root / "linked_bad", "--analysis-results", str(linked_path),
                       "--figure-metadata", str(figure_path))
