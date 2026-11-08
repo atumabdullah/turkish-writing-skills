@@ -143,6 +143,10 @@ def check() -> None:
         bad_schema("bad_integer", lambda d: d["sampling"].update(independent_units=True),
                    "independent_units")
         bad_schema("bad_consent", lambda d: d["ethics"].update(consent="maybe"), "consent")
+        bad_schema("bad_calibration", lambda d: d["measurements"].update(calibration="unclear"),
+                   "calibration")
+        bad_schema("bad_causal_claim", lambda d: d["study"].update(causal_claim="maybe"),
+                   "causal_claim")
         bad_schema("bad_time", lambda d: d["measurements"].update(timepoints=[1, 1]),
                    "timepoints")
         bad_schema("bad_design", lambda d: d["study"].update(design="not_a_design"), "study.design")

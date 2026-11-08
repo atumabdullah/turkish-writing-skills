@@ -16,6 +16,8 @@ jobs:
         run: python3 -m pip install -r skills/turkish-clear-writing/requirements-statistics.txt
       - name: Validate package
         run: python3 scripts/validate_package.py
+      - name: Check scientific methodology audit with synthetic protocols
+        run: python3 scripts/check_methodology_audit.py
       - name: Check preservation examples
         run: python3 scripts/check_examples.py
       - name: Check behavioral smoke-test outputs
@@ -32,5 +34,3 @@ jobs:
         run: python3 scripts/check_advanced_statistics.py
       - name: Verify model-linked factorial and mixed interaction figures
         run: python3 scripts/check_interaction_graphs.py
-      - name: Check scientific methodology audit with synthetic protocols
-        run: python3 scripts/check_methodology_audit.py
