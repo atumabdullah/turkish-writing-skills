@@ -34,7 +34,8 @@
     ],
     "missing_data_plan": "Eksik değerlerin dağılımı raporlanır; gerekçeli tam-vaka/duyarlılık yaklaşımı uygulanır.",
     "confounder_plan": "Yaş ve cinsiyet gibi önceden tanımlanmış etmenler değerlendirilir.",
-    "multiple_comparisons": "Aynı hipotez ailesi için Holm."
+    "multiple_comparisons": "Aynı hipotez ailesi için Holm.",
+    "assumption_checks": "Regresyon için artık yapısı, doğrusallık, heteroskedastisite, aykırı değerler ve çoklu doğrusal bağlantı kontrol edilir."
   },
   "ethics": {
     "human_participants": true,
