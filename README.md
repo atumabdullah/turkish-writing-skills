@@ -131,6 +131,21 @@ python3 skills/turkish-clear-writing/scripts/plot_interactions.py deneme.xlsx \
 
 Karma model için örnekler ve belirsizlik türlerinin açıklaması [etkileşim grafikleri kılavuzunda](skills/turkish-clear-writing/references/interaction-figures.md).
 
+### Bilimsel yöntem denetimi (v1.0.0)
+
+- **Yapılandırılmış protokol denetimi:** araştırma sorusu, deney birimi, uygulama ve doz faktörleri, randomizasyon, kontrol, ölçüm tekniği, tekrarlı ölçüm, eksik veri ve yöntem raporunu sistematik inceler.
+- **Üç farklı bulgu tipi:** beyanlar arasında kesin tutarsızlık, belgede eksik bilgi ve uzman değerlendirmesi gereken durumları ayrı sınıflandırır. Kanıt yolu, öncelik ve önerilen düzeltmeyi raporlar.
+- **İstatistik ve grafik bütünlüğü:** isteğe bağlı v0.9.x results.json ve v0.9.1 interaction_metadata.json raporlarını protokol ile karşılaştırır; analiz birimi, model yöntemi, faktör ve kaynak veri SHA-256 eşleşmelerini kontrol eder.
+- **Etik/raporlama farkındalığı:** insan veya hayvan çalışması kapsamı, etik kurul ve onam durumunun raporlanmasını, STROBE/CONSORT/PRISMA seçimini ve finansman/çıkar çatışması beyanlarını gözden geçirir.
+- **Ölçülü sonuçlar:** otomatik bilimsel kalite puanı, etik onayı, gerçek protokol doğrulaması veya p değeri üretmez. Eksik bilgi otomatik olarak yöntem hatası kabul edilmez.
+- **Çıktılar:** methodology_report.json ve methodology_report.md; JSON kaynak özeti ve ilgili model/şekil izleri.
+
+Üçüncü taraf bağımlılık gerektirmeyen örnek:
+
+    python3 skills/turkish-clear-writing/scripts/audit_methodology.py examples/methodology-factorial-pot.json --output denetim/sonuc
+
+Kendi protokolünü oluşturmak için skill içindeki assets/methodology-protocol-template.json dosyasını kullan. [Kapsam ve kullanım kılavuzu](skills/turkish-clear-writing/references/methodology-audit.md). Aracın kendisi PDF/DOCX okumaz; belgeyi inceleyip doğrulanabilen alanların JSON'a aktarılması gerekir.
+
 ### Test ve doğrulama
 
 - Sayı, atıf ve etik tanımlayıcı koruması için otomatik örnek testleri içerir.

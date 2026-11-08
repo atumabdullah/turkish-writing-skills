@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "0.9.1"
+  version: "1.0.0"
 ---
 
 # Türkçe Açık Yazım
@@ -69,6 +69,14 @@ Faktöriyel uygulama×doz veya karma model zaman×uygulama etkileşim grafiği g
 - `factorial` çizimi uygulama × doz hücre ortalamalarını, bağımsız ham noktaları ve varsayılan ayrı hücre **Student t %95 güven aralıklarını** gösterir. Bu aralıklar iki grubun farkına ilişkin CI değildir; etkileşim testi p değeri yalnızca ilişkili analiz raporundadır.
 - `mixed` çizimi, aynı raporda hesaplanmış **sabit etkilere dayalı popülasyon ortalaması tahminlerini** ve gözlenen grup zaman aralığında yoğun bir ızgarada kovaryanstan yeniden hesaplanan asimptotik %95 güven bantlarını gösterir. Bireysel tahmin aralığı değildir; noktalar gözlenen grup×zaman ortalamalarıdır.
 - Hiçbir çizim yeni çıkarımsal test, anlamlılık harfi, otomatik post-hoc karşılaştırma veya nedensellik kanıtı üretmez. Deney desenini doğrulama ve dergi biçim kontrolü sürer.
+
+## Bilimsel yöntem denetimi (v1.0.0)
+
+Kullanıcı araştırma protokolü, tez veya makale yönteminin bilimsel uygunluğunu değerlendirmek istediğinde [references/methodology-audit.md](references/methodology-audit.md) dosyasını oku. Önce yalnızca **belgeyle doğrulanabilen** çalışma deseni, gerçek deney birimi, faktörler, tekrarlar, randomizasyon, ölçüm ve istatistik yöntemlerini çıkar. Metinde bulunmayan değerleri tahmin etme; gerekiyorsa assets/methodology-protocol-template.json şablonunu unknown/null bırakarak doldur.
+
+Yapılandırılmış JSON hazırlandıysa scripts/audit_methodology.py betiğiyle kural temelli denetim yap: belgedeki açık çelişkileri, eksik bilgileri ve uzman gerekçesi isteyen durumları **ayrı sınıflandır**. PDF/DOCX'i betiğin doğrudan okuyabildiğini iddia etme. Desteklenen bağlantılı ileri analiz varsa --analysis-results, etkileşim grafiği varsa --figure-metadata ile gerçekten aynı çalışmanın verisi ve modeli olduğunu denetle.
+
+Pseudoreplication, teknik alt örnekler, randomizasyon birimi, tekrarlı ölçüm ve bağımsızlık, faktöriyel tasarım ile analiz eşleştirmesi, ölçüm/kalibrasyon, eksik veri, etik/onam ve raporlama beyanlarını değerlendir. **Etik onayın yokluğu ile onaya ilişkin bilgi eksikliğini karıştırma.** Raporlama kılavuzları yöntem kalitesi puanı değildir. Otomatik p değeri, veri, kalite sertifikası veya mevzuata uygunluk kararı üretme. Analizin uygunluğunu bütün kaynak ve birimlere bakmadan kesin olarak ilan etme.
 
 ## Türkçeye özgü kararlar
 
