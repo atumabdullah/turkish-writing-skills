@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "study": {
+    "design": null,
+    "research_question": "",
+    "causal_claim": null
+  },
+  "sampling": {
+    "unit_of_randomization": null,
+    "unit_of_analysis": null,
+    "unit_of_observation": null,
+    "independent_units": null,
+    "replicates_per_cell": null,
+    "technical_subsamples_per_unit": null,
+    "subsample_handling": null,
+    "repeated_measurements": null,
+    "clustered": null,
+    "factors": []
+  },
+  "procedures": {
+    "randomization": "unknown",
+    "randomization_method": null,
+    "control_group": "unknown",
+    "blinding": "unknown",
+    "sample_size_justification": null,
+    "allocation_concealment": "unknown"
+  },
+  "measurements": {
+    "primary_outcome": null,
+    "unit": null,
+    "method": null,
+    "calibration": "unknown",
+    "timepoints": []
+  },
+  "analysis": {
+    "methods": [],
+    "missing_data_plan": null,
+    "assumption_checks": null,
+    "multiple_comparisons": null,
+    "confounder_plan": null
+  },
+  "ethics": {
+    "human_participants": null,
+    "animal_research": null,
+    "approval": "unknown",
+    "consent": "unknown"
+  },
+  "reporting": {
+    "guideline": null,
+    "funding_statement": "unknown",
+    "conflicts_statement": "unknown",
+    "data_sharing_statement": "unknown"
+  }
+}
