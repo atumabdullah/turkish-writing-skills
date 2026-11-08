@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 from pathlib import Path
 import sys
 import tempfile
@@ -134,6 +135,18 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="doi-dogrulama-test-") as tmp:
         output = Path(tmp)
         module.write_reports(results, output)
+        # The published CLI should not signal a failed command solely
+        # because the remote DOI service is inaccessible.
+        command = subprocess.run(
+            [sys.executable, str(MODULE_PATH), "--doi", "10.1000/ornek.4",
+             "--fixture", str(FIXTURE_PATH), "--output", str(output / "blocked_cli")],
+            capture_output=True, text=True, timeout=30,
+        )
+        if command.returncode != 0 or "KONTROL_EDILEMEDI" not in command.stdout:
+            failures.append(f"unverified-only CLI should exit 0 with explicit status: {command.stderr}")
+        blocked_report = output / "blocked_cli" / "doi-dogrulama-raporu.md"
+        if not blocked_report.is_file() or "Erişim / izin sorunu" not in blocked_report.read_text(encoding="utf-8"):
+            failures.append("DOI Markdown report does not expose access/permission issues")
         required = {
             "doi-dogrulama-sonuclari.json",
             "doi-dogrulama-raporu.md",
