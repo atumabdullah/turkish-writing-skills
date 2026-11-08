@@ -4,7 +4,7 @@
 
 - Claude Crossref URL erişim engellerinin DOI geçersizliği olarak işaretlenmemesi için yönergeler güçlendirildi.
 - verify_dois.py, DOI yönlendiricisi başarısız olsa da Crossref ve gerekirse DataCite kayıt API'sini ayrı sorguluyor.
-- HTTP 403/429, ağ kesintisi ve kayıt 404 ayrıldı; üç uçtan açık 404 dışında çözümleme başarısızlığı kesin sayılmıyor.
+- HTTP 403/429, ağ kesintisi ve kayıt 404 ayrıldı; üç uçtan açık 404 dışında çözümleme başarısızlığı kesin sayılmıyor. Erişim engeli nedeniyle sonuç alınamazsa durum açıkça `KONTROL_EDILEMEDI` olarak raporlanıyor.
 - Yanıt DOI kimliği karşılaştırılıyor; registry_source ve access_issues metadata/erişim izleri JSON ve XLSX raporlarına eklendi.
 - DataCite doğrulaması Crossref geri çekme/düzeltme bildirimi doğrulamasıyla karıştırılmıyor.
 - Ağsız testlerde engellenmiş URL, metadata fallback, kaynak 404 ve yanlış DOI yanıtı senaryoları eklendi.

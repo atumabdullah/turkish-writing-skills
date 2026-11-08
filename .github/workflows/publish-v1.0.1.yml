@@ -69,7 +69,9 @@ jobs:
           header = f"## {version} "
           assert header in changelog, f"Missing {version} changelog section"
           section = changelog.split(header, 1)[1].split("\n## ", 1)[0].strip()
-          assert all(word in section for word in ("verify_dois.py", "DataCite", "KONTROL_EDILEMEDI"))
+          required_notes = ("verify_dois.py", "DataCite", "KONTROL_EDILEMEDI")
+          missing_notes = [word for word in required_notes if word not in section]
+          assert not missing_notes, f"Missing release notes details: {missing_notes}"
           Path("release-notes.md").write_text(section + "\n", encoding="utf-8")
           PY
       - name: Publish release and Claude-ready archive
