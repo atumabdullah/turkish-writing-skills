@@ -290,22 +290,25 @@ def audit(protocol: dict, filename: str, fingerprint: str, linked: dict | None =
                 ["sampling.technical_subsamples_per_unit", "sampling.subsample_handling"],
                 "Subsamples must not be counted as independent replicates.",
                 "Birim ortalaması veya uygun hiyerarşik modelin nasıl kullanıldığını gösterin.")
-    if clustered and any(m in INDEPENDENT_TESTS for m in methods) and not any(
-        m in DEPENDENCE_AWARE for m in methods
-    ):
-        add("M022", "high", "confirmed_inconsistency", "statistics",
-            "Kümelenmiş veri için bağımsız örneklem testi seçilmiş.",
+    if clustered and any(m in INDEPENDENT_TESTS for m in methods):
+        # A second cluster-aware method does not automatically make each
+        # independent-unit analysis valid. Keep the warning, but downgrade
+        # it to a review point when the plan explicitly includes both.
+        has_aware = any(m in DEPENDENCE_AWARE for m in methods)
+        add("M022", "medium" if has_aware else "high",
+            "review_point" if has_aware else "confirmed_inconsistency", "statistics",
+            "Kümelenmiş veride bağımsız birim varsayan yöntemler de listelenmiş.",
             ["sampling.clustered", "analysis.methods"],
-            "Within-cluster correlations can invalidate standard errors.",
-            "Uygun kümeli analiz veya küme düzeyinde özetleme kullanın.")
-    if repeated and any(m in INDEPENDENT_TESTS for m in methods) and not any(
-        m in DEPENDENCE_AWARE | {"repeated_measures_anova"} for m in methods
-    ):
-        add("M023", "high", "confirmed_inconsistency", "statistics",
-            "Tekrarlı ölçümlere bağımsız grup testi planlanmış.",
+            "Within-cluster correlations can invalidate ordinary standard errors, even with HC3.",
+            "Her yöntem için bağımsız birime indirgeme veya kümeli modelin gerçekten kullanıldığını doğrulayın.")
+    if repeated and any(m in INDEPENDENT_TESTS for m in methods):
+        has_aware = any(m in DEPENDENCE_AWARE | {"repeated_measures_anova"} for m in methods)
+        add("M023", "medium" if has_aware else "high",
+            "review_point" if has_aware else "confirmed_inconsistency", "statistics",
+            "Tekrarlı ölçümlerde bağımsız birim varsayan yöntemler de listelenmiş.",
             ["sampling.repeated_measurements", "analysis.methods"],
-            "Observations from the same unit are correlated.",
-            "Tekrarlı ölçümleri hesaba katan modeli kullanın.")
+            "Repeated observations are correlated even when other planned methods handle dependence.",
+            "Her bağımsız-birim analizinin uygun özet birim üzerinde çalıştırıldığını doğrulayın.")
     if design == "repeated_measures_experiment" and repeated is not True:
         add("M024", "high" if repeated is False else "medium",
             "confirmed_inconsistency" if repeated is False else "documentation_gap", "design",
@@ -519,6 +522,16 @@ def audit(protocol: dict, filename: str, fingerprint: str, linked: dict | None =
                 ["sampling.repeated_measurements", "linked_results.analysis"],
                 "Mixed-model grouping requires checking the actual data structure.",
                 "Birim, grup ve tekrar tanımını doğrulayın.")
+        # Unlike plans that list several methods, the linked report names
+        # exactly which implementation ran. v0.9.x ordinary OLS (HC3) and
+        # correlations assume independent analysis units.
+        if which in {"regression", "correlation"} and (clustered is True or repeated is True):
+            add("M086", "high", "review_point", "integration",
+                "Bağlı sıradan regresyon/korelasyon raporu tekrarlı veya kümeli tasarımla ayrıca doğrulanmalı.",
+                ["linked_results.analysis", "sampling.clustered",
+                 "sampling.repeated_measurements", "sampling.unit_of_analysis"],
+                "The supplied implementation assumes independent units; HC3 does not adjust for clustering.",
+                "Verinin bağımsız birim düzeyinde önceden özetlendiğini kanıtlayın veya uygun bağımlılık modelini yeniden çalıştırın.")
 
     if figure is not None:
         if linked is None:
