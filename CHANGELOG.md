@@ -8,6 +8,7 @@
 - JSON protokol şablonu, sentetik tarımsal faktöriyel ve gözlemsel çalışma örnekleri, methodology_report.json / methodology_report.md çıktıları ve kullanım kılavuzu eklendi.
 - check_methodology_audit.py regresyon testleri; ciddi çelişki, eksik bilgi, etik kayıt uyarısı, geçersiz JSON ve yanlış veri/analiz/grafik birim eşleşmelerini kapsar.
 - Codex P1 test çağrısı düzeltilerek --fail-on-high çıkış kodu doğru alt işlemden doğrulanıyor. Codex P2 model karışması, grafiğin results_json_sha256 değerini analiz raporunun tam dosya SHA-256 değeriyle ve yanıt sütunuyla karşılaştırarak önlendi; ek regresyon testleri eklendi.
+- Codex ikinci P2 incelemesi: kümeli/tekrarlı verilerde bağımsız birimli HC3 regresyon ve korelasyon da istatistik–desen uyumsuzluğu kurallarına dahil edildi; insan/hayvan araştırmasının kapsamlarından yalnız biri bilinmiyorsa belge açığı raporlanıyor.
 - Tüm mevcut Türkçe yazım, DOI, tek faktörlü analiz, gelişmiş istatistik ve bilimsel grafik özellikleri korunur.
 
 

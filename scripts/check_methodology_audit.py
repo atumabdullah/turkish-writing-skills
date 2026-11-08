@@ -90,6 +90,21 @@ def check() -> None:
                              lambda d: d["sampling"].update(
                                  clustered=True, unit_of_randomization="batch_id"))
         assert "M020" in ids(report)
+        # Ordinary HC3 regression/correlation do not correct cluster dependence.
+        for method in ("regression", "correlation"):
+            report, _ = modified("cluster_" + method,
+                                 lambda d, m=method: (
+                                     d["sampling"].update(clustered=True),
+                                     d["analysis"].update(methods=[m])
+                                 ))
+            assert "M022" in ids(report), (method, report["findings"])
+            report, _ = modified("repeated_" + method,
+                                 lambda d, m=method: (
+                                     d["sampling"].update(repeated_measurements=True),
+                                     d["analysis"].update(methods=[m]),
+                                     d["measurements"].update(timepoints=[0, 1, 2])
+                                 ))
+            assert "M023" in ids(report), (method, report["findings"])
         report, _ = modified("uneven",
                              lambda d: d["sampling"].update(independent_units=32))
         assert "M029" in ids(report)
@@ -122,6 +137,22 @@ def check() -> None:
                                                     approval="no", consent="unknown")
                              ))
         assert {"M060", "M061"} <= ids(report)
+        # Ethics applicability can be partially unknown, not only wholly unknown.
+        for missing_key, known_key in (
+            ("human_participants", "animal_research"),
+            ("animal_research", "human_participants"),
+        ):
+            def partial_ethics(d, unknown=missing_key, no=known_key):
+                d.clear()
+                d.update(copy.deepcopy(cross))
+                d["ethics"][unknown] = None
+                d["ethics"][no] = False
+                d["ethics"]["approval"] = "unknown"
+                d["ethics"]["consent"] = "unknown"
+            report, _ = modified("partial_ethics_" + missing_key, partial_ethics)
+            assert "M062" in ids(report), (missing_key, report["findings"])
+            assert next(x for x in report["findings"] if x["id"] == "M062")[
+                "classification"] == "documentation_gap"
         report, _ = modified("unknown",
                              lambda d: d["procedures"].update(randomization="unknown"))
         assert "M011" in ids(report)
