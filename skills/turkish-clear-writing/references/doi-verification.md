@@ -38,8 +38,8 @@ Betik kaynak dosyayı değiştirmez. Şu çıktıları üretir:
 - `UYUSMAZLIK`: Sağlanan alanlardan en az biri Crossref kaydıyla uyuşmadı. Asıl kaynağı incelemeden düzeltme yapma.
 - `GUNCELLEME_UYARISI`: Düzeltme, endişe ifadesi veya başka bir güncelleme kaydı bulundu.
 - `GERI_CEKME_UYARISI`: Geri çekme/yayından kaldırma bildirimi bulundu. Bildirimin kendisini ve yayıncı sayfasını incele.
-- `COZUMLENEMEDI`: DOI çözümleyici kaydı bulamadı. Yazım hatasını ve asıl kaynak sayfasını incele.
-- `KONTROL_EDILEMEDI`: Ağ/servis hatası ya da işlenemeyen yanıt. Bunu DOI geçersizliği gibi sunma.
+- `COZUMLENEMEDI`: DOI yönlendiricisi, Crossref ve DataCite üçü de açık HTTP 404 döndürdü. Bu kesin geçersizlik hükmü değildir; olası yazım hatasını ve asıl kaynağı incele.
+- `KONTROL_EDILEMEDI`: URL onay engeli, HTTP 403/429, ağ/servis hatası veya işlenemeyen yanıt. DOI'nin geçersizliğine kanıt değildir.
 
 ## Karar kuralları
 
@@ -51,6 +51,21 @@ Betik kaynak dosyayı değiştirmez. Şu çıktıları üretir:
 - Geri çekme/düzeltme uyarısı varsa kullanıcının metnini sessizce silme veya yeniden yazma; kayıt ve etkilenebilecek iddiayı görünür kıl.
 - “Uyarı bulunmadı” ifadesini “yayında sorun yoktur” biçiminde kesinleştirme. Crossref, yayıncı ve Retraction Watch kapsamı eksik olabilir.
 
+
+## Claude web erişim engeli ve DataCite alternatif sorgusu (v1.0.1)
+
+Claude'un Crossref API sayfasını açamaması (onaylanmamış URL, dış bağlantı kısıtı) HTTP 404 veya bibliyografik uyuşmazlık değildir. Adımlar:
+
+1. DOI'nin tam metniyle normal web araması yap; varsa güvenilir sonuç üzerinden DOI kayıt ajansı veya yayıncının asıl sayfasını incele.
+2. Yalnızca başlık/yıl/yazar metadatası gerçekten incelendiğinde eşleşme veya çelişki bildirilir. Arama sonucu başlığı tek başına kaynak doğrulaması sayılmaz.
+3. Yetkili internetli Python ortamında doğrulama betiğini çalıştır. Betik DOI yönlendiricisi başarısız olsa dahi Crossref API, sonra gerekirse DataCite API sorgusuna devam eder. Claude'un URL izin sistemini **bypass etmez**.
+4. Bağlantıların tamamı engellenirse KONTROL_EDILEMEDI belirt. Kaynağı, belge hazırlığını durdurmadan son kontrol listesinde tut; DOI veya kaynak bilgisi uydurma.
+5. JSON/XLSX raporundaki registry_source ve access_issues alanları hangi ajansın yanıt verdiğini ve erişim sınırlarını gösterir.
+
+API uç noktaları: https://doi.org/ , https://api.crossref.org/works/ , https://api.datacite.org/dois/ .
+
+Crossref 404 yalnız Crossref'te kayıt bulunamaması anlamına gelir; başka DOI ajansı ihtimalini dışlamaz. DataCite metadata eşleşmesi Crossref'in geri çekme/düzeltme bildirimi kapsamını sağlamaz; kritik kaydı yayıncıdan ayrıca doğrula.
+
 ## Kaynaklar ve kapsam
 
 - DOI Foundation, DOI Handbook: HTTPS çözümleme ve içerik uzlaşması. https://www.doi.org/doi-handbook/html/
@@ -58,3 +73,5 @@ Betik kaynak dosyayı değiştirmez. Şu çıktıları üretir:
 - Crossref Retraction Watch: geri çekmeler `update-to` alanında, kaynak `publisher` veya `retraction-watch` olarak görülebilir. https://www.crossref.org/documentation/retrieve-metadata/retraction-watch/
 
 Crossref, Retraction Watch geri çekmelerini üretim API'sine dâhil eder. Düzeltme ve endişe ifadesi kayıtları geri çekmeler kadar kapsamlı değildir. Son kaynak kontrol tarihi: 1 Kasım 2026.
+
+- DataCite REST API: https://support.datacite.org/docs/api
