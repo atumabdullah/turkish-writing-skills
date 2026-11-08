@@ -52,7 +52,7 @@ Türkçe akademik, kurumsal ve bilgilendirici metinleri daha doğal ve anlaşıl
 
 ### DOI doğrulama katmanı
 
-**v1.0.1:** Claude'da URL okuma izni engeli, HTTP 403/429 veya internet kesintisi geçersiz DOI sayılmaz. DOI çözümlenemese de Crossref, gerekirse DataCite metadata sorguları denenir. Erişilen güvenilir metadata bibliyografik alanlarla eşleşirse DOGRULANDI; çelişirse UYUSMAZLIK; erişilemiyorsa KONTROL_EDILEMEDI. Kaynak ajansı ve bağlantı hataları rapora eklenir. DataCite Crossref geri çekme taramasının yerini almaz; web izinleri atlatılmaz.
+**v1.0.1:** Claude'da URL okuma izni engeli, HTTP 403/429 veya internet kesintisi geçersiz DOI sayılmaz. DOI çözümlenemese de Crossref, gerekirse DataCite metadata sorguları denenir. Erişilen güvenilir metadata bibliyografik alanlarla eşleşirse DOGRULANDI; çelişirse UYUSMAZLIK; erişilemiyorsa KONTROL_EDILEMEDI. Kaynak ajansı ve bağlantı hataları rapora eklenir. Yalnızca erişim nedeniyle doğrulanamayan kayıtlar, konsol uyarısıyla raporlanır; komut gerçek kaynak hatası varmış gibi başarısız sayılmaz. DataCite Crossref geri çekme taramasının yerini almaz; web izinleri atlatılmaz.
 
 
 

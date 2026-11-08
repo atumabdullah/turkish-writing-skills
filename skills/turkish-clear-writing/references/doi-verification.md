@@ -32,8 +32,8 @@ Betik kaynak dosyayı değiştirmez. Şu çıktıları üretir:
 
 ## Durumların anlamı
 
-- `DOGRULANDI`: DOI çözümlendi ve girdide bulunan başlık/yazar/yıl alanları Crossref kaydıyla eşleşti.
-- `GECERLI_DOI_METADATA_INCELENMELI`: DOI çözümlendi ancak karşılaştırma için yeterli yerel bibliyografik alan yoktu.
+- `DOGRULANDI`: Crossref veya DataCite'da talep edilen DOI ile eşleşen metadata bulundu ve mevcut kaynakça alanlarıyla karşılaştırma eşleşti. DOI yönlendiricisi ayrı bir adım olarak engellenmiş olabilir; rapor bu ayrımı gösterir.
+- `GECERLI_DOI_METADATA_INCELENMELI`: Kayıt ajansından DOI metadata bilgisi alındı, ancak karşılaştırılacak yeterli yerel bibliyografik alan yoktu.
 - `GECERLI_DOI_CROSSREF_DISI_INCELENMELI`: DOI çözümlendi ancak Crossref kaydı bulunamadı. Başka bir kayıt ajansı ve yayıncı metadata sayfası elle incelenmelidir.
 - `UYUSMAZLIK`: Sağlanan alanlardan en az biri Crossref kaydıyla uyuşmadı. Asıl kaynağı incelemeden düzeltme yapma.
 - `GUNCELLEME_UYARISI`: Düzeltme, endişe ifadesi veya başka bir güncelleme kaydı bulundu.
@@ -75,3 +75,5 @@ Crossref 404 yalnız Crossref'te kayıt bulunamaması anlamına gelir; başka DO
 Crossref, Retraction Watch geri çekmelerini üretim API'sine dâhil eder. Düzeltme ve endişe ifadesi kayıtları geri çekmeler kadar kapsamlı değildir. Son kaynak kontrol tarihi: 1 Kasım 2026.
 
 - DataCite REST API: https://support.datacite.org/docs/api
+
+Komut satırı yalnızca erişim hatası nedeniyle KONTROL_EDILEMEDI bulguları verirse denetim raporunu üretir ve çıkış kodu 0 döndürür; bu **DOI'lerin doğrulandığı anlamına gelmez**. Konsolda uyarı ve JSON/Markdown/XLSX raporundaki durumlar korunur. Gerçek bibliyografik uyuşmazlık ve geri çekme gibi kritik bulgular çıkış kodu 1 üretir.

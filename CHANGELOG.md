@@ -8,6 +8,7 @@
 - Yanıt DOI kimliği karşılaştırılıyor; registry_source ve access_issues metadata/erişim izleri JSON ve XLSX raporlarına eklendi.
 - DataCite doğrulaması Crossref geri çekme/düzeltme bildirimi doğrulamasıyla karıştırılmıyor.
 - Ağsız testlerde engellenmiş URL, metadata fallback, kaynak 404 ve yanlış DOI yanıtı senaryoları eklendi.
+- Salt erişim nedeniyle doğrulanamayan DOI'ler için CLI çıkış kodu artık gerçek hata gibi davranmıyor; açık uyarı ve rapor üretiyor. Markdown/XLSX raporuna kayıt ajansı ve erişim nedeni ekleniyor.
 - Önceki tüm akademik yazım, yöntem, istatistik ve grafik özellikleri korundu.
 
 
