@@ -99,7 +99,10 @@ def check() -> None:
                                  d["procedures"].update(randomization="no")
                              ), options=("--fail-on-high",))
         assert "M010" in ids(report) and report["summary"]["severity_counts"]["high"] >= 1
-        assert run.returncode == 3
+        assert run.returncode == 3, (
+            "fail-on-high exit code", run.args, run.returncode,
+            run.stdout, run.stderr, report["summary"]
+        )
         report, _ = modified("no_design",
                              lambda d: d["study"].pop("design"))
         assert "M002" in ids(report)

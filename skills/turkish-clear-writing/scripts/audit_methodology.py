@@ -600,8 +600,12 @@ def main() -> int:
             markdown(result), encoding="utf-8")
     except (ValueError, OSError, TypeError) as exc:
         raise SystemExit(f"Methodology audit stopped: {exc}") from exc
+    count_high = result["summary"]["severity_counts"].get("high", 0)
+    if opts.fail_on_high and count_high > 0:
+        print(f"REVIEW REQUIRED: {count_high} high-severity finding(s) -> {opts.output}")
+        return 3
     print(f"PASS: {result['summary']['finding_count']} findings -> {opts.output}")
-    return 3 if opts.fail_on_high and result["summary"]["severity_counts"].get("high", 0) else 0
+    return 0
 
 
 if __name__ == "__main__":
