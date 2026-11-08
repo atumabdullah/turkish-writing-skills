@@ -9,6 +9,8 @@ from pathlib import Path
 import sys
 import tempfile
 import zipfile
+from unittest.mock import patch
+from urllib.error import HTTPError
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,6 +56,81 @@ def main() -> int:
     if statuses != expected:
         failures.append(f"durumlar beklenenden farklı: {statuses}")
 
+    # A web-tool URL-approval failure is NOT evidence of a bad DOI. Continue
+    # with registry checks after a blocked DOI redirect and do not invent
+    # invalidity when every external endpoint is inaccessible.
+    standard_message = fixture["records"]["10.1000/ornek.1"]["message"]
+    datacite_attrs = {
+        "doi": valid.doi,
+        "titles": [{"title": valid.source_title}],
+        "creators": [{"givenName": "Ayşe", "familyName": "Yılmaz"}],
+        "publicationYear": 2025,
+        "publisher": "DataCite test publisher",
+        "types": {"resourceTypeGeneral": "JournalArticle"},
+    }
+    cases = [
+        ("blocked_resolver_crossref_ok",
+         {"resolver_http_error": 403, "message": standard_message},
+         "DOGRULANDI", "Crossref"),
+        ("crossref_blocked_datacite_fallback",
+         {"resolver_status": 200, "crossref_http_error": 403,
+          "datacite_attributes": datacite_attrs},
+         "DOGRULANDI", "DataCite"),
+        ("crossref_404_datacite_found",
+         {"resolver_status": 200, "crossref_http_error": 404,
+          "datacite_attributes": datacite_attrs},
+         "DOGRULANDI", "DataCite"),
+        ("all_blocked",
+         {"resolver_http_error": 403, "crossref_http_error": 403,
+          "datacite_http_error": 429},
+         "KONTROL_EDILEMEDI", ""),
+        ("all_missing",
+         {"resolver_http_error": 404, "crossref_http_error": 404,
+          "datacite_http_error": 404},
+         "COZUMLENEMEDI", ""),
+        ("resolver_ok_both_registries_404",
+         {"resolver_status": 200, "crossref_http_error": 404,
+          "datacite_http_error": 404},
+         "GECERLI_DOI_CROSSREF_DISI_INCELENMELI", ""),
+        ("all_network_unavailable",
+         {"resolver_network_error": "URL approval denied",
+          "crossref_network_error": "URL approval denied",
+          "datacite_network_error": "URL approval denied"},
+         "KONTROL_EDILEMEDI", ""),
+        ("crossref_wrong_doi",
+         {"resolver_status": 200,
+          "message": {**standard_message, "DOI": "10.1000/wrong-doi"},
+          "datacite_http_error": 404},
+         "KONTROL_EDILEMEDI", ""),
+    ]
+    for label, case, expected_status, registry in cases:
+        got = module.verify_record(
+            valid, fixture={"records": {valid.doi: case}}
+        )
+        if got["overall_status"] != expected_status:
+            failures.append(f"{label}: expected {expected_status}, got {got['overall_status']}")
+        if got["registry_source"] != registry:
+            failures.append(f"{label}: unexpected registry {got['registry_source']}")
+        if expected_status == "KONTROL_EDILEMEDI" and not got["access_issues"]:
+            failures.append(f"{label}: access errors must be reported")
+        if label == "crossref_blocked_datacite_fallback" and "geri çekme" not in got["note"]:
+            failures.append(f"{label}: DataCite must not imply Crossref retraction clearance")
+
+    # Exercise actual DataCite JSON:API parser with a mocked response; never
+    # issue any external network request during regression tests.
+    response = {"data": {"attributes": datacite_attrs}}
+    with patch.object(module, "fetch_json", return_value=(200, "https://api.datacite.org", response)):
+        parsed = module.datacite_message(valid.doi)
+        if parsed["DOI"] != valid.doi or parsed["title"] != [valid.source_title]:
+            failures.append("DataCite JSON:API parsing incorrect")
+    with patch.object(module, "fetch_json", return_value=(200, "https://api.datacite.org",
+                                                          {"data": {"attributes": {**datacite_attrs, "doi": "10.0000/other"}}})):
+        try:
+            module.datacite_message(valid.doi)
+            failures.append("DataCite DOI mismatch was accepted")
+        except ValueError:
+            pass
+
     with tempfile.TemporaryDirectory(prefix="doi-dogrulama-test-") as tmp:
         output = Path(tmp)
         module.write_reports(results, output)
@@ -78,7 +155,7 @@ def main() -> int:
         for failure in failures:
             print(f"FAIL: {failure}")
         return 1
-    print("PASS: DOI extraction, metadata matching, retraction warning, network uncertainty, and XLSX reports")
+    print("PASS: DOI metadata, Crossref/DataCite fallback, URL approval denial, non-invalidity, retraction and XLSX")
     return 0
 
 
