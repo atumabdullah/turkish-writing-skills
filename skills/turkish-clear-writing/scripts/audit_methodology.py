@@ -25,7 +25,8 @@ EXPERIMENTS = {
 }
 OBSERVATIONAL = {"observational_cross_sectional", "observational_cohort", "case_control"}
 STATUS = {"yes", "no", "unknown", "not_applicable"}
-INDEPENDENT_TESTS = {"one_way_anova", "factorial_anova", "t_test", "welch_anova"}
+INDEPENDENT_TESTS = {"one_way_anova", "factorial_anova", "t_test", "welch_anova",
+                     "regression", "correlation"}
 DEPENDENCE_AWARE = {"mixed_model", "multilevel_model", "gee", "cluster_robust_regression"}
 GUIDELINES = {
     "randomized_trial": ("CONSORT", "https://www.consort-spirit.org/"),
@@ -437,9 +438,9 @@ def audit(protocol: dict, filename: str, fingerprint: str, linked: dict | None =
                 ["ethics.human_participants", "ethics.consent"],
                 "Consent requirements depend on protocol and jurisdiction.",
                 "Onam/feragat/muafiyet sürecini doğru belgelendirin.")
-    if human is None and animal is None:
+    if human is None or animal is None:
         add("M062", "medium", "documentation_gap", "ethics",
-            "İnsan/hayvan araştırması kapsamı belirtilmemiş.",
+            "İnsan/hayvan araştırması kapsamının en az bir bölümü belirtilmemiş.",
             ["ethics.human_participants", "ethics.animal_research"],
             "Ethics applicability cannot be evaluated.",
             "Katılımcı veya deney hayvanı kullanımını açık belirtin.")
