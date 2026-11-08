@@ -222,6 +222,45 @@ def check() -> None:
         assert check_result.returncode == 0, check_result.stderr
         assert "M086" not in ids(result(independent_out))
 
+        # Codex: correlation metadata must contain the reported primary outcome.
+        for pairs, expected in (
+            ([{"left": "height_cm", "right": "weight_kg"}], True),
+            ([{"left": "sleep_hours", "right": "stress_score"}], False),
+            ([], True),
+        ):
+            p = root / ("primary_corr_" + str(expected) + "_" + str(len(pairs)) + ".json")
+            dump(p, {"analysis": "correlation", "experimental_unit": "participant_id",
+                     "input_sha256": "a" * 64,
+                     "model": {"method": "pearson correlation", "comparisons": pairs}})
+            protocol_path = root / "primary_corr_protocol.json"
+            dump(protocol_path, cross)
+            out = root / ("corr_check_" + str(expected) + "_" + str(len(pairs)))
+            run = execute(protocol_path, out, "--analysis-results", str(p))
+            assert run.returncode == 0, run.stderr
+            findings = ids(result(out))
+            assert ("M087" in findings) == expected, findings
+
+        # Primary outcome must also be recorded by new OLS reports.
+        for response, expected in (
+            ("stress_score", None),
+            ("sleep_hours", "M083"),
+            (None, "M088"),
+        ):
+            p = root / ("primary_reg_" + str(response) + ".json")
+            mdl = {"method": "multiple linear OLS regression"}
+            if response is not None:
+                mdl["response_column"] = response
+            dump(p, {"analysis": "regression", "experimental_unit": "participant_id",
+                     "input_sha256": "a" * 64, "model": mdl})
+            out = root / ("reg_check_" + str(response))
+            run = execute(protocol_path, out, "--analysis-results", str(p))
+            assert run.returncode == 0, run.stderr
+            findings = ids(result(out))
+            if expected:
+                assert expected in findings, (response, findings)
+            else:
+                assert "M083" not in findings and "M088" not in findings, findings
+
         # The linked reports are fixtures modeled on v0.9.1 metadata; no model
         # is refitted by the methodology checker.
         actual = {

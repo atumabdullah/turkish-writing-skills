@@ -56,7 +56,7 @@ sampling.factors listesinde her faktörün name alanı ve sıfır veya en az iki
 
 **Gözlemsel araştırma:** nedensellik dili, karıştırıcılar, eksik veri, etik/onam ve raporlama.
 
-**Kümeli/tekrarlı veriler:** bağımsız-hücre ANOVA ve t testleri yanında sıradan HC3 OLS regresyon ve bağımsız birim korelasyonları da bağımlılık denetimine dahildir. HC3 standart hataları küme içi bağımlılığı kendiliğinden düzeltmez. Protokolde birden çok yöntem varsa her bağımsız-birim yöntemi ayrı incelenir. Özellikle bağlanan results.json dosyası regression veya correlation ise clustered/repeated beyanına karşı ayrıca M086 uzman inceleme bulgusu üretilir. Veri bağımsız birim düzeyine önceden indirgenmişse bunun kanıtı ayrıca doğrulanmalıdır.
+**Kümeli/tekrarlı veriler:** bağımsız-hücre ANOVA ve t testleri yanında sıradan HC3 OLS regresyon ve bağımsız birim korelasyonları da bağımlılık denetimine dahildir. HC3 standart hataları küme içi bağımlılığı kendiliğinden düzeltmez. Protokolde birden çok yöntem varsa her bağımsız-birim yöntemi ayrı incelenir. Özellikle bağlanan results.json dosyası regression veya correlation ise clustered/repeated beyanına karşı ayrıca M086 uzman inceleme bulgusu üretilir. Bağlı correlation raporundaki karşılaştırma çiftlerinin birincil sonuç değişkenini içerip içermediği M087 ile; regression modelinin yanıt sütunu ise M083/M088 ile kontrol edilir. İkincil analizler otomatik hatalı sayılmaz, gerekçe istenir. Veri bağımsız birim düzeyine önceden indirgenmişse bunun kanıtı ayrıca doğrulanmalıdır.
 
 **Kısmen belirsiz etik kapsam:** insan katılımcısı yok fakat deney hayvanı durumu bilinmiyor (veya tersi) ise belge eksikliği raporlanır.
 
