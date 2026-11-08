@@ -331,6 +331,7 @@ def regression(frame: pd.DataFrame, args: argparse.Namespace, report: dict) -> l
                               "variance_inflation_factors": vif}
     add_warning(report, "HC3 robust standard errors, two-sided asymptotic tests; observational regression is not causal")
     report["model"] = {"method": "multiple linear OLS regression",
+                       "response_column": args.value,
                        "covariance": "HC3", "n": int(fit.nobs),
                        "predictors": preds, "r_squared": finite(fit.rsquared),
                        "r_squared_adjusted": finite(fit.rsquared_adj),

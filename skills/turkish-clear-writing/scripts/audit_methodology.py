@@ -504,12 +504,39 @@ def audit(protocol: dict, filename: str, fingerprint: str, linked: dict | None =
                 "Faktör adlarını ve karşılaştırma hedefini denetleyin.")
         outcome = string(measurement, "primary_outcome")
         actual_outcome = model.get("response_column")
-        if which in {"factorial", "mixed"} and outcome and actual_outcome and outcome != actual_outcome:
+        if which in {"factorial", "mixed", "regression"} and outcome and actual_outcome and outcome != actual_outcome:
             add("M083", "medium", "review_point", "integration",
                 "Model yanıtı protokoldeki birincil sonuçtan farklı.",
                 ["measurements.primary_outcome", "linked_results.model.response_column"],
                 "A secondary analysis can be valid but must be correctly labelled.",
                 "İkincil sonuçları ve plan değişikliklerini işaretleyin.")
+        if which == "regression" and outcome and not actual_outcome:
+            add("M088", "medium", "documentation_gap", "integration",
+                "Bağlı regresyon raporu yanıt değişkenini açıkça belirtmiyor.",
+                ["linked_results.model.response_column", "measurements.primary_outcome"],
+                "Without the response name, the primary outcome cannot be linked to the model.",
+                "Regresyonu güncel analiz betiğiyle çalıştırarak yanıt alanını ekleyin.")
+        if which == "correlation" and outcome:
+            comparisons = model.get("comparisons")
+            if not isinstance(comparisons, list) or not comparisons:
+                add("M087", "medium", "documentation_gap", "integration",
+                    "Korelasyon raporunda analiz edilen değişken çiftleri belirtilmemiş.",
+                    ["linked_results.model.comparisons", "measurements.primary_outcome"],
+                    "A correlation cannot be linked to the primary outcome without variable names.",
+                    "Birincil değişkeni içeren karşılaştırmaları ve analiz kapsamını doğrulayın.")
+            else:
+                analyzed = set()
+                for pair in comparisons:
+                    if isinstance(pair, dict):
+                        for key in ("left", "right"):
+                            if isinstance(pair.get(key), str):
+                                analyzed.add(pair[key])
+                if outcome not in analyzed:
+                    add("M087", "medium", "review_point", "integration",
+                        "Bağlı korelasyon analizinde beyan edilen birincil sonuç yer almıyor.",
+                        ["measurements.primary_outcome", "linked_results.model.comparisons"],
+                        "A secondary correlation may be valid but must not masquerade as a primary result.",
+                        "Birincil/ikincil analiz ayrımını ve kullanılan değişkenleri belgeleyin.")
         if which == "factorial" and (repeated is True or clustered is True):
             add("M084", "high", "confirmed_inconsistency", "integration",
                 "Bağımsız hücre faktöriyel ANOVA tekrarlı/kümeli tasarımla eşleşmiyor.",
