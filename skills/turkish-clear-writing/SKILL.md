@@ -2,7 +2,7 @@
 name: turkish-clear-writing
 description: Türkçe akademik ve kurumsal metinleri kanıta sadık biçimde yazar veya düzenler; akademik veri varsa istatistiksel analiz ve yayın kalitesinde bilimsel şekil üretimine de rehberlik eder. Yazım, bilimsel yöntem, analiz ve grafik isteklerinde kullan; yaratıcı edebiyat için kullanma.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Türkçe Açık Yazım
@@ -77,6 +77,15 @@ Kullanıcı araştırma protokolü, tez veya makale yönteminin bilimsel uygunlu
 Yapılandırılmış JSON hazırlandıysa scripts/audit_methodology.py betiğiyle kural temelli denetim yap: belgedeki açık çelişkileri, eksik bilgileri ve uzman gerekçesi isteyen durumları **ayrı sınıflandır**. PDF/DOCX'i betiğin doğrudan okuyabildiğini iddia etme. Desteklenen bağlantılı ileri analiz varsa --analysis-results, etkileşim grafiği varsa --figure-metadata ile gerçekten aynı çalışmanın verisi ve modeli olduğunu denetle.
 
 Pseudoreplication, teknik alt örnekler, randomizasyon birimi, tekrarlı ölçüm ve bağımsızlık, faktöriyel tasarım ile analiz eşleştirmesi, ölçüm/kalibrasyon, eksik veri, etik/onam ve raporlama beyanlarını değerlendir. **Etik onayın yokluğu ile onaya ilişkin bilgi eksikliğini karıştırma.** Raporlama kılavuzları yöntem kalitesi puanı değildir. Otomatik p değeri, veri, kalite sertifikası veya mevzuata uygunluk kararı üretme. Analizin uygunluğunu bütün kaynak ve birimlere bakmadan kesin olarak ilan etme.
+
+
+## DOI erişim hatalarında güvenli doğrulama (v1.0.1)
+
+DOI kontrolünde önce [references/doi-verification.md](references/doi-verification.md) yönergesini izle. Claude URL okuma aracı "bu bağlantıyı açamaz" veya "yalnız sohbet bağlantıları/onaylı sonuçlar açılabilir" diyorsa bunu **DOI geçersizliği veya kaynakça hatası olarak değerlendirme**. Web araması açıksa DOI dizesini aratıp güvenilir arama sonucu üzerinden yayıncı/ajans sayfasına erişmeyi dene; uygulamanın URL izin kurallarını atlatmaya çalışma.
+
+İzinli ve internet erişimli Python ortamında scripts/verify_dois.py kullanılabilir. Bu betik DOI yönlendiricisi başarısız olsa da Crossref'i ayrı dener; gerekirse DataCite kaydını sorgular. Tüm erişim engelliyse KONTROL_EDILEMEDI raporla ve belge çalışmasına devam ederek kaynağı kontrol listesine koy.
+
+DOGRULANDI yalnız gerçek kayıt metadatasıyla kaynakça alanları eşleştiğinde, UYUSMAZLIK yalnız erişilmiş metadata ile karşılaştırma uyuşmadığında kullanılmalı. DataCite kaydı, Crossref/Retraction Watch güncelleme taraması yapılmış anlamına gelmez. Kaynakları erişim nedeniyle silme veya uydurma.
 
 ## Türkçeye özgü kararlar
 

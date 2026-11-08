@@ -1,5 +1,17 @@
 # Değişiklik günlüğü
 
+## 1.0.1 — 2026-11-08
+
+- Claude Crossref URL erişim engellerinin DOI geçersizliği olarak işaretlenmemesi için yönergeler güçlendirildi.
+- verify_dois.py, DOI yönlendiricisi başarısız olsa da Crossref ve gerekirse DataCite kayıt API'sini ayrı sorguluyor.
+- HTTP 403/429, ağ kesintisi ve kayıt 404 ayrıldı; üç uçtan açık 404 dışında çözümleme başarısızlığı kesin sayılmıyor.
+- Yanıt DOI kimliği karşılaştırılıyor; registry_source ve access_issues metadata/erişim izleri JSON ve XLSX raporlarına eklendi.
+- DataCite doğrulaması Crossref geri çekme/düzeltme bildirimi doğrulamasıyla karıştırılmıyor.
+- Ağsız testlerde engellenmiş URL, metadata fallback, kaynak 404 ve yanlış DOI yanıtı senaryoları eklendi.
+- Salt erişim nedeniyle doğrulanamayan DOI'ler için CLI çıkış kodu artık gerçek hata gibi davranmıyor; açık uyarı ve rapor üretiyor. Markdown/XLSX raporuna kayıt ajansı ve erişim nedeni ekleniyor.
+- Önceki tüm akademik yazım, yöntem, istatistik ve grafik özellikleri korundu.
+
+
 ## 1.0.0 — 2026-11-08
 
 - Yapılandırılmış ve bağımlılıksız scientific methodology audit için audit_methodology.py eklendi: araştırma deseni, bağımsız deney birimi, teknik alt örnek/pseudoreplication, randomizasyon, örneklem, faktöriyel ve tekrarlı ölçüm uygunluğu, cihaz/ölçüm, etik ve şeffaflık alanları.
